@@ -67,7 +67,7 @@
     }
   });
 });
-;define("squared-up/controllers/login", ["exports", "fetch", "squared-up/config/environment"], function (_exports, _fetch, _environment) {
+;define("squared-up/controllers/login", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -75,27 +75,49 @@
   });
   _exports.default = void 0;
 
-  var _default = Ember.Controller.extend({
-    email: "",
-    password: "",
-    actions: {
-      login() {
-        let url = `${_environment.default.APP.BACKEND}/sessions`;
-        (0, _fetch.default)(url, {
-          method: "post",
-          body: {
-            "email": this.email,
-            "password": this.password
-          }
-        });
-      }
+  var _class, _temp;
 
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  let LoginController = (_class = (_temp = class LoginController extends Ember.Controller {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "email", '');
+
+      _defineProperty(this, "password", '');
     }
-  });
 
-  _exports.default = _default;
+    async login() {
+      let url = `${_environment.default.APP.BACKEND}/sessions`;
+      let body = JSON.stringify({
+        email: this.email,
+        password: this.password
+      });
+      let headers = new _fetch.Headers({
+        'Content-Type': 'application/json'
+      });
+
+      try {
+        let response = await (0, _fetch.default)(url, {
+          method: 'post',
+          headers,
+          body
+        }); // TODO do something with the token
+        // console.log(response);
+
+        return this.transitionToRoute('layouts');
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+  }, _temp), (_applyDecoratedDescriptor(_class.prototype, "login", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "login"), _class.prototype)), _class);
+  _exports.default = LoginController;
 });
-;define("squared-up/controllers/signup", ["exports", "fetch", "squared-up/config/environment"], function (_exports, _fetch, _environment) {
+;define("squared-up/controllers/signup", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -103,25 +125,54 @@
   });
   _exports.default = void 0;
 
-  var _default = Ember.Controller.extend({
-    email: "",
-    password: "",
-    actions: {
-      signup() {
-        let url = `${_environment.default.APP.BACKEND}/users`;
-        (0, _fetch.default)(url, {
-          method: "post",
-          body: {
-            "email": this.email,
-            "password": this.password
-          }
-        });
-      }
+  var _class, _temp;
 
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  let SignupController = (_class = (_temp = class SignupController extends Ember.Controller {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "email", '');
+
+      _defineProperty(this, "password", '');
     }
-  });
 
-  _exports.default = _default;
+    async signup() {
+      let url = `${_environment.default.APP.BACKEND}/users`;
+      let url2 = `${_environment.default.APP.BACKEND}/sessions`;
+      let body = JSON.stringify({
+        email: this.email,
+        password: this.password
+      });
+      let headers = new _fetch.Headers({
+        'Content-Type': 'application/json'
+      });
+
+      try {
+        let response = await (0, _fetch.default)(url, {
+          method: 'post',
+          headers,
+          body
+        });
+        let response2 = await (0, _fetch.default)(url2, {
+          method: 'post',
+          headers,
+          body
+        }); // TODO do something with the token
+
+        console.log(response);
+        console.log(response2);
+        return this.transitionToRoute('layouts');
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+  }, _temp), (_applyDecoratedDescriptor(_class.prototype, "signup", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "signup"), _class.prototype)), _class);
+  _exports.default = SignupController;
 });
 ;define("squared-up/data-adapter", ["exports", "@ember-data/debug"], function (_exports, _debug) {
   "use strict";
@@ -493,8 +544,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "zo2ATK/l",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Welcome to Squared Up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"h2\",true],[10],[1,1,0,0,\"Please login or sign up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n        Email\\n        \"],[9,\"input\",true],[13,\"value\",[27,[26,0,\"AppendSingleId\"],[]],null],[12,\"type\",\"text\",null],[10],[11],[1,1,0,0,\"\\n        Password\\n        \"],[9,\"input\",true],[13,\"value\",[27,[26,1,\"AppendSingleId\"],[]],null],[12,\"type\",\"password\",null],[10],[11],[1,1,0,0,\"\\n        \"],[9,\"button\",false],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"login\"],null],[10],[1,1,0,0,\"Login\"],[11],[1,1,0,0,\"\\n        \"],[9,\"p\",true],[10],[1,1,0,0,\"Don't have an account?\"],[11],[1,1,0,0,\"\\n        \"],[5,[27,[26,3,\"BlockHead\"],[]],null,[[\"route\"],[\"signup\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Create Account\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n    \"],[5,[27,[26,3,\"BlockHead\"],[]],null,[[\"route\"],[\"layouts\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Layouts\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"email\",\"password\",\"action\",\"link-to\"]}",
+    "id": "7ZtOvMmG",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Welcome to Squared Up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"h2\",true],[10],[1,1,0,0,\"Please login or sign up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n        Email\\n        \"],[7,\"input\",[[23,\"type\",\"text\",null]],[[\"@value\"],[[27,[24,0],[\"email\"]]]],null],[1,1,0,0,\"\\n        Password\\n        \"],[7,\"input\",[[23,\"type\",\"password\",null]],[[\"@value\"],[[27,[24,0],[\"password\"]]]],null],[1,1,0,0,\"\\n        \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"login\"],null],[10],[1,1,0,0,\"Login\"],[11],[1,1,0,0,\"\\n        \"],[9,\"p\",true],[10],[1,1,0,0,\"Don't have an account?\"],[11],[1,1,0,0,\"\\n        \"],[5,[27,[26,1,\"BlockHead\"],[]],null,[[\"route\"],[\"signup\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Create Account\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n    \"],[5,[27,[26,1,\"BlockHead\"],[]],null,[[\"route\"],[\"layouts\"]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"Layouts\"]],\"parameters\":[]}]]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"action\",\"link-to\"]}",
     "meta": {
       "moduleName": "squared-up/templates/login.hbs"
     }
@@ -511,8 +562,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "ZG1nAAGf",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Welcome to Squared Up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"h2\",true],[10],[1,1,0,0,\"Sign up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n        Email\\n        \"],[9,\"input\",true],[13,\"value\",[27,[26,0,\"AppendSingleId\"],[]],null],[12,\"type\",\"text\",null],[10],[11],[1,1,0,0,\"\\n        Password\\n        \"],[9,\"input\",true],[13,\"value\",[27,[26,1,\"AppendSingleId\"],[]],null],[12,\"type\",\"password\",null],[10],[11],[1,1,0,0,\"\\n        \"],[9,\"button\",false],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[[27,[24,0],[]],\"signup\"],null],[10],[1,1,0,0,\"Sign up\"],[11],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"email\",\"password\",\"action\"]}",
+    "id": "tm3zuLsw",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Welcome to Squared Up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"h2\",true],[10],[1,1,0,0,\"Sign up!\"],[11],[1,1,0,0,\"\\n    \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n        Email\\n        \"],[7,\"input\",[[23,\"type\",\"text\",null]],[[\"@value\"],[[27,[24,0],[\"email\"]]]],null],[1,1,0,0,\"\\n        Password\\n        \"],[7,\"input\",[[23,\"type\",\"password\",null]],[[\"@value\"],[[27,[24,0],[\"password\"]]]],null],[1,1,0,0,\"\\n        \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"signup\"],null],[10],[1,1,0,0,\"Sign up\"],[11],[1,1,0,0,\"\\n    \"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"action\"]}",
     "meta": {
       "moduleName": "squared-up/templates/signup.hbs"
     }
@@ -595,7 +646,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+8858b313"});
+            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+a1489dfe"});
           }
         
 //# sourceMappingURL=squared-up.map
