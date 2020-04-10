@@ -1,0 +1,14 @@
+<div>
+    <h1>Welcome to Squared Up!</h1>
+    <h2>Please login or sign up!</h2>
+    <div>
+        Email
+        <input type="text" value={{email}}>
+        Password
+        <input type="password" value={{password}}>
+        <button {{action "login"}}>Login</button>
+        <p>Don't have an account?</p>
+        {{#link-to "signup"}}Create Account{{/link-to}}
+    </div>
+    {{#link-to "layouts"}}Layouts{{/link-to}}
+</div>
