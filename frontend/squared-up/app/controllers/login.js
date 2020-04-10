@@ -23,8 +23,9 @@ export default class LoginController extends Controller {
                 try {
                     let response = await fetch(url, { method: 'post', headers, body });
               
-                    // TODO do something with the token
-                    // console.log(response);
+                    let json2 = await response.json();
+                    let localStorage = window.localStorage;
+                    localStorage.setItem('auth-token', json2.token);
               
                     return this.transitionToRoute('layouts');
                   } catch (e) {

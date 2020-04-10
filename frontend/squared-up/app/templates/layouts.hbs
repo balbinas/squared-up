@@ -1,3 +1,10 @@
 <div>
     <h1>Layouts</h1>
+
+    {{#each this.model as |ly|}}
+    <p> {{#link-to "layout" ly.id }}
+            {{ ly.name }}
+        {{/link-to}} </p>
+    {{/each}}
+
 </div>

@@ -105,9 +105,10 @@
           method: 'post',
           headers,
           body
-        }); // TODO do something with the token
-        // console.log(response);
-
+        });
+        let json2 = await response.json();
+        let localStorage = window.localStorage;
+        localStorage.setItem('auth-token', json2.token);
         return this.transitionToRoute('layouts');
       } catch (e) {
         console.log(e);
@@ -161,10 +162,10 @@
           method: 'post',
           headers,
           body
-        }); // TODO do something with the token
-
-        console.log(response);
-        console.log(response2);
+        });
+        let json2 = await response2.json();
+        let localStorage = window.localStorage;
+        localStorage.setItem('auth-token', json2.token);
         return this.transitionToRoute('layouts');
       } catch (e) {
         console.log(e);
@@ -416,6 +417,58 @@
     this.route('layouts');
   });
 });
+;define("squared-up/routes/layout", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  class Layout extends Ember.Route {
+    async model(params) {
+      let url = `${_environment.default.APP.BACKEND}/layouts/${params.id}/rectangles`;
+      let localStorage = window.localStorage;
+      let headers = new _fetch.Headers({
+        'Authorization': localStorage.getItem('auth-token')
+      });
+      let response = await (0, _fetch.default)(url, {
+        method: 'get',
+        headers
+      });
+      return response.json();
+    }
+
+  }
+
+  _exports.default = Layout;
+});
+;define("squared-up/routes/layouts", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  class Layouts extends Ember.Route {
+    async model() {
+      let url = `${_environment.default.APP.BACKEND}/users/me/layouts`;
+      let localStorage = window.localStorage;
+      let headers = new _fetch.Headers({
+        'Authorization': localStorage.getItem('auth-token')
+      });
+      let response = await (0, _fetch.default)(url, {
+        method: 'get',
+        headers
+      });
+      return response.json();
+    }
+
+  }
+
+  _exports.default = Layouts;
+});
 ;define("squared-up/serializers/-default", ["exports", "@ember-data/serializer/json"], function (_exports, _json) {
   "use strict";
 
@@ -508,8 +561,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "GBJxAoOG",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layout singular\"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[]}",
+    "id": "mxN8cWng",
+    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layout singular\"],[11],[1,1,0,0,\"\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"        \"],[1,0,0,0,[27,[24,1],[\"startX\"]]],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layout.hbs"
     }
@@ -526,8 +579,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "IEtBJCKC",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[]}",
+    "id": "c/F0JSs/",
+    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,2,\"BlockHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,0,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"link-to\",\"-track-array\",\"each\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layouts.hbs"
     }
@@ -646,7 +699,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+a1489dfe"});
+            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+09d6ffec"});
           }
         
 //# sourceMappingURL=squared-up.map
