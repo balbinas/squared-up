@@ -1,9 +1,10 @@
 # squared-up
 
-BackEnd
+# BackEnd
 * Allow user logins
 * Save and load layouts
-Front End
+
+# Front End
 * Add a new rectangle to the area
 * Remove a rectangle
 * Resize a rectangle using direct mouse manipulations
