@@ -54,6 +54,113 @@
     }
   });
 });
+;define("squared-up/components/layout", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  class _default extends Ember.Component {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "classNames", ['layout']);
+
+      _defineProperty(this, "clickX", -1);
+
+      _defineProperty(this, "clickY", -1);
+
+      _defineProperty(this, "minX", 0);
+
+      _defineProperty(this, "minY", 0);
+
+      _defineProperty(this, "maxX", 0);
+
+      _defineProperty(this, "maxY", 0);
+
+      _defineProperty(this, "dragging", false);
+
+      _defineProperty(this, "rectId", -1);
+    }
+
+    didRender() {
+      this._super(...arguments);
+
+      this.minX = this.element.offsetLeft;
+      this.minY = this.element.offsetTop;
+      this.maxX = this.minX + this.element.width;
+      this.maxY = this.minY + this.element.height;
+    }
+
+    mouseDown(event) {
+      this.clickX = event.pageX - this.minX;
+      this.clickY = event.pageY - this.minY;
+      let selectedRectangle = event.target.classList.contains('rectangle');
+      let rightClick = event.which == 3;
+
+      if (selectedRectangle) {
+        if (rightClick) {
+          this.deleteRectangle(event.target.id);
+        } else {
+          this.dragging = true;
+          this.rectId = event.target.id;
+        }
+      }
+    }
+
+    mouseUp(event) {
+      let x = event.pageX - this.minX;
+      let y = event.pageY - this.minY;
+
+      if (this.dragging) {
+        let distX = x - this.clickX;
+        let distY = y - this.clickY;
+        this.updateRectangle(this.rectId, distX, distY);
+      } else {
+        let rect = {
+          startX: Math.max(0, Math.min(this.clickX, x)),
+          startY: Math.max(0, Math.min(this.clickY, y)),
+          endX: Math.max(this.clickX, x),
+          endY: Math.max(this.clickY, y),
+          color: 'blue'
+        };
+        this.addRectangle(rect);
+      }
+
+      this.dragging = false;
+      this.clickX = -1;
+      this.clickY = -1;
+    }
+
+  }
+
+  _exports.default = _default;
+});
+;define("squared-up/components/rectangle", ["exports", "@glimmer/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  class _default extends _component.default {
+    get width() {
+      return this.args.endX - this.args.startX;
+    }
+
+    get height() {
+      return this.args.endY - this.args.startY;
+    }
+
+  }
+
+  _exports.default = _default;
+});
 ;define("squared-up/components/welcome-page", ["exports", "ember-welcome-page/components/welcome-page"], function (_exports, _welcomePage) {
   "use strict";
 
@@ -66,6 +173,101 @@
       return _welcomePage.default;
     }
   });
+});
+;define("squared-up/controllers/application", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _descriptor, _descriptor2, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  let ApplicationController = (_class = (_temp = class ApplicationController extends Ember.Controller {
+    constructor(...args) {
+      super(...args);
+
+      _initializerDefineProperty(this, "autoId", _descriptor, this);
+
+      _initializerDefineProperty(this, "rectangles", _descriptor2, this);
+    }
+
+    addRectangle(rect) {
+      rect.id = this.autoId;
+      this.autoId++;
+      this.rectangles.push(rect);
+      this.rectangles = this.rectangles;
+    }
+
+    updateRectangle(id, distX, distY) {
+      let rectId = -1;
+
+      for (rectId = 0; rectId < this.rectangles.length; rectId++) {
+        if (id == this.rectangles[rectId].id) {
+          break;
+        }
+      }
+
+      ;
+      let ogRect = this.rectangles[rectId];
+      Ember.set(ogRect, 'startX', ogRect.startX + distX);
+      Ember.set(ogRect, 'startY', ogRect.startY + distY);
+      Ember.set(ogRect, 'endX', ogRect.endX + distX);
+      Ember.set(ogRect, 'endY', ogRect.endY + distY);
+    }
+
+    deleteRectangle(id) {
+      let rectId = -1;
+
+      for (rectId = 0; rectId < this.rectangles.length; rectId++) {
+        if (id == this.rectangles[rectId].id) {
+          break;
+        }
+      }
+
+      ;
+      this.rectangles.splice(rectId, 1); // this.rectangles = this.rectangles;
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "autoId", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return 3;
+    }
+  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "rectangles", [Ember._tracked], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return [{
+        id: 1,
+        startX: 0,
+        startY: 0,
+        endX: 100,
+        endY: 100,
+        color: 'red'
+      }, {
+        id: 2,
+        startX: 300,
+        startY: 300,
+        endX: 500,
+        endY: 500,
+        color: 'green'
+      }];
+    }
+  }), _applyDecoratedDescriptor(_class.prototype, "addRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "addRectangle"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "updateRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updateRectangle"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "deleteRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "deleteRectangle"), _class.prototype)), _class);
+  _exports.default = ApplicationController;
 });
 ;define("squared-up/controllers/login", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
   "use strict";
@@ -417,7 +619,7 @@
     this.route('layouts');
   });
 });
-;define("squared-up/routes/layout", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
+;define("squared-up/routes/layout", ["exports", "squared-up/config/environment", "fetch", "interactjs"], function (_exports, _environment, _fetch, _interactjs) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -552,6 +754,42 @@
 
   _exports.default = _default;
 });
+;define("squared-up/templates/components/layout", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "yhsuhBST",
+    "block": "{\"symbols\":[\"rect\",\"@rectangles\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,2],[]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"        \"],[7,\"rectangle\",[],[[\"@id\",\"@startX\",\"@startY\",\"@endX\",\"@endY\",\"@color\"],[[27,[24,1],[\"id\"]],[27,[24,1],[\"startX\"]],[27,[24,1],[\"startY\"]],[27,[24,1],[\"endX\"]],[27,[24,1],[\"endY\"]],[27,[24,1],[\"color\"]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
+    "meta": {
+      "moduleName": "squared-up/templates/components/layout.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
+;define("squared-up/templates/components/rectangle", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "4vGfaO8+",
+    "block": "{\"symbols\":[\"@id\",\"@color\",\"@startY\",\"@startX\"],\"statements\":[[9,\"div\",true],[12,\"class\",\"rectangle\",null],[13,\"id\",[27,[24,1],[]],null],[13,\"style\",[32,[\"position: absolute;\\n         left:\",[27,[24,4],[]],\"px;\\n         top:\",[27,[24,3],[]],\"px;\\n         width:\",[27,[24,0],[\"width\"]],\"px;\\n         height:\",[27,[24,0],[\"height\"]],\"px;\\n         background-color:\",[27,[24,2],[]],\";\"]],null],[10],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[]}",
+    "meta": {
+      "moduleName": "squared-up/templates/components/rectangle.hbs"
+    }
+  });
+
+  _exports.default = _default;
+});
 ;define("squared-up/templates/layout", ["exports"], function (_exports) {
   "use strict";
 
@@ -561,8 +799,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "mxN8cWng",
-    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layout singular\"],[11],[1,1,0,0,\"\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"        \"],[1,0,0,0,[27,[24,1],[\"startX\"]]],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
+    "id": "/WFcNu9p",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layout: \"],[1,0,0,0,[27,[24,0],[\"model\",\"name\"]]],[11],[1,1,0,0,\"\\n\\n    \"],[7,\"layout\",[],[[\"@rectangles\",\"@addRectangle\",\"@updateRectangle\",\"@deleteRectangle\"],[[27,[26,0,\"AppendSingleId\"],[]],[27,[26,1,\"AppendSingleId\"],[]],[27,[26,2,\"AppendSingleId\"],[]],[27,[26,3,\"AppendSingleId\"],[]]]],null],[1,1,0,0,\"\\n\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"rectangles\",\"addRectangle\",\"updateRectangle\",\"deleteRectangle\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layout.hbs"
     }
@@ -579,8 +817,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "c/F0JSs/",
-    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,2,\"BlockHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,0,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"link-to\",\"-track-array\",\"each\"]}",
+    "id": "CR1zAwA+",
+    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,2,\"BlockHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,0,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"link-to\",\"-track-array\",\"each\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layouts.hbs"
     }
@@ -699,7 +937,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+09d6ffec"});
+            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+2795982a"});
           }
         
 //# sourceMappingURL=squared-up.map

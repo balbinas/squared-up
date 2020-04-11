@@ -2,7 +2,7 @@ import Route from '@ember/routing/route';
 import ENV from 'squared-up/config/environment';
 import { action } from '@ember/object';
 import fetch, { Headers } from 'fetch';
-
+import interact from 'interactjs'
 
 export default class Layout extends Route {
   
