@@ -1,6 +1,6 @@
 <h1>Layout: {{ this.model.name }}</h1>
 
-<Layout @rectangles={{rectangles}} 
+<Layout @rectangles={{this.model}} 
         @addRectangle={{addRectangle}}
         @updateRectangle={{updateRectangle}}
         @deleteRectangle={{deleteRectangle}}/>

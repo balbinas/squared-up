@@ -46,6 +46,6 @@ class RectanglesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def rectangle_params
-      params.permit(:layout_id, :startX, :startY, :endX, :endY)
+      params.permit(:layout_id, :startX, :startY, :endX, :endY, :color)
     end
 end

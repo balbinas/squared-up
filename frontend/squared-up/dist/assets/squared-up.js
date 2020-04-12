@@ -127,8 +127,9 @@
           startY: Math.max(0, Math.min(this.clickY, y)),
           endX: Math.max(this.clickX, x),
           endY: Math.max(this.clickY, y),
-          color: 'blue'
+          color: '#' + Math.floor(Math.random() * 16777215).toString(16)
         };
+        console.log("in component rect =", rect);
         this.addRectangle(rect);
       }
 
@@ -188,7 +189,7 @@
     }
   });
 });
-;define("squared-up/controllers/layout", ["exports"], function (_exports) {
+;define("squared-up/controllers/layout", ["exports", "fetch", "squared-up/config/environment"], function (_exports, _fetch, _environment) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -196,7 +197,7 @@
   });
   _exports.default = void 0;
 
-  var _class, _descriptor, _descriptor2, _temp;
+  var _class, _descriptor, _temp;
 
   function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
 
@@ -210,19 +211,40 @@
     constructor(...args) {
       super(...args);
 
-      _initializerDefineProperty(this, "autoId", _descriptor, this);
-
-      _initializerDefineProperty(this, "rectangles", _descriptor2, this);
+      _initializerDefineProperty(this, "rectangles", _descriptor, this);
     }
 
-    addRectangle(rect) {
-      rect.id = this.autoId;
-      this.autoId++;
-      this.rectangles.push(rect);
-      this.rectangles = this.rectangles;
+    async addRectangle(rect) {
+      let url = `${_environment.default.APP.BACKEND}/rectangles`;
+      console.log("this model", this.model);
+      let body = JSON.stringify({
+        startX: rect.startX,
+        endX: rect.endX,
+        startY: rect.startY,
+        endY: rect.endY,
+        color: rect.color,
+        layout_id: 1
+      });
+      console.log({
+        body
+      });
+      let headers = new _fetch.Headers({
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('auth-token')
+      });
+
+      try {
+        let response = await (0, _fetch.default)(url, {
+          method: 'post',
+          headers,
+          body
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
 
-    updateRectangle(id, distX, distY) {
+    async updateRectangle(id, distX, distY) {
       let rectId = -1;
 
       for (rectId = 0; rectId < this.rectangles.length; rectId++) {
@@ -237,7 +259,32 @@
       Ember.set(ogRect, 'startY', ogRect.startY + distY);
       Ember.set(ogRect, 'endX', ogRect.endX + distX);
       Ember.set(ogRect, 'endY', ogRect.endY + distY);
-    }
+      let url = `${_environment.default.APP.BACKEND}/rectangles/${rectId}`;
+      let body = JSON.stringify({
+        startX: ogRect.startX,
+        endX: ogRect.endX,
+        startY: ogRect.startY,
+        endY: ogRect.endY,
+        color: ogRect.color
+      });
+      let headers = new _fetch.Headers({
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('auth-token')
+      });
+
+      try {
+        let response = await (0, _fetch.default)(url, {
+          method: 'patch',
+          headers,
+          body
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    } // @action
+    // saveRectangles() {
+    // }
+
 
     deleteRectangle(id) {
       let rectId = -1;
@@ -249,39 +296,90 @@
       }
 
       ;
-      this.rectangles.splice(rectId, 1); // this.rectangles = this.rectangles;
+      let url = `${_environment.default.APP.BACKEND}/rectangles/${id}`;
+      let headers = new _fetch.Headers({
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('auth-token')
+      });
+
+      try {
+        let response = (0, _fetch.default)(url, {
+          method: 'delete',
+          headers
+        });
+        console.log(response); // let json = await response.json();
+        // let localStorage = window.localStorage;
+        // localStorage.setItem('auth-token', json.token);
+        // return this.transitionToRoute('layouts');
+      } catch (e) {
+        console.log(e);
+      }
+
+      this.rectangles.splice(rectId, 1);
     }
 
-  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "autoId", [Ember._tracked], {
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class.prototype, "rectangles", [Ember._tracked], {
     configurable: true,
     enumerable: true,
     writable: true,
     initializer: function () {
-      return 3;
-    }
-  }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, "rectangles", [Ember._tracked], {
-    configurable: true,
-    enumerable: true,
-    writable: true,
-    initializer: function () {
-      return [{
-        id: 1,
-        startX: 0,
-        startY: 0,
-        endX: 100,
-        endY: 100,
-        color: 'skyblue'
-      }, {
-        id: 2,
-        startX: 300,
-        startY: 300,
-        endX: 500,
-        endY: 500,
-        color: 'pink'
-      }];
+      return this.model;
     }
   }), _applyDecoratedDescriptor(_class.prototype, "addRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "addRectangle"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "updateRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updateRectangle"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "deleteRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "deleteRectangle"), _class.prototype)), _class);
   _exports.default = LayoutController;
+});
+;define("squared-up/controllers/layouts", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _class, _temp;
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  let SignupController = (_class = (_temp = class SignupController extends Ember.Controller {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "name", '');
+
+      _defineProperty(this, "newLayout", false);
+    }
+
+    openLayoutBox() {
+      this.toggleProperty('newLayout');
+    }
+
+    async createLayout() {
+      let url = `${_environment.default.APP.BACKEND}/layouts`;
+      let body = JSON.stringify({
+        name: this.name
+      });
+      let headers = new _fetch.Headers({
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('auth-token')
+      });
+
+      try {
+        let response = await (0, _fetch.default)(url, {
+          method: 'post',
+          headers,
+          body
+        });
+        let json = await response.json();
+        return await response.then(this.transitionToRoute(`layout/${json.id}`));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+  }, _temp), (_applyDecoratedDescriptor(_class.prototype, "openLayoutBox", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "openLayoutBox"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "createLayout", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "createLayout"), _class.prototype)), _class);
+  _exports.default = SignupController;
 });
 ;define("squared-up/controllers/login", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
   "use strict";
@@ -813,8 +911,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "EWQRNMMR",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"h1\",true],[10],[1,1,0,0,\"Layout: \"],[1,0,0,0,[27,[24,0],[\"model\",\"name\"]]],[11],[1,1,0,0,\"\\n\\n\"],[7,\"layout\",[],[[\"@rectangles\",\"@addRectangle\",\"@updateRectangle\",\"@deleteRectangle\"],[[27,[26,0,\"AppendSingleId\"],[]],[27,[26,1,\"AppendSingleId\"],[]],[27,[26,2,\"AppendSingleId\"],[]],[27,[26,3,\"AppendSingleId\"],[]]]],null]],\"hasEval\":false,\"upvars\":[\"rectangles\",\"addRectangle\",\"updateRectangle\",\"deleteRectangle\"]}",
+    "id": "FTt9j/N8",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"h1\",true],[10],[1,1,0,0,\"Layout: \"],[1,0,0,0,[27,[24,0],[\"model\",\"name\"]]],[11],[1,1,0,0,\"\\n\\n\"],[7,\"layout\",[],[[\"@rectangles\",\"@addRectangle\",\"@updateRectangle\",\"@deleteRectangle\"],[[27,[24,0],[\"model\"]],[27,[26,0,\"AppendSingleId\"],[]],[27,[26,1,\"AppendSingleId\"],[]],[27,[26,2,\"AppendSingleId\"],[]]]],null]],\"hasEval\":false,\"upvars\":[\"addRectangle\",\"updateRectangle\",\"deleteRectangle\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layout.hbs"
     }
@@ -831,8 +929,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "mS5Sm8VK",
-    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,2,\"BlockHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,0,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            Open \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"link-to\",\"-track-array\",\"each\"]}",
+    "id": "+CfC6v3j",
+    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,3,\"BlockHead\"],[]],[[31,0,0,[27,[26,2,\"CallHead\"],[]],[[31,0,0,[27,[26,2,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,1,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            Open \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n    \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"openLayoutBox\"],null],[10],[1,1,0,0,\"New Layout\"],[11],[1,1,0,0,\"\\n\\n    \"],[9,\"div\",true],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,5,\"BlockHead\"],[]],[[27,[26,4,\"Expression\"],[]]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"            \"],[9,\"label\",true],[10],[1,1,0,0,\"Name your new layout\"],[11],[1,1,0,0,\"\\n            \"],[7,\"input\",[[23,\"type\",\"text\",null]],[[\"@value\"],[[27,[24,0],[\"name\"]]]],null],[1,1,0,0,\"\\n            \"],[9,\"button\",false],[3,0,0,[27,[26,0,\"ModifierHead\"],[]],[[27,[24,0],[]],\"createLayout\"],null],[10],[1,1,0,0,\"Create\"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[]}]]],[1,1,0,0,\"    \"],[11],[1,1,0,0,\"\\n\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"action\",\"link-to\",\"-track-array\",\"each\",\"newLayout\",\"if\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layouts.hbs"
     }

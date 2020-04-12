@@ -56,8 +56,9 @@ export default class extends Component {
         startY: Math.max(0, Math.min(this.clickY, y)),
         endX: Math.max(this.clickX, x),
         endY: Math.max(this.clickY, y),
-        color: 'blue'
+        color: '#'+Math.floor(Math.random()*16777215).toString(16)
       }
+      console.log("in component rect =", rect)
       
       this.addRectangle(rect);
     }

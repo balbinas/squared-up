@@ -7,4 +7,14 @@
         {{/link-to}} </p>
     {{/each}}
 
+    <button {{action "openLayoutBox"}}>New Layout</button>
+
+    <div>
+        {{#if newLayout}}
+            <label>Name your new layout</label>
+            <Input type="text" @value={{this.name}}/>
+            <button {{action "createLayout"}}>Create</button>
+        {{/if}}
+    </div>
+
 </div>
