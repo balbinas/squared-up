@@ -346,6 +346,10605 @@ var runningTests = false;
     module.exports = { require: require, define: define };
   }
 })(this);
+;/*!
+ * jQuery JavaScript Library v3.4.1
+ * https://jquery.com/
+ *
+ * Includes Sizzle.js
+ * https://sizzlejs.com/
+ *
+ * Copyright JS Foundation and other contributors
+ * Released under the MIT license
+ * https://jquery.org/license
+ *
+ * Date: 2019-05-01T21:04Z
+ */
+( function( global, factory ) {
+
+	"use strict";
+
+	if ( typeof module === "object" && typeof module.exports === "object" ) {
+
+		// For CommonJS and CommonJS-like environments where a proper `window`
+		// is present, execute the factory and get jQuery.
+		// For environments that do not have a `window` with a `document`
+		// (such as Node.js), expose a factory as module.exports.
+		// This accentuates the need for the creation of a real `window`.
+		// e.g. var jQuery = require("jquery")(window);
+		// See ticket #14549 for more info.
+		module.exports = global.document ?
+			factory( global, true ) :
+			function( w ) {
+				if ( !w.document ) {
+					throw new Error( "jQuery requires a window with a document" );
+				}
+				return factory( w );
+			};
+	} else {
+		factory( global );
+	}
+
+// Pass this if window is not defined yet
+} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+
+// Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
+// throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
+// arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
+// enough that all such attempts are guarded in a try block.
+"use strict";
+
+var arr = [];
+
+var document = window.document;
+
+var getProto = Object.getPrototypeOf;
+
+var slice = arr.slice;
+
+var concat = arr.concat;
+
+var push = arr.push;
+
+var indexOf = arr.indexOf;
+
+var class2type = {};
+
+var toString = class2type.toString;
+
+var hasOwn = class2type.hasOwnProperty;
+
+var fnToString = hasOwn.toString;
+
+var ObjectFunctionString = fnToString.call( Object );
+
+var support = {};
+
+var isFunction = function isFunction( obj ) {
+
+      // Support: Chrome <=57, Firefox <=52
+      // In some browsers, typeof returns "function" for HTML <object> elements
+      // (i.e., `typeof document.createElement( "object" ) === "function"`).
+      // We don't want to classify *any* DOM node as a function.
+      return typeof obj === "function" && typeof obj.nodeType !== "number";
+  };
+
+
+var isWindow = function isWindow( obj ) {
+		return obj != null && obj === obj.window;
+	};
+
+
+
+
+	var preservedScriptAttributes = {
+		type: true,
+		src: true,
+		nonce: true,
+		noModule: true
+	};
+
+	function DOMEval( code, node, doc ) {
+		doc = doc || document;
+
+		var i, val,
+			script = doc.createElement( "script" );
+
+		script.text = code;
+		if ( node ) {
+			for ( i in preservedScriptAttributes ) {
+
+				// Support: Firefox 64+, Edge 18+
+				// Some browsers don't support the "nonce" property on scripts.
+				// On the other hand, just using `getAttribute` is not enough as
+				// the `nonce` attribute is reset to an empty string whenever it
+				// becomes browsing-context connected.
+				// See https://github.com/whatwg/html/issues/2369
+				// See https://html.spec.whatwg.org/#nonce-attributes
+				// The `node.getAttribute` check was added for the sake of
+				// `jQuery.globalEval` so that it can fake a nonce-containing node
+				// via an object.
+				val = node[ i ] || node.getAttribute && node.getAttribute( i );
+				if ( val ) {
+					script.setAttribute( i, val );
+				}
+			}
+		}
+		doc.head.appendChild( script ).parentNode.removeChild( script );
+	}
+
+
+function toType( obj ) {
+	if ( obj == null ) {
+		return obj + "";
+	}
+
+	// Support: Android <=2.3 only (functionish RegExp)
+	return typeof obj === "object" || typeof obj === "function" ?
+		class2type[ toString.call( obj ) ] || "object" :
+		typeof obj;
+}
+/* global Symbol */
+// Defining this global in .eslintrc.json would create a danger of using the global
+// unguarded in another place, it seems safer to define global only for this module
+
+
+
+var
+	version = "3.4.1",
+
+	// Define a local copy of jQuery
+	jQuery = function( selector, context ) {
+
+		// The jQuery object is actually just the init constructor 'enhanced'
+		// Need init if jQuery is called (just allow error to be thrown if not included)
+		return new jQuery.fn.init( selector, context );
+	},
+
+	// Support: Android <=4.0 only
+	// Make sure we trim BOM and NBSP
+	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+
+jQuery.fn = jQuery.prototype = {
+
+	// The current version of jQuery being used
+	jquery: version,
+
+	constructor: jQuery,
+
+	// The default length of a jQuery object is 0
+	length: 0,
+
+	toArray: function() {
+		return slice.call( this );
+	},
+
+	// Get the Nth element in the matched element set OR
+	// Get the whole matched element set as a clean array
+	get: function( num ) {
+
+		// Return all the elements in a clean array
+		if ( num == null ) {
+			return slice.call( this );
+		}
+
+		// Return just the one element from the set
+		return num < 0 ? this[ num + this.length ] : this[ num ];
+	},
+
+	// Take an array of elements and push it onto the stack
+	// (returning the new matched element set)
+	pushStack: function( elems ) {
+
+		// Build a new jQuery matched element set
+		var ret = jQuery.merge( this.constructor(), elems );
+
+		// Add the old object onto the stack (as a reference)
+		ret.prevObject = this;
+
+		// Return the newly-formed element set
+		return ret;
+	},
+
+	// Execute a callback for every element in the matched set.
+	each: function( callback ) {
+		return jQuery.each( this, callback );
+	},
+
+	map: function( callback ) {
+		return this.pushStack( jQuery.map( this, function( elem, i ) {
+			return callback.call( elem, i, elem );
+		} ) );
+	},
+
+	slice: function() {
+		return this.pushStack( slice.apply( this, arguments ) );
+	},
+
+	first: function() {
+		return this.eq( 0 );
+	},
+
+	last: function() {
+		return this.eq( -1 );
+	},
+
+	eq: function( i ) {
+		var len = this.length,
+			j = +i + ( i < 0 ? len : 0 );
+		return this.pushStack( j >= 0 && j < len ? [ this[ j ] ] : [] );
+	},
+
+	end: function() {
+		return this.prevObject || this.constructor();
+	},
+
+	// For internal use only.
+	// Behaves like an Array's method, not like a jQuery method.
+	push: push,
+	sort: arr.sort,
+	splice: arr.splice
+};
+
+jQuery.extend = jQuery.fn.extend = function() {
+	var options, name, src, copy, copyIsArray, clone,
+		target = arguments[ 0 ] || {},
+		i = 1,
+		length = arguments.length,
+		deep = false;
+
+	// Handle a deep copy situation
+	if ( typeof target === "boolean" ) {
+		deep = target;
+
+		// Skip the boolean and the target
+		target = arguments[ i ] || {};
+		i++;
+	}
+
+	// Handle case when target is a string or something (possible in deep copy)
+	if ( typeof target !== "object" && !isFunction( target ) ) {
+		target = {};
+	}
+
+	// Extend jQuery itself if only one argument is passed
+	if ( i === length ) {
+		target = this;
+		i--;
+	}
+
+	for ( ; i < length; i++ ) {
+
+		// Only deal with non-null/undefined values
+		if ( ( options = arguments[ i ] ) != null ) {
+
+			// Extend the base object
+			for ( name in options ) {
+				copy = options[ name ];
+
+				// Prevent Object.prototype pollution
+				// Prevent never-ending loop
+				if ( name === "__proto__" || target === copy ) {
+					continue;
+				}
+
+				// Recurse if we're merging plain objects or arrays
+				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
+					( copyIsArray = Array.isArray( copy ) ) ) ) {
+					src = target[ name ];
+
+					// Ensure proper type for the source value
+					if ( copyIsArray && !Array.isArray( src ) ) {
+						clone = [];
+					} else if ( !copyIsArray && !jQuery.isPlainObject( src ) ) {
+						clone = {};
+					} else {
+						clone = src;
+					}
+					copyIsArray = false;
+
+					// Never move original objects, clone them
+					target[ name ] = jQuery.extend( deep, clone, copy );
+
+				// Don't bring in undefined values
+				} else if ( copy !== undefined ) {
+					target[ name ] = copy;
+				}
+			}
+		}
+	}
+
+	// Return the modified object
+	return target;
+};
+
+jQuery.extend( {
+
+	// Unique for each copy of jQuery on the page
+	expando: "jQuery" + ( version + Math.random() ).replace( /\D/g, "" ),
+
+	// Assume jQuery is ready without the ready module
+	isReady: true,
+
+	error: function( msg ) {
+		throw new Error( msg );
+	},
+
+	noop: function() {},
+
+	isPlainObject: function( obj ) {
+		var proto, Ctor;
+
+		// Detect obvious negatives
+		// Use toString instead of jQuery.type to catch host objects
+		if ( !obj || toString.call( obj ) !== "[object Object]" ) {
+			return false;
+		}
+
+		proto = getProto( obj );
+
+		// Objects with no prototype (e.g., `Object.create( null )`) are plain
+		if ( !proto ) {
+			return true;
+		}
+
+		// Objects with prototype are plain iff they were constructed by a global Object function
+		Ctor = hasOwn.call( proto, "constructor" ) && proto.constructor;
+		return typeof Ctor === "function" && fnToString.call( Ctor ) === ObjectFunctionString;
+	},
+
+	isEmptyObject: function( obj ) {
+		var name;
+
+		for ( name in obj ) {
+			return false;
+		}
+		return true;
+	},
+
+	// Evaluates a script in a global context
+	globalEval: function( code, options ) {
+		DOMEval( code, { nonce: options && options.nonce } );
+	},
+
+	each: function( obj, callback ) {
+		var length, i = 0;
+
+		if ( isArrayLike( obj ) ) {
+			length = obj.length;
+			for ( ; i < length; i++ ) {
+				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
+					break;
+				}
+			}
+		} else {
+			for ( i in obj ) {
+				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
+					break;
+				}
+			}
+		}
+
+		return obj;
+	},
+
+	// Support: Android <=4.0 only
+	trim: function( text ) {
+		return text == null ?
+			"" :
+			( text + "" ).replace( rtrim, "" );
+	},
+
+	// results is for internal usage only
+	makeArray: function( arr, results ) {
+		var ret = results || [];
+
+		if ( arr != null ) {
+			if ( isArrayLike( Object( arr ) ) ) {
+				jQuery.merge( ret,
+					typeof arr === "string" ?
+					[ arr ] : arr
+				);
+			} else {
+				push.call( ret, arr );
+			}
+		}
+
+		return ret;
+	},
+
+	inArray: function( elem, arr, i ) {
+		return arr == null ? -1 : indexOf.call( arr, elem, i );
+	},
+
+	// Support: Android <=4.0 only, PhantomJS 1 only
+	// push.apply(_, arraylike) throws on ancient WebKit
+	merge: function( first, second ) {
+		var len = +second.length,
+			j = 0,
+			i = first.length;
+
+		for ( ; j < len; j++ ) {
+			first[ i++ ] = second[ j ];
+		}
+
+		first.length = i;
+
+		return first;
+	},
+
+	grep: function( elems, callback, invert ) {
+		var callbackInverse,
+			matches = [],
+			i = 0,
+			length = elems.length,
+			callbackExpect = !invert;
+
+		// Go through the array, only saving the items
+		// that pass the validator function
+		for ( ; i < length; i++ ) {
+			callbackInverse = !callback( elems[ i ], i );
+			if ( callbackInverse !== callbackExpect ) {
+				matches.push( elems[ i ] );
+			}
+		}
+
+		return matches;
+	},
+
+	// arg is for internal usage only
+	map: function( elems, callback, arg ) {
+		var length, value,
+			i = 0,
+			ret = [];
+
+		// Go through the array, translating each of the items to their new values
+		if ( isArrayLike( elems ) ) {
+			length = elems.length;
+			for ( ; i < length; i++ ) {
+				value = callback( elems[ i ], i, arg );
+
+				if ( value != null ) {
+					ret.push( value );
+				}
+			}
+
+		// Go through every key on the object,
+		} else {
+			for ( i in elems ) {
+				value = callback( elems[ i ], i, arg );
+
+				if ( value != null ) {
+					ret.push( value );
+				}
+			}
+		}
+
+		// Flatten any nested arrays
+		return concat.apply( [], ret );
+	},
+
+	// A global GUID counter for objects
+	guid: 1,
+
+	// jQuery.support is not used in Core but other projects attach their
+	// properties to it so it needs to exist.
+	support: support
+} );
+
+if ( typeof Symbol === "function" ) {
+	jQuery.fn[ Symbol.iterator ] = arr[ Symbol.iterator ];
+}
+
+// Populate the class2type map
+jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
+function( i, name ) {
+	class2type[ "[object " + name + "]" ] = name.toLowerCase();
+} );
+
+function isArrayLike( obj ) {
+
+	// Support: real iOS 8.2 only (not reproducible in simulator)
+	// `in` check used to prevent JIT error (gh-2145)
+	// hasOwn isn't used here due to false negatives
+	// regarding Nodelist length in IE
+	var length = !!obj && "length" in obj && obj.length,
+		type = toType( obj );
+
+	if ( isFunction( obj ) || isWindow( obj ) ) {
+		return false;
+	}
+
+	return type === "array" || length === 0 ||
+		typeof length === "number" && length > 0 && ( length - 1 ) in obj;
+}
+var Sizzle =
+/*!
+ * Sizzle CSS Selector Engine v2.3.4
+ * https://sizzlejs.com/
+ *
+ * Copyright JS Foundation and other contributors
+ * Released under the MIT license
+ * https://js.foundation/
+ *
+ * Date: 2019-04-08
+ */
+(function( window ) {
+
+var i,
+	support,
+	Expr,
+	getText,
+	isXML,
+	tokenize,
+	compile,
+	select,
+	outermostContext,
+	sortInput,
+	hasDuplicate,
+
+	// Local document vars
+	setDocument,
+	document,
+	docElem,
+	documentIsHTML,
+	rbuggyQSA,
+	rbuggyMatches,
+	matches,
+	contains,
+
+	// Instance-specific data
+	expando = "sizzle" + 1 * new Date(),
+	preferredDoc = window.document,
+	dirruns = 0,
+	done = 0,
+	classCache = createCache(),
+	tokenCache = createCache(),
+	compilerCache = createCache(),
+	nonnativeSelectorCache = createCache(),
+	sortOrder = function( a, b ) {
+		if ( a === b ) {
+			hasDuplicate = true;
+		}
+		return 0;
+	},
+
+	// Instance methods
+	hasOwn = ({}).hasOwnProperty,
+	arr = [],
+	pop = arr.pop,
+	push_native = arr.push,
+	push = arr.push,
+	slice = arr.slice,
+	// Use a stripped-down indexOf as it's faster than native
+	// https://jsperf.com/thor-indexof-vs-for/5
+	indexOf = function( list, elem ) {
+		var i = 0,
+			len = list.length;
+		for ( ; i < len; i++ ) {
+			if ( list[i] === elem ) {
+				return i;
+			}
+		}
+		return -1;
+	},
+
+	booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+
+	// Regular expressions
+
+	// http://www.w3.org/TR/css3-selectors/#whitespace
+	whitespace = "[\\x20\\t\\r\\n\\f]",
+
+	// http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+	identifier = "(?:\\\\.|[\\w-]|[^\0-\\xa0])+",
+
+	// Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
+	attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
+		// Operator (capture 2)
+		"*([*^$|!~]?=)" + whitespace +
+		// "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
+		"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace +
+		"*\\]",
+
+	pseudos = ":(" + identifier + ")(?:\\((" +
+		// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
+		// 1. quoted (capture 3; capture 4 or capture 5)
+		"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
+		// 2. simple (capture 6)
+		"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
+		// 3. anything else (capture 2)
+		".*" +
+		")\\)|)",
+
+	// Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
+	rwhitespace = new RegExp( whitespace + "+", "g" ),
+	rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g" ),
+
+	rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
+	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" + whitespace + "*" ),
+	rdescend = new RegExp( whitespace + "|>" ),
+
+	rpseudo = new RegExp( pseudos ),
+	ridentifier = new RegExp( "^" + identifier + "$" ),
+
+	matchExpr = {
+		"ID": new RegExp( "^#(" + identifier + ")" ),
+		"CLASS": new RegExp( "^\\.(" + identifier + ")" ),
+		"TAG": new RegExp( "^(" + identifier + "|[*])" ),
+		"ATTR": new RegExp( "^" + attributes ),
+		"PSEUDO": new RegExp( "^" + pseudos ),
+		"CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace +
+			"*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace +
+			"*(\\d+)|))" + whitespace + "*\\)|)", "i" ),
+		"bool": new RegExp( "^(?:" + booleans + ")$", "i" ),
+		// For use in libraries implementing .is()
+		// We use this for POS matching in `select`
+		"needsContext": new RegExp( "^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" +
+			whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
+	},
+
+	rhtml = /HTML$/i,
+	rinputs = /^(?:input|select|textarea|button)$/i,
+	rheader = /^h\d$/i,
+
+	rnative = /^[^{]+\{\s*\[native \w/,
+
+	// Easily-parseable/retrievable ID or TAG or CLASS selectors
+	rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,
+
+	rsibling = /[+~]/,
+
+	// CSS escapes
+	// http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
+	runescape = new RegExp( "\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig" ),
+	funescape = function( _, escaped, escapedWhitespace ) {
+		var high = "0x" + escaped - 0x10000;
+		// NaN means non-codepoint
+		// Support: Firefox<24
+		// Workaround erroneous numeric interpretation of +"0x"
+		return high !== high || escapedWhitespace ?
+			escaped :
+			high < 0 ?
+				// BMP codepoint
+				String.fromCharCode( high + 0x10000 ) :
+				// Supplemental Plane codepoint (surrogate pair)
+				String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
+	},
+
+	// CSS string/identifier serialization
+	// https://drafts.csswg.org/cssom/#common-serializing-idioms
+	rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\0-\x1f\x7f-\uFFFF\w-]/g,
+	fcssescape = function( ch, asCodePoint ) {
+		if ( asCodePoint ) {
+
+			// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
+			if ( ch === "\0" ) {
+				return "\uFFFD";
+			}
+
+			// Control characters and (dependent upon position) numbers get escaped as code points
+			return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
+		}
+
+		// Other potentially-special ASCII characters get backslash-escaped
+		return "\\" + ch;
+	},
+
+	// Used for iframes
+	// See setDocument()
+	// Removing the function wrapper causes a "Permission Denied"
+	// error in IE
+	unloadHandler = function() {
+		setDocument();
+	},
+
+	inDisabledFieldset = addCombinator(
+		function( elem ) {
+			return elem.disabled === true && elem.nodeName.toLowerCase() === "fieldset";
+		},
+		{ dir: "parentNode", next: "legend" }
+	);
+
+// Optimize for push.apply( _, NodeList )
+try {
+	push.apply(
+		(arr = slice.call( preferredDoc.childNodes )),
+		preferredDoc.childNodes
+	);
+	// Support: Android<4.0
+	// Detect silently failing push.apply
+	arr[ preferredDoc.childNodes.length ].nodeType;
+} catch ( e ) {
+	push = { apply: arr.length ?
+
+		// Leverage slice if possible
+		function( target, els ) {
+			push_native.apply( target, slice.call(els) );
+		} :
+
+		// Support: IE<9
+		// Otherwise append directly
+		function( target, els ) {
+			var j = target.length,
+				i = 0;
+			// Can't trust NodeList.length
+			while ( (target[j++] = els[i++]) ) {}
+			target.length = j - 1;
+		}
+	};
+}
+
+function Sizzle( selector, context, results, seed ) {
+	var m, i, elem, nid, match, groups, newSelector,
+		newContext = context && context.ownerDocument,
+
+		// nodeType defaults to 9, since context defaults to document
+		nodeType = context ? context.nodeType : 9;
+
+	results = results || [];
+
+	// Return early from calls with invalid selector or context
+	if ( typeof selector !== "string" || !selector ||
+		nodeType !== 1 && nodeType !== 9 && nodeType !== 11 ) {
+
+		return results;
+	}
+
+	// Try to shortcut find operations (as opposed to filters) in HTML documents
+	if ( !seed ) {
+
+		if ( ( context ? context.ownerDocument || context : preferredDoc ) !== document ) {
+			setDocument( context );
+		}
+		context = context || document;
+
+		if ( documentIsHTML ) {
+
+			// If the selector is sufficiently simple, try using a "get*By*" DOM method
+			// (excepting DocumentFragment context, where the methods don't exist)
+			if ( nodeType !== 11 && (match = rquickExpr.exec( selector )) ) {
+
+				// ID selector
+				if ( (m = match[1]) ) {
+
+					// Document context
+					if ( nodeType === 9 ) {
+						if ( (elem = context.getElementById( m )) ) {
+
+							// Support: IE, Opera, Webkit
+							// TODO: identify versions
+							// getElementById can match elements by name instead of ID
+							if ( elem.id === m ) {
+								results.push( elem );
+								return results;
+							}
+						} else {
+							return results;
+						}
+
+					// Element context
+					} else {
+
+						// Support: IE, Opera, Webkit
+						// TODO: identify versions
+						// getElementById can match elements by name instead of ID
+						if ( newContext && (elem = newContext.getElementById( m )) &&
+							contains( context, elem ) &&
+							elem.id === m ) {
+
+							results.push( elem );
+							return results;
+						}
+					}
+
+				// Type selector
+				} else if ( match[2] ) {
+					push.apply( results, context.getElementsByTagName( selector ) );
+					return results;
+
+				// Class selector
+				} else if ( (m = match[3]) && support.getElementsByClassName &&
+					context.getElementsByClassName ) {
+
+					push.apply( results, context.getElementsByClassName( m ) );
+					return results;
+				}
+			}
+
+			// Take advantage of querySelectorAll
+			if ( support.qsa &&
+				!nonnativeSelectorCache[ selector + " " ] &&
+				(!rbuggyQSA || !rbuggyQSA.test( selector )) &&
+
+				// Support: IE 8 only
+				// Exclude object elements
+				(nodeType !== 1 || context.nodeName.toLowerCase() !== "object") ) {
+
+				newSelector = selector;
+				newContext = context;
+
+				// qSA considers elements outside a scoping root when evaluating child or
+				// descendant combinators, which is not what we want.
+				// In such cases, we work around the behavior by prefixing every selector in the
+				// list with an ID selector referencing the scope context.
+				// Thanks to Andrew Dupont for this technique.
+				if ( nodeType === 1 && rdescend.test( selector ) ) {
+
+					// Capture the context ID, setting it first if necessary
+					if ( (nid = context.getAttribute( "id" )) ) {
+						nid = nid.replace( rcssescape, fcssescape );
+					} else {
+						context.setAttribute( "id", (nid = expando) );
+					}
+
+					// Prefix every selector in the list
+					groups = tokenize( selector );
+					i = groups.length;
+					while ( i-- ) {
+						groups[i] = "#" + nid + " " + toSelector( groups[i] );
+					}
+					newSelector = groups.join( "," );
+
+					// Expand context for sibling selectors
+					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
+						context;
+				}
+
+				try {
+					push.apply( results,
+						newContext.querySelectorAll( newSelector )
+					);
+					return results;
+				} catch ( qsaError ) {
+					nonnativeSelectorCache( selector, true );
+				} finally {
+					if ( nid === expando ) {
+						context.removeAttribute( "id" );
+					}
+				}
+			}
+		}
+	}
+
+	// All others
+	return select( selector.replace( rtrim, "$1" ), context, results, seed );
+}
+
+/**
+ * Create key-value caches of limited size
+ * @returns {function(string, object)} Returns the Object data after storing it on itself with
+ *	property name the (space-suffixed) string and (if the cache is larger than Expr.cacheLength)
+ *	deleting the oldest entry
+ */
+function createCache() {
+	var keys = [];
+
+	function cache( key, value ) {
+		// Use (key + " ") to avoid collision with native prototype properties (see Issue #157)
+		if ( keys.push( key + " " ) > Expr.cacheLength ) {
+			// Only keep the most recent entries
+			delete cache[ keys.shift() ];
+		}
+		return (cache[ key + " " ] = value);
+	}
+	return cache;
+}
+
+/**
+ * Mark a function for special use by Sizzle
+ * @param {Function} fn The function to mark
+ */
+function markFunction( fn ) {
+	fn[ expando ] = true;
+	return fn;
+}
+
+/**
+ * Support testing using an element
+ * @param {Function} fn Passed the created element and returns a boolean result
+ */
+function assert( fn ) {
+	var el = document.createElement("fieldset");
+
+	try {
+		return !!fn( el );
+	} catch (e) {
+		return false;
+	} finally {
+		// Remove from its parent by default
+		if ( el.parentNode ) {
+			el.parentNode.removeChild( el );
+		}
+		// release memory in IE
+		el = null;
+	}
+}
+
+/**
+ * Adds the same handler for all of the specified attrs
+ * @param {String} attrs Pipe-separated list of attributes
+ * @param {Function} handler The method that will be applied
+ */
+function addHandle( attrs, handler ) {
+	var arr = attrs.split("|"),
+		i = arr.length;
+
+	while ( i-- ) {
+		Expr.attrHandle[ arr[i] ] = handler;
+	}
+}
+
+/**
+ * Checks document order of two siblings
+ * @param {Element} a
+ * @param {Element} b
+ * @returns {Number} Returns less than 0 if a precedes b, greater than 0 if a follows b
+ */
+function siblingCheck( a, b ) {
+	var cur = b && a,
+		diff = cur && a.nodeType === 1 && b.nodeType === 1 &&
+			a.sourceIndex - b.sourceIndex;
+
+	// Use IE sourceIndex if available on both nodes
+	if ( diff ) {
+		return diff;
+	}
+
+	// Check if b follows a
+	if ( cur ) {
+		while ( (cur = cur.nextSibling) ) {
+			if ( cur === b ) {
+				return -1;
+			}
+		}
+	}
+
+	return a ? 1 : -1;
+}
+
+/**
+ * Returns a function to use in pseudos for input types
+ * @param {String} type
+ */
+function createInputPseudo( type ) {
+	return function( elem ) {
+		var name = elem.nodeName.toLowerCase();
+		return name === "input" && elem.type === type;
+	};
+}
+
+/**
+ * Returns a function to use in pseudos for buttons
+ * @param {String} type
+ */
+function createButtonPseudo( type ) {
+	return function( elem ) {
+		var name = elem.nodeName.toLowerCase();
+		return (name === "input" || name === "button") && elem.type === type;
+	};
+}
+
+/**
+ * Returns a function to use in pseudos for :enabled/:disabled
+ * @param {Boolean} disabled true for :disabled; false for :enabled
+ */
+function createDisabledPseudo( disabled ) {
+
+	// Known :disabled false positives: fieldset[disabled] > legend:nth-of-type(n+2) :can-disable
+	return function( elem ) {
+
+		// Only certain elements can match :enabled or :disabled
+		// https://html.spec.whatwg.org/multipage/scripting.html#selector-enabled
+		// https://html.spec.whatwg.org/multipage/scripting.html#selector-disabled
+		if ( "form" in elem ) {
+
+			// Check for inherited disabledness on relevant non-disabled elements:
+			// * listed form-associated elements in a disabled fieldset
+			//   https://html.spec.whatwg.org/multipage/forms.html#category-listed
+			//   https://html.spec.whatwg.org/multipage/forms.html#concept-fe-disabled
+			// * option elements in a disabled optgroup
+			//   https://html.spec.whatwg.org/multipage/forms.html#concept-option-disabled
+			// All such elements have a "form" property.
+			if ( elem.parentNode && elem.disabled === false ) {
+
+				// Option elements defer to a parent optgroup if present
+				if ( "label" in elem ) {
+					if ( "label" in elem.parentNode ) {
+						return elem.parentNode.disabled === disabled;
+					} else {
+						return elem.disabled === disabled;
+					}
+				}
+
+				// Support: IE 6 - 11
+				// Use the isDisabled shortcut property to check for disabled fieldset ancestors
+				return elem.isDisabled === disabled ||
+
+					// Where there is no isDisabled, check manually
+					/* jshint -W018 */
+					elem.isDisabled !== !disabled &&
+						inDisabledFieldset( elem ) === disabled;
+			}
+
+			return elem.disabled === disabled;
+
+		// Try to winnow out elements that can't be disabled before trusting the disabled property.
+		// Some victims get caught in our net (label, legend, menu, track), but it shouldn't
+		// even exist on them, let alone have a boolean value.
+		} else if ( "label" in elem ) {
+			return elem.disabled === disabled;
+		}
+
+		// Remaining elements are neither :enabled nor :disabled
+		return false;
+	};
+}
+
+/**
+ * Returns a function to use in pseudos for positionals
+ * @param {Function} fn
+ */
+function createPositionalPseudo( fn ) {
+	return markFunction(function( argument ) {
+		argument = +argument;
+		return markFunction(function( seed, matches ) {
+			var j,
+				matchIndexes = fn( [], seed.length, argument ),
+				i = matchIndexes.length;
+
+			// Match elements found at the specified indexes
+			while ( i-- ) {
+				if ( seed[ (j = matchIndexes[i]) ] ) {
+					seed[j] = !(matches[j] = seed[j]);
+				}
+			}
+		});
+	});
+}
+
+/**
+ * Checks a node for validity as a Sizzle context
+ * @param {Element|Object=} context
+ * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
+ */
+function testContext( context ) {
+	return context && typeof context.getElementsByTagName !== "undefined" && context;
+}
+
+// Expose support vars for convenience
+support = Sizzle.support = {};
+
+/**
+ * Detects XML nodes
+ * @param {Element|Object} elem An element or a document
+ * @returns {Boolean} True iff elem is a non-HTML XML node
+ */
+isXML = Sizzle.isXML = function( elem ) {
+	var namespace = elem.namespaceURI,
+		docElem = (elem.ownerDocument || elem).documentElement;
+
+	// Support: IE <=8
+	// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
+	// https://bugs.jquery.com/ticket/4833
+	return !rhtml.test( namespace || docElem && docElem.nodeName || "HTML" );
+};
+
+/**
+ * Sets document-related variables once based on the current document
+ * @param {Element|Object} [doc] An element or document object to use to set the document
+ * @returns {Object} Returns the current document
+ */
+setDocument = Sizzle.setDocument = function( node ) {
+	var hasCompare, subWindow,
+		doc = node ? node.ownerDocument || node : preferredDoc;
+
+	// Return early if doc is invalid or already selected
+	if ( doc === document || doc.nodeType !== 9 || !doc.documentElement ) {
+		return document;
+	}
+
+	// Update global variables
+	document = doc;
+	docElem = document.documentElement;
+	documentIsHTML = !isXML( document );
+
+	// Support: IE 9-11, Edge
+	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
+	if ( preferredDoc !== document &&
+		(subWindow = document.defaultView) && subWindow.top !== subWindow ) {
+
+		// Support: IE 11, Edge
+		if ( subWindow.addEventListener ) {
+			subWindow.addEventListener( "unload", unloadHandler, false );
+
+		// Support: IE 9 - 10 only
+		} else if ( subWindow.attachEvent ) {
+			subWindow.attachEvent( "onunload", unloadHandler );
+		}
+	}
+
+	/* Attributes
+	---------------------------------------------------------------------- */
+
+	// Support: IE<8
+	// Verify that getAttribute really returns attributes and not properties
+	// (excepting IE8 booleans)
+	support.attributes = assert(function( el ) {
+		el.className = "i";
+		return !el.getAttribute("className");
+	});
+
+	/* getElement(s)By*
+	---------------------------------------------------------------------- */
+
+	// Check if getElementsByTagName("*") returns only elements
+	support.getElementsByTagName = assert(function( el ) {
+		el.appendChild( document.createComment("") );
+		return !el.getElementsByTagName("*").length;
+	});
+
+	// Support: IE<9
+	support.getElementsByClassName = rnative.test( document.getElementsByClassName );
+
+	// Support: IE<10
+	// Check if getElementById returns elements by name
+	// The broken getElementById methods don't pick up programmatically-set names,
+	// so use a roundabout getElementsByName test
+	support.getById = assert(function( el ) {
+		docElem.appendChild( el ).id = expando;
+		return !document.getElementsByName || !document.getElementsByName( expando ).length;
+	});
+
+	// ID filter and find
+	if ( support.getById ) {
+		Expr.filter["ID"] = function( id ) {
+			var attrId = id.replace( runescape, funescape );
+			return function( elem ) {
+				return elem.getAttribute("id") === attrId;
+			};
+		};
+		Expr.find["ID"] = function( id, context ) {
+			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
+				var elem = context.getElementById( id );
+				return elem ? [ elem ] : [];
+			}
+		};
+	} else {
+		Expr.filter["ID"] =  function( id ) {
+			var attrId = id.replace( runescape, funescape );
+			return function( elem ) {
+				var node = typeof elem.getAttributeNode !== "undefined" &&
+					elem.getAttributeNode("id");
+				return node && node.value === attrId;
+			};
+		};
+
+		// Support: IE 6 - 7 only
+		// getElementById is not reliable as a find shortcut
+		Expr.find["ID"] = function( id, context ) {
+			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
+				var node, i, elems,
+					elem = context.getElementById( id );
+
+				if ( elem ) {
+
+					// Verify the id attribute
+					node = elem.getAttributeNode("id");
+					if ( node && node.value === id ) {
+						return [ elem ];
+					}
+
+					// Fall back on getElementsByName
+					elems = context.getElementsByName( id );
+					i = 0;
+					while ( (elem = elems[i++]) ) {
+						node = elem.getAttributeNode("id");
+						if ( node && node.value === id ) {
+							return [ elem ];
+						}
+					}
+				}
+
+				return [];
+			}
+		};
+	}
+
+	// Tag
+	Expr.find["TAG"] = support.getElementsByTagName ?
+		function( tag, context ) {
+			if ( typeof context.getElementsByTagName !== "undefined" ) {
+				return context.getElementsByTagName( tag );
+
+			// DocumentFragment nodes don't have gEBTN
+			} else if ( support.qsa ) {
+				return context.querySelectorAll( tag );
+			}
+		} :
+
+		function( tag, context ) {
+			var elem,
+				tmp = [],
+				i = 0,
+				// By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
+				results = context.getElementsByTagName( tag );
+
+			// Filter out possible comments
+			if ( tag === "*" ) {
+				while ( (elem = results[i++]) ) {
+					if ( elem.nodeType === 1 ) {
+						tmp.push( elem );
+					}
+				}
+
+				return tmp;
+			}
+			return results;
+		};
+
+	// Class
+	Expr.find["CLASS"] = support.getElementsByClassName && function( className, context ) {
+		if ( typeof context.getElementsByClassName !== "undefined" && documentIsHTML ) {
+			return context.getElementsByClassName( className );
+		}
+	};
+
+	/* QSA/matchesSelector
+	---------------------------------------------------------------------- */
+
+	// QSA and matchesSelector support
+
+	// matchesSelector(:active) reports false when true (IE9/Opera 11.5)
+	rbuggyMatches = [];
+
+	// qSa(:focus) reports false when true (Chrome 21)
+	// We allow this because of a bug in IE8/9 that throws an error
+	// whenever `document.activeElement` is accessed on an iframe
+	// So, we allow :focus to pass through QSA all the time to avoid the IE error
+	// See https://bugs.jquery.com/ticket/13378
+	rbuggyQSA = [];
+
+	if ( (support.qsa = rnative.test( document.querySelectorAll )) ) {
+		// Build QSA regex
+		// Regex strategy adopted from Diego Perini
+		assert(function( el ) {
+			// Select is set to empty string on purpose
+			// This is to test IE's treatment of not explicitly
+			// setting a boolean content attribute,
+			// since its presence should be enough
+			// https://bugs.jquery.com/ticket/12359
+			docElem.appendChild( el ).innerHTML = "<a id='" + expando + "'></a>" +
+				"<select id='" + expando + "-\r\\' msallowcapture=''>" +
+				"<option selected=''></option></select>";
+
+			// Support: IE8, Opera 11-12.16
+			// Nothing should be selected when empty strings follow ^= or $= or *=
+			// The test attribute must be unknown in Opera but "safe" for WinRT
+			// https://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
+			if ( el.querySelectorAll("[msallowcapture^='']").length ) {
+				rbuggyQSA.push( "[*^$]=" + whitespace + "*(?:''|\"\")" );
+			}
+
+			// Support: IE8
+			// Boolean attributes and "value" are not treated correctly
+			if ( !el.querySelectorAll("[selected]").length ) {
+				rbuggyQSA.push( "\\[" + whitespace + "*(?:value|" + booleans + ")" );
+			}
+
+			// Support: Chrome<29, Android<4.4, Safari<7.0+, iOS<7.0+, PhantomJS<1.9.8+
+			if ( !el.querySelectorAll( "[id~=" + expando + "-]" ).length ) {
+				rbuggyQSA.push("~=");
+			}
+
+			// Webkit/Opera - :checked should return selected option elements
+			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
+			// IE8 throws error here and will not see later tests
+			if ( !el.querySelectorAll(":checked").length ) {
+				rbuggyQSA.push(":checked");
+			}
+
+			// Support: Safari 8+, iOS 8+
+			// https://bugs.webkit.org/show_bug.cgi?id=136851
+			// In-page `selector#id sibling-combinator selector` fails
+			if ( !el.querySelectorAll( "a#" + expando + "+*" ).length ) {
+				rbuggyQSA.push(".#.+[+~]");
+			}
+		});
+
+		assert(function( el ) {
+			el.innerHTML = "<a href='' disabled='disabled'></a>" +
+				"<select disabled='disabled'><option/></select>";
+
+			// Support: Windows 8 Native Apps
+			// The type and name attributes are restricted during .innerHTML assignment
+			var input = document.createElement("input");
+			input.setAttribute( "type", "hidden" );
+			el.appendChild( input ).setAttribute( "name", "D" );
+
+			// Support: IE8
+			// Enforce case-sensitivity of name attribute
+			if ( el.querySelectorAll("[name=d]").length ) {
+				rbuggyQSA.push( "name" + whitespace + "*[*^$|!~]?=" );
+			}
+
+			// FF 3.5 - :enabled/:disabled and hidden elements (hidden elements are still enabled)
+			// IE8 throws error here and will not see later tests
+			if ( el.querySelectorAll(":enabled").length !== 2 ) {
+				rbuggyQSA.push( ":enabled", ":disabled" );
+			}
+
+			// Support: IE9-11+
+			// IE's :disabled selector does not pick up the children of disabled fieldsets
+			docElem.appendChild( el ).disabled = true;
+			if ( el.querySelectorAll(":disabled").length !== 2 ) {
+				rbuggyQSA.push( ":enabled", ":disabled" );
+			}
+
+			// Opera 10-11 does not throw on post-comma invalid pseudos
+			el.querySelectorAll("*,:x");
+			rbuggyQSA.push(",.*:");
+		});
+	}
+
+	if ( (support.matchesSelector = rnative.test( (matches = docElem.matches ||
+		docElem.webkitMatchesSelector ||
+		docElem.mozMatchesSelector ||
+		docElem.oMatchesSelector ||
+		docElem.msMatchesSelector) )) ) {
+
+		assert(function( el ) {
+			// Check to see if it's possible to do matchesSelector
+			// on a disconnected node (IE 9)
+			support.disconnectedMatch = matches.call( el, "*" );
+
+			// This should fail with an exception
+			// Gecko does not error, returns false instead
+			matches.call( el, "[s!='']:x" );
+			rbuggyMatches.push( "!=", pseudos );
+		});
+	}
+
+	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join("|") );
+	rbuggyMatches = rbuggyMatches.length && new RegExp( rbuggyMatches.join("|") );
+
+	/* Contains
+	---------------------------------------------------------------------- */
+	hasCompare = rnative.test( docElem.compareDocumentPosition );
+
+	// Element contains another
+	// Purposefully self-exclusive
+	// As in, an element does not contain itself
+	contains = hasCompare || rnative.test( docElem.contains ) ?
+		function( a, b ) {
+			var adown = a.nodeType === 9 ? a.documentElement : a,
+				bup = b && b.parentNode;
+			return a === bup || !!( bup && bup.nodeType === 1 && (
+				adown.contains ?
+					adown.contains( bup ) :
+					a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
+			));
+		} :
+		function( a, b ) {
+			if ( b ) {
+				while ( (b = b.parentNode) ) {
+					if ( b === a ) {
+						return true;
+					}
+				}
+			}
+			return false;
+		};
+
+	/* Sorting
+	---------------------------------------------------------------------- */
+
+	// Document order sorting
+	sortOrder = hasCompare ?
+	function( a, b ) {
+
+		// Flag for duplicate removal
+		if ( a === b ) {
+			hasDuplicate = true;
+			return 0;
+		}
+
+		// Sort on method existence if only one input has compareDocumentPosition
+		var compare = !a.compareDocumentPosition - !b.compareDocumentPosition;
+		if ( compare ) {
+			return compare;
+		}
+
+		// Calculate position if both inputs belong to the same document
+		compare = ( a.ownerDocument || a ) === ( b.ownerDocument || b ) ?
+			a.compareDocumentPosition( b ) :
+
+			// Otherwise we know they are disconnected
+			1;
+
+		// Disconnected nodes
+		if ( compare & 1 ||
+			(!support.sortDetached && b.compareDocumentPosition( a ) === compare) ) {
+
+			// Choose the first element that is related to our preferred document
+			if ( a === document || a.ownerDocument === preferredDoc && contains(preferredDoc, a) ) {
+				return -1;
+			}
+			if ( b === document || b.ownerDocument === preferredDoc && contains(preferredDoc, b) ) {
+				return 1;
+			}
+
+			// Maintain original order
+			return sortInput ?
+				( indexOf( sortInput, a ) - indexOf( sortInput, b ) ) :
+				0;
+		}
+
+		return compare & 4 ? -1 : 1;
+	} :
+	function( a, b ) {
+		// Exit early if the nodes are identical
+		if ( a === b ) {
+			hasDuplicate = true;
+			return 0;
+		}
+
+		var cur,
+			i = 0,
+			aup = a.parentNode,
+			bup = b.parentNode,
+			ap = [ a ],
+			bp = [ b ];
+
+		// Parentless nodes are either documents or disconnected
+		if ( !aup || !bup ) {
+			return a === document ? -1 :
+				b === document ? 1 :
+				aup ? -1 :
+				bup ? 1 :
+				sortInput ?
+				( indexOf( sortInput, a ) - indexOf( sortInput, b ) ) :
+				0;
+
+		// If the nodes are siblings, we can do a quick check
+		} else if ( aup === bup ) {
+			return siblingCheck( a, b );
+		}
+
+		// Otherwise we need full lists of their ancestors for comparison
+		cur = a;
+		while ( (cur = cur.parentNode) ) {
+			ap.unshift( cur );
+		}
+		cur = b;
+		while ( (cur = cur.parentNode) ) {
+			bp.unshift( cur );
+		}
+
+		// Walk down the tree looking for a discrepancy
+		while ( ap[i] === bp[i] ) {
+			i++;
+		}
+
+		return i ?
+			// Do a sibling check if the nodes have a common ancestor
+			siblingCheck( ap[i], bp[i] ) :
+
+			// Otherwise nodes in our document sort first
+			ap[i] === preferredDoc ? -1 :
+			bp[i] === preferredDoc ? 1 :
+			0;
+	};
+
+	return document;
+};
+
+Sizzle.matches = function( expr, elements ) {
+	return Sizzle( expr, null, null, elements );
+};
+
+Sizzle.matchesSelector = function( elem, expr ) {
+	// Set document vars if needed
+	if ( ( elem.ownerDocument || elem ) !== document ) {
+		setDocument( elem );
+	}
+
+	if ( support.matchesSelector && documentIsHTML &&
+		!nonnativeSelectorCache[ expr + " " ] &&
+		( !rbuggyMatches || !rbuggyMatches.test( expr ) ) &&
+		( !rbuggyQSA     || !rbuggyQSA.test( expr ) ) ) {
+
+		try {
+			var ret = matches.call( elem, expr );
+
+			// IE 9's matchesSelector returns false on disconnected nodes
+			if ( ret || support.disconnectedMatch ||
+					// As well, disconnected nodes are said to be in a document
+					// fragment in IE 9
+					elem.document && elem.document.nodeType !== 11 ) {
+				return ret;
+			}
+		} catch (e) {
+			nonnativeSelectorCache( expr, true );
+		}
+	}
+
+	return Sizzle( expr, document, null, [ elem ] ).length > 0;
+};
+
+Sizzle.contains = function( context, elem ) {
+	// Set document vars if needed
+	if ( ( context.ownerDocument || context ) !== document ) {
+		setDocument( context );
+	}
+	return contains( context, elem );
+};
+
+Sizzle.attr = function( elem, name ) {
+	// Set document vars if needed
+	if ( ( elem.ownerDocument || elem ) !== document ) {
+		setDocument( elem );
+	}
+
+	var fn = Expr.attrHandle[ name.toLowerCase() ],
+		// Don't get fooled by Object.prototype properties (jQuery #13807)
+		val = fn && hasOwn.call( Expr.attrHandle, name.toLowerCase() ) ?
+			fn( elem, name, !documentIsHTML ) :
+			undefined;
+
+	return val !== undefined ?
+		val :
+		support.attributes || !documentIsHTML ?
+			elem.getAttribute( name ) :
+			(val = elem.getAttributeNode(name)) && val.specified ?
+				val.value :
+				null;
+};
+
+Sizzle.escape = function( sel ) {
+	return (sel + "").replace( rcssescape, fcssescape );
+};
+
+Sizzle.error = function( msg ) {
+	throw new Error( "Syntax error, unrecognized expression: " + msg );
+};
+
+/**
+ * Document sorting and removing duplicates
+ * @param {ArrayLike} results
+ */
+Sizzle.uniqueSort = function( results ) {
+	var elem,
+		duplicates = [],
+		j = 0,
+		i = 0;
+
+	// Unless we *know* we can detect duplicates, assume their presence
+	hasDuplicate = !support.detectDuplicates;
+	sortInput = !support.sortStable && results.slice( 0 );
+	results.sort( sortOrder );
+
+	if ( hasDuplicate ) {
+		while ( (elem = results[i++]) ) {
+			if ( elem === results[ i ] ) {
+				j = duplicates.push( i );
+			}
+		}
+		while ( j-- ) {
+			results.splice( duplicates[ j ], 1 );
+		}
+	}
+
+	// Clear input after sorting to release objects
+	// See https://github.com/jquery/sizzle/pull/225
+	sortInput = null;
+
+	return results;
+};
+
+/**
+ * Utility function for retrieving the text value of an array of DOM nodes
+ * @param {Array|Element} elem
+ */
+getText = Sizzle.getText = function( elem ) {
+	var node,
+		ret = "",
+		i = 0,
+		nodeType = elem.nodeType;
+
+	if ( !nodeType ) {
+		// If no nodeType, this is expected to be an array
+		while ( (node = elem[i++]) ) {
+			// Do not traverse comment nodes
+			ret += getText( node );
+		}
+	} else if ( nodeType === 1 || nodeType === 9 || nodeType === 11 ) {
+		// Use textContent for elements
+		// innerText usage removed for consistency of new lines (jQuery #11153)
+		if ( typeof elem.textContent === "string" ) {
+			return elem.textContent;
+		} else {
+			// Traverse its children
+			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
+				ret += getText( elem );
+			}
+		}
+	} else if ( nodeType === 3 || nodeType === 4 ) {
+		return elem.nodeValue;
+	}
+	// Do not include comment or processing instruction nodes
+
+	return ret;
+};
+
+Expr = Sizzle.selectors = {
+
+	// Can be adjusted by the user
+	cacheLength: 50,
+
+	createPseudo: markFunction,
+
+	match: matchExpr,
+
+	attrHandle: {},
+
+	find: {},
+
+	relative: {
+		">": { dir: "parentNode", first: true },
+		" ": { dir: "parentNode" },
+		"+": { dir: "previousSibling", first: true },
+		"~": { dir: "previousSibling" }
+	},
+
+	preFilter: {
+		"ATTR": function( match ) {
+			match[1] = match[1].replace( runescape, funescape );
+
+			// Move the given value to match[3] whether quoted or unquoted
+			match[3] = ( match[3] || match[4] || match[5] || "" ).replace( runescape, funescape );
+
+			if ( match[2] === "~=" ) {
+				match[3] = " " + match[3] + " ";
+			}
+
+			return match.slice( 0, 4 );
+		},
+
+		"CHILD": function( match ) {
+			/* matches from matchExpr["CHILD"]
+				1 type (only|nth|...)
+				2 what (child|of-type)
+				3 argument (even|odd|\d*|\d*n([+-]\d+)?|...)
+				4 xn-component of xn+y argument ([+-]?\d*n|)
+				5 sign of xn-component
+				6 x of xn-component
+				7 sign of y-component
+				8 y of y-component
+			*/
+			match[1] = match[1].toLowerCase();
+
+			if ( match[1].slice( 0, 3 ) === "nth" ) {
+				// nth-* requires argument
+				if ( !match[3] ) {
+					Sizzle.error( match[0] );
+				}
+
+				// numeric x and y parameters for Expr.filter.CHILD
+				// remember that false/true cast respectively to 0/1
+				match[4] = +( match[4] ? match[5] + (match[6] || 1) : 2 * ( match[3] === "even" || match[3] === "odd" ) );
+				match[5] = +( ( match[7] + match[8] ) || match[3] === "odd" );
+
+			// other types prohibit arguments
+			} else if ( match[3] ) {
+				Sizzle.error( match[0] );
+			}
+
+			return match;
+		},
+
+		"PSEUDO": function( match ) {
+			var excess,
+				unquoted = !match[6] && match[2];
+
+			if ( matchExpr["CHILD"].test( match[0] ) ) {
+				return null;
+			}
+
+			// Accept quoted arguments as-is
+			if ( match[3] ) {
+				match[2] = match[4] || match[5] || "";
+
+			// Strip excess characters from unquoted arguments
+			} else if ( unquoted && rpseudo.test( unquoted ) &&
+				// Get excess from tokenize (recursively)
+				(excess = tokenize( unquoted, true )) &&
+				// advance to the next closing parenthesis
+				(excess = unquoted.indexOf( ")", unquoted.length - excess ) - unquoted.length) ) {
+
+				// excess is a negative index
+				match[0] = match[0].slice( 0, excess );
+				match[2] = unquoted.slice( 0, excess );
+			}
+
+			// Return only captures needed by the pseudo filter method (type and argument)
+			return match.slice( 0, 3 );
+		}
+	},
+
+	filter: {
+
+		"TAG": function( nodeNameSelector ) {
+			var nodeName = nodeNameSelector.replace( runescape, funescape ).toLowerCase();
+			return nodeNameSelector === "*" ?
+				function() { return true; } :
+				function( elem ) {
+					return elem.nodeName && elem.nodeName.toLowerCase() === nodeName;
+				};
+		},
+
+		"CLASS": function( className ) {
+			var pattern = classCache[ className + " " ];
+
+			return pattern ||
+				(pattern = new RegExp( "(^|" + whitespace + ")" + className + "(" + whitespace + "|$)" )) &&
+				classCache( className, function( elem ) {
+					return pattern.test( typeof elem.className === "string" && elem.className || typeof elem.getAttribute !== "undefined" && elem.getAttribute("class") || "" );
+				});
+		},
+
+		"ATTR": function( name, operator, check ) {
+			return function( elem ) {
+				var result = Sizzle.attr( elem, name );
+
+				if ( result == null ) {
+					return operator === "!=";
+				}
+				if ( !operator ) {
+					return true;
+				}
+
+				result += "";
+
+				return operator === "=" ? result === check :
+					operator === "!=" ? result !== check :
+					operator === "^=" ? check && result.indexOf( check ) === 0 :
+					operator === "*=" ? check && result.indexOf( check ) > -1 :
+					operator === "$=" ? check && result.slice( -check.length ) === check :
+					operator === "~=" ? ( " " + result.replace( rwhitespace, " " ) + " " ).indexOf( check ) > -1 :
+					operator === "|=" ? result === check || result.slice( 0, check.length + 1 ) === check + "-" :
+					false;
+			};
+		},
+
+		"CHILD": function( type, what, argument, first, last ) {
+			var simple = type.slice( 0, 3 ) !== "nth",
+				forward = type.slice( -4 ) !== "last",
+				ofType = what === "of-type";
+
+			return first === 1 && last === 0 ?
+
+				// Shortcut for :nth-*(n)
+				function( elem ) {
+					return !!elem.parentNode;
+				} :
+
+				function( elem, context, xml ) {
+					var cache, uniqueCache, outerCache, node, nodeIndex, start,
+						dir = simple !== forward ? "nextSibling" : "previousSibling",
+						parent = elem.parentNode,
+						name = ofType && elem.nodeName.toLowerCase(),
+						useCache = !xml && !ofType,
+						diff = false;
+
+					if ( parent ) {
+
+						// :(first|last|only)-(child|of-type)
+						if ( simple ) {
+							while ( dir ) {
+								node = elem;
+								while ( (node = node[ dir ]) ) {
+									if ( ofType ?
+										node.nodeName.toLowerCase() === name :
+										node.nodeType === 1 ) {
+
+										return false;
+									}
+								}
+								// Reverse direction for :only-* (if we haven't yet done so)
+								start = dir = type === "only" && !start && "nextSibling";
+							}
+							return true;
+						}
+
+						start = [ forward ? parent.firstChild : parent.lastChild ];
+
+						// non-xml :nth-child(...) stores cache data on `parent`
+						if ( forward && useCache ) {
+
+							// Seek `elem` from a previously-cached index
+
+							// ...in a gzip-friendly way
+							node = parent;
+							outerCache = node[ expando ] || (node[ expando ] = {});
+
+							// Support: IE <9 only
+							// Defend against cloned attroperties (jQuery gh-1709)
+							uniqueCache = outerCache[ node.uniqueID ] ||
+								(outerCache[ node.uniqueID ] = {});
+
+							cache = uniqueCache[ type ] || [];
+							nodeIndex = cache[ 0 ] === dirruns && cache[ 1 ];
+							diff = nodeIndex && cache[ 2 ];
+							node = nodeIndex && parent.childNodes[ nodeIndex ];
+
+							while ( (node = ++nodeIndex && node && node[ dir ] ||
+
+								// Fallback to seeking `elem` from the start
+								(diff = nodeIndex = 0) || start.pop()) ) {
+
+								// When found, cache indexes on `parent` and break
+								if ( node.nodeType === 1 && ++diff && node === elem ) {
+									uniqueCache[ type ] = [ dirruns, nodeIndex, diff ];
+									break;
+								}
+							}
+
+						} else {
+							// Use previously-cached element index if available
+							if ( useCache ) {
+								// ...in a gzip-friendly way
+								node = elem;
+								outerCache = node[ expando ] || (node[ expando ] = {});
+
+								// Support: IE <9 only
+								// Defend against cloned attroperties (jQuery gh-1709)
+								uniqueCache = outerCache[ node.uniqueID ] ||
+									(outerCache[ node.uniqueID ] = {});
+
+								cache = uniqueCache[ type ] || [];
+								nodeIndex = cache[ 0 ] === dirruns && cache[ 1 ];
+								diff = nodeIndex;
+							}
+
+							// xml :nth-child(...)
+							// or :nth-last-child(...) or :nth(-last)?-of-type(...)
+							if ( diff === false ) {
+								// Use the same loop as above to seek `elem` from the start
+								while ( (node = ++nodeIndex && node && node[ dir ] ||
+									(diff = nodeIndex = 0) || start.pop()) ) {
+
+									if ( ( ofType ?
+										node.nodeName.toLowerCase() === name :
+										node.nodeType === 1 ) &&
+										++diff ) {
+
+										// Cache the index of each encountered element
+										if ( useCache ) {
+											outerCache = node[ expando ] || (node[ expando ] = {});
+
+											// Support: IE <9 only
+											// Defend against cloned attroperties (jQuery gh-1709)
+											uniqueCache = outerCache[ node.uniqueID ] ||
+												(outerCache[ node.uniqueID ] = {});
+
+											uniqueCache[ type ] = [ dirruns, diff ];
+										}
+
+										if ( node === elem ) {
+											break;
+										}
+									}
+								}
+							}
+						}
+
+						// Incorporate the offset, then check against cycle size
+						diff -= last;
+						return diff === first || ( diff % first === 0 && diff / first >= 0 );
+					}
+				};
+		},
+
+		"PSEUDO": function( pseudo, argument ) {
+			// pseudo-class names are case-insensitive
+			// http://www.w3.org/TR/selectors/#pseudo-classes
+			// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
+			// Remember that setFilters inherits from pseudos
+			var args,
+				fn = Expr.pseudos[ pseudo ] || Expr.setFilters[ pseudo.toLowerCase() ] ||
+					Sizzle.error( "unsupported pseudo: " + pseudo );
+
+			// The user may use createPseudo to indicate that
+			// arguments are needed to create the filter function
+			// just as Sizzle does
+			if ( fn[ expando ] ) {
+				return fn( argument );
+			}
+
+			// But maintain support for old signatures
+			if ( fn.length > 1 ) {
+				args = [ pseudo, pseudo, "", argument ];
+				return Expr.setFilters.hasOwnProperty( pseudo.toLowerCase() ) ?
+					markFunction(function( seed, matches ) {
+						var idx,
+							matched = fn( seed, argument ),
+							i = matched.length;
+						while ( i-- ) {
+							idx = indexOf( seed, matched[i] );
+							seed[ idx ] = !( matches[ idx ] = matched[i] );
+						}
+					}) :
+					function( elem ) {
+						return fn( elem, 0, args );
+					};
+			}
+
+			return fn;
+		}
+	},
+
+	pseudos: {
+		// Potentially complex pseudos
+		"not": markFunction(function( selector ) {
+			// Trim the selector passed to compile
+			// to avoid treating leading and trailing
+			// spaces as combinators
+			var input = [],
+				results = [],
+				matcher = compile( selector.replace( rtrim, "$1" ) );
+
+			return matcher[ expando ] ?
+				markFunction(function( seed, matches, context, xml ) {
+					var elem,
+						unmatched = matcher( seed, null, xml, [] ),
+						i = seed.length;
+
+					// Match elements unmatched by `matcher`
+					while ( i-- ) {
+						if ( (elem = unmatched[i]) ) {
+							seed[i] = !(matches[i] = elem);
+						}
+					}
+				}) :
+				function( elem, context, xml ) {
+					input[0] = elem;
+					matcher( input, null, xml, results );
+					// Don't keep the element (issue #299)
+					input[0] = null;
+					return !results.pop();
+				};
+		}),
+
+		"has": markFunction(function( selector ) {
+			return function( elem ) {
+				return Sizzle( selector, elem ).length > 0;
+			};
+		}),
+
+		"contains": markFunction(function( text ) {
+			text = text.replace( runescape, funescape );
+			return function( elem ) {
+				return ( elem.textContent || getText( elem ) ).indexOf( text ) > -1;
+			};
+		}),
+
+		// "Whether an element is represented by a :lang() selector
+		// is based solely on the element's language value
+		// being equal to the identifier C,
+		// or beginning with the identifier C immediately followed by "-".
+		// The matching of C against the element's language value is performed case-insensitively.
+		// The identifier C does not have to be a valid language name."
+		// http://www.w3.org/TR/selectors/#lang-pseudo
+		"lang": markFunction( function( lang ) {
+			// lang value must be a valid identifier
+			if ( !ridentifier.test(lang || "") ) {
+				Sizzle.error( "unsupported lang: " + lang );
+			}
+			lang = lang.replace( runescape, funescape ).toLowerCase();
+			return function( elem ) {
+				var elemLang;
+				do {
+					if ( (elemLang = documentIsHTML ?
+						elem.lang :
+						elem.getAttribute("xml:lang") || elem.getAttribute("lang")) ) {
+
+						elemLang = elemLang.toLowerCase();
+						return elemLang === lang || elemLang.indexOf( lang + "-" ) === 0;
+					}
+				} while ( (elem = elem.parentNode) && elem.nodeType === 1 );
+				return false;
+			};
+		}),
+
+		// Miscellaneous
+		"target": function( elem ) {
+			var hash = window.location && window.location.hash;
+			return hash && hash.slice( 1 ) === elem.id;
+		},
+
+		"root": function( elem ) {
+			return elem === docElem;
+		},
+
+		"focus": function( elem ) {
+			return elem === document.activeElement && (!document.hasFocus || document.hasFocus()) && !!(elem.type || elem.href || ~elem.tabIndex);
+		},
+
+		// Boolean properties
+		"enabled": createDisabledPseudo( false ),
+		"disabled": createDisabledPseudo( true ),
+
+		"checked": function( elem ) {
+			// In CSS3, :checked should return both checked and selected elements
+			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
+			var nodeName = elem.nodeName.toLowerCase();
+			return (nodeName === "input" && !!elem.checked) || (nodeName === "option" && !!elem.selected);
+		},
+
+		"selected": function( elem ) {
+			// Accessing this property makes selected-by-default
+			// options in Safari work properly
+			if ( elem.parentNode ) {
+				elem.parentNode.selectedIndex;
+			}
+
+			return elem.selected === true;
+		},
+
+		// Contents
+		"empty": function( elem ) {
+			// http://www.w3.org/TR/selectors/#empty-pseudo
+			// :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
+			//   but not by others (comment: 8; processing instruction: 7; etc.)
+			// nodeType < 6 works because attributes (2) do not appear as children
+			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
+				if ( elem.nodeType < 6 ) {
+					return false;
+				}
+			}
+			return true;
+		},
+
+		"parent": function( elem ) {
+			return !Expr.pseudos["empty"]( elem );
+		},
+
+		// Element/input types
+		"header": function( elem ) {
+			return rheader.test( elem.nodeName );
+		},
+
+		"input": function( elem ) {
+			return rinputs.test( elem.nodeName );
+		},
+
+		"button": function( elem ) {
+			var name = elem.nodeName.toLowerCase();
+			return name === "input" && elem.type === "button" || name === "button";
+		},
+
+		"text": function( elem ) {
+			var attr;
+			return elem.nodeName.toLowerCase() === "input" &&
+				elem.type === "text" &&
+
+				// Support: IE<8
+				// New HTML5 attribute values (e.g., "search") appear with elem.type === "text"
+				( (attr = elem.getAttribute("type")) == null || attr.toLowerCase() === "text" );
+		},
+
+		// Position-in-collection
+		"first": createPositionalPseudo(function() {
+			return [ 0 ];
+		}),
+
+		"last": createPositionalPseudo(function( matchIndexes, length ) {
+			return [ length - 1 ];
+		}),
+
+		"eq": createPositionalPseudo(function( matchIndexes, length, argument ) {
+			return [ argument < 0 ? argument + length : argument ];
+		}),
+
+		"even": createPositionalPseudo(function( matchIndexes, length ) {
+			var i = 0;
+			for ( ; i < length; i += 2 ) {
+				matchIndexes.push( i );
+			}
+			return matchIndexes;
+		}),
+
+		"odd": createPositionalPseudo(function( matchIndexes, length ) {
+			var i = 1;
+			for ( ; i < length; i += 2 ) {
+				matchIndexes.push( i );
+			}
+			return matchIndexes;
+		}),
+
+		"lt": createPositionalPseudo(function( matchIndexes, length, argument ) {
+			var i = argument < 0 ?
+				argument + length :
+				argument > length ?
+					length :
+					argument;
+			for ( ; --i >= 0; ) {
+				matchIndexes.push( i );
+			}
+			return matchIndexes;
+		}),
+
+		"gt": createPositionalPseudo(function( matchIndexes, length, argument ) {
+			var i = argument < 0 ? argument + length : argument;
+			for ( ; ++i < length; ) {
+				matchIndexes.push( i );
+			}
+			return matchIndexes;
+		})
+	}
+};
+
+Expr.pseudos["nth"] = Expr.pseudos["eq"];
+
+// Add button/input type pseudos
+for ( i in { radio: true, checkbox: true, file: true, password: true, image: true } ) {
+	Expr.pseudos[ i ] = createInputPseudo( i );
+}
+for ( i in { submit: true, reset: true } ) {
+	Expr.pseudos[ i ] = createButtonPseudo( i );
+}
+
+// Easy API for creating new setFilters
+function setFilters() {}
+setFilters.prototype = Expr.filters = Expr.pseudos;
+Expr.setFilters = new setFilters();
+
+tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
+	var matched, match, tokens, type,
+		soFar, groups, preFilters,
+		cached = tokenCache[ selector + " " ];
+
+	if ( cached ) {
+		return parseOnly ? 0 : cached.slice( 0 );
+	}
+
+	soFar = selector;
+	groups = [];
+	preFilters = Expr.preFilter;
+
+	while ( soFar ) {
+
+		// Comma and first run
+		if ( !matched || (match = rcomma.exec( soFar )) ) {
+			if ( match ) {
+				// Don't consume trailing commas as valid
+				soFar = soFar.slice( match[0].length ) || soFar;
+			}
+			groups.push( (tokens = []) );
+		}
+
+		matched = false;
+
+		// Combinators
+		if ( (match = rcombinators.exec( soFar )) ) {
+			matched = match.shift();
+			tokens.push({
+				value: matched,
+				// Cast descendant combinators to space
+				type: match[0].replace( rtrim, " " )
+			});
+			soFar = soFar.slice( matched.length );
+		}
+
+		// Filters
+		for ( type in Expr.filter ) {
+			if ( (match = matchExpr[ type ].exec( soFar )) && (!preFilters[ type ] ||
+				(match = preFilters[ type ]( match ))) ) {
+				matched = match.shift();
+				tokens.push({
+					value: matched,
+					type: type,
+					matches: match
+				});
+				soFar = soFar.slice( matched.length );
+			}
+		}
+
+		if ( !matched ) {
+			break;
+		}
+	}
+
+	// Return the length of the invalid excess
+	// if we're just parsing
+	// Otherwise, throw an error or return tokens
+	return parseOnly ?
+		soFar.length :
+		soFar ?
+			Sizzle.error( selector ) :
+			// Cache the tokens
+			tokenCache( selector, groups ).slice( 0 );
+};
+
+function toSelector( tokens ) {
+	var i = 0,
+		len = tokens.length,
+		selector = "";
+	for ( ; i < len; i++ ) {
+		selector += tokens[i].value;
+	}
+	return selector;
+}
+
+function addCombinator( matcher, combinator, base ) {
+	var dir = combinator.dir,
+		skip = combinator.next,
+		key = skip || dir,
+		checkNonElements = base && key === "parentNode",
+		doneName = done++;
+
+	return combinator.first ?
+		// Check against closest ancestor/preceding element
+		function( elem, context, xml ) {
+			while ( (elem = elem[ dir ]) ) {
+				if ( elem.nodeType === 1 || checkNonElements ) {
+					return matcher( elem, context, xml );
+				}
+			}
+			return false;
+		} :
+
+		// Check against all ancestor/preceding elements
+		function( elem, context, xml ) {
+			var oldCache, uniqueCache, outerCache,
+				newCache = [ dirruns, doneName ];
+
+			// We can't set arbitrary data on XML nodes, so they don't benefit from combinator caching
+			if ( xml ) {
+				while ( (elem = elem[ dir ]) ) {
+					if ( elem.nodeType === 1 || checkNonElements ) {
+						if ( matcher( elem, context, xml ) ) {
+							return true;
+						}
+					}
+				}
+			} else {
+				while ( (elem = elem[ dir ]) ) {
+					if ( elem.nodeType === 1 || checkNonElements ) {
+						outerCache = elem[ expando ] || (elem[ expando ] = {});
+
+						// Support: IE <9 only
+						// Defend against cloned attroperties (jQuery gh-1709)
+						uniqueCache = outerCache[ elem.uniqueID ] || (outerCache[ elem.uniqueID ] = {});
+
+						if ( skip && skip === elem.nodeName.toLowerCase() ) {
+							elem = elem[ dir ] || elem;
+						} else if ( (oldCache = uniqueCache[ key ]) &&
+							oldCache[ 0 ] === dirruns && oldCache[ 1 ] === doneName ) {
+
+							// Assign to newCache so results back-propagate to previous elements
+							return (newCache[ 2 ] = oldCache[ 2 ]);
+						} else {
+							// Reuse newcache so results back-propagate to previous elements
+							uniqueCache[ key ] = newCache;
+
+							// A match means we're done; a fail means we have to keep checking
+							if ( (newCache[ 2 ] = matcher( elem, context, xml )) ) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+			return false;
+		};
+}
+
+function elementMatcher( matchers ) {
+	return matchers.length > 1 ?
+		function( elem, context, xml ) {
+			var i = matchers.length;
+			while ( i-- ) {
+				if ( !matchers[i]( elem, context, xml ) ) {
+					return false;
+				}
+			}
+			return true;
+		} :
+		matchers[0];
+}
+
+function multipleContexts( selector, contexts, results ) {
+	var i = 0,
+		len = contexts.length;
+	for ( ; i < len; i++ ) {
+		Sizzle( selector, contexts[i], results );
+	}
+	return results;
+}
+
+function condense( unmatched, map, filter, context, xml ) {
+	var elem,
+		newUnmatched = [],
+		i = 0,
+		len = unmatched.length,
+		mapped = map != null;
+
+	for ( ; i < len; i++ ) {
+		if ( (elem = unmatched[i]) ) {
+			if ( !filter || filter( elem, context, xml ) ) {
+				newUnmatched.push( elem );
+				if ( mapped ) {
+					map.push( i );
+				}
+			}
+		}
+	}
+
+	return newUnmatched;
+}
+
+function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postSelector ) {
+	if ( postFilter && !postFilter[ expando ] ) {
+		postFilter = setMatcher( postFilter );
+	}
+	if ( postFinder && !postFinder[ expando ] ) {
+		postFinder = setMatcher( postFinder, postSelector );
+	}
+	return markFunction(function( seed, results, context, xml ) {
+		var temp, i, elem,
+			preMap = [],
+			postMap = [],
+			preexisting = results.length,
+
+			// Get initial elements from seed or context
+			elems = seed || multipleContexts( selector || "*", context.nodeType ? [ context ] : context, [] ),
+
+			// Prefilter to get matcher input, preserving a map for seed-results synchronization
+			matcherIn = preFilter && ( seed || !selector ) ?
+				condense( elems, preMap, preFilter, context, xml ) :
+				elems,
+
+			matcherOut = matcher ?
+				// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
+				postFinder || ( seed ? preFilter : preexisting || postFilter ) ?
+
+					// ...intermediate processing is necessary
+					[] :
+
+					// ...otherwise use results directly
+					results :
+				matcherIn;
+
+		// Find primary matches
+		if ( matcher ) {
+			matcher( matcherIn, matcherOut, context, xml );
+		}
+
+		// Apply postFilter
+		if ( postFilter ) {
+			temp = condense( matcherOut, postMap );
+			postFilter( temp, [], context, xml );
+
+			// Un-match failing elements by moving them back to matcherIn
+			i = temp.length;
+			while ( i-- ) {
+				if ( (elem = temp[i]) ) {
+					matcherOut[ postMap[i] ] = !(matcherIn[ postMap[i] ] = elem);
+				}
+			}
+		}
+
+		if ( seed ) {
+			if ( postFinder || preFilter ) {
+				if ( postFinder ) {
+					// Get the final matcherOut by condensing this intermediate into postFinder contexts
+					temp = [];
+					i = matcherOut.length;
+					while ( i-- ) {
+						if ( (elem = matcherOut[i]) ) {
+							// Restore matcherIn since elem is not yet a final match
+							temp.push( (matcherIn[i] = elem) );
+						}
+					}
+					postFinder( null, (matcherOut = []), temp, xml );
+				}
+
+				// Move matched elements from seed to results to keep them synchronized
+				i = matcherOut.length;
+				while ( i-- ) {
+					if ( (elem = matcherOut[i]) &&
+						(temp = postFinder ? indexOf( seed, elem ) : preMap[i]) > -1 ) {
+
+						seed[temp] = !(results[temp] = elem);
+					}
+				}
+			}
+
+		// Add elements to results, through postFinder if defined
+		} else {
+			matcherOut = condense(
+				matcherOut === results ?
+					matcherOut.splice( preexisting, matcherOut.length ) :
+					matcherOut
+			);
+			if ( postFinder ) {
+				postFinder( null, results, matcherOut, xml );
+			} else {
+				push.apply( results, matcherOut );
+			}
+		}
+	});
+}
+
+function matcherFromTokens( tokens ) {
+	var checkContext, matcher, j,
+		len = tokens.length,
+		leadingRelative = Expr.relative[ tokens[0].type ],
+		implicitRelative = leadingRelative || Expr.relative[" "],
+		i = leadingRelative ? 1 : 0,
+
+		// The foundational matcher ensures that elements are reachable from top-level context(s)
+		matchContext = addCombinator( function( elem ) {
+			return elem === checkContext;
+		}, implicitRelative, true ),
+		matchAnyContext = addCombinator( function( elem ) {
+			return indexOf( checkContext, elem ) > -1;
+		}, implicitRelative, true ),
+		matchers = [ function( elem, context, xml ) {
+			var ret = ( !leadingRelative && ( xml || context !== outermostContext ) ) || (
+				(checkContext = context).nodeType ?
+					matchContext( elem, context, xml ) :
+					matchAnyContext( elem, context, xml ) );
+			// Avoid hanging onto element (issue #299)
+			checkContext = null;
+			return ret;
+		} ];
+
+	for ( ; i < len; i++ ) {
+		if ( (matcher = Expr.relative[ tokens[i].type ]) ) {
+			matchers = [ addCombinator(elementMatcher( matchers ), matcher) ];
+		} else {
+			matcher = Expr.filter[ tokens[i].type ].apply( null, tokens[i].matches );
+
+			// Return special upon seeing a positional matcher
+			if ( matcher[ expando ] ) {
+				// Find the next relative operator (if any) for proper handling
+				j = ++i;
+				for ( ; j < len; j++ ) {
+					if ( Expr.relative[ tokens[j].type ] ) {
+						break;
+					}
+				}
+				return setMatcher(
+					i > 1 && elementMatcher( matchers ),
+					i > 1 && toSelector(
+						// If the preceding token was a descendant combinator, insert an implicit any-element `*`
+						tokens.slice( 0, i - 1 ).concat({ value: tokens[ i - 2 ].type === " " ? "*" : "" })
+					).replace( rtrim, "$1" ),
+					matcher,
+					i < j && matcherFromTokens( tokens.slice( i, j ) ),
+					j < len && matcherFromTokens( (tokens = tokens.slice( j )) ),
+					j < len && toSelector( tokens )
+				);
+			}
+			matchers.push( matcher );
+		}
+	}
+
+	return elementMatcher( matchers );
+}
+
+function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
+	var bySet = setMatchers.length > 0,
+		byElement = elementMatchers.length > 0,
+		superMatcher = function( seed, context, xml, results, outermost ) {
+			var elem, j, matcher,
+				matchedCount = 0,
+				i = "0",
+				unmatched = seed && [],
+				setMatched = [],
+				contextBackup = outermostContext,
+				// We must always have either seed elements or outermost context
+				elems = seed || byElement && Expr.find["TAG"]( "*", outermost ),
+				// Use integer dirruns iff this is the outermost matcher
+				dirrunsUnique = (dirruns += contextBackup == null ? 1 : Math.random() || 0.1),
+				len = elems.length;
+
+			if ( outermost ) {
+				outermostContext = context === document || context || outermost;
+			}
+
+			// Add elements passing elementMatchers directly to results
+			// Support: IE<9, Safari
+			// Tolerate NodeList properties (IE: "length"; Safari: <number>) matching elements by id
+			for ( ; i !== len && (elem = elems[i]) != null; i++ ) {
+				if ( byElement && elem ) {
+					j = 0;
+					if ( !context && elem.ownerDocument !== document ) {
+						setDocument( elem );
+						xml = !documentIsHTML;
+					}
+					while ( (matcher = elementMatchers[j++]) ) {
+						if ( matcher( elem, context || document, xml) ) {
+							results.push( elem );
+							break;
+						}
+					}
+					if ( outermost ) {
+						dirruns = dirrunsUnique;
+					}
+				}
+
+				// Track unmatched elements for set filters
+				if ( bySet ) {
+					// They will have gone through all possible matchers
+					if ( (elem = !matcher && elem) ) {
+						matchedCount--;
+					}
+
+					// Lengthen the array for every element, matched or not
+					if ( seed ) {
+						unmatched.push( elem );
+					}
+				}
+			}
+
+			// `i` is now the count of elements visited above, and adding it to `matchedCount`
+			// makes the latter nonnegative.
+			matchedCount += i;
+
+			// Apply set filters to unmatched elements
+			// NOTE: This can be skipped if there are no unmatched elements (i.e., `matchedCount`
+			// equals `i`), unless we didn't visit _any_ elements in the above loop because we have
+			// no element matchers and no seed.
+			// Incrementing an initially-string "0" `i` allows `i` to remain a string only in that
+			// case, which will result in a "00" `matchedCount` that differs from `i` but is also
+			// numerically zero.
+			if ( bySet && i !== matchedCount ) {
+				j = 0;
+				while ( (matcher = setMatchers[j++]) ) {
+					matcher( unmatched, setMatched, context, xml );
+				}
+
+				if ( seed ) {
+					// Reintegrate element matches to eliminate the need for sorting
+					if ( matchedCount > 0 ) {
+						while ( i-- ) {
+							if ( !(unmatched[i] || setMatched[i]) ) {
+								setMatched[i] = pop.call( results );
+							}
+						}
+					}
+
+					// Discard index placeholder values to get only actual matches
+					setMatched = condense( setMatched );
+				}
+
+				// Add matches to results
+				push.apply( results, setMatched );
+
+				// Seedless set matches succeeding multiple successful matchers stipulate sorting
+				if ( outermost && !seed && setMatched.length > 0 &&
+					( matchedCount + setMatchers.length ) > 1 ) {
+
+					Sizzle.uniqueSort( results );
+				}
+			}
+
+			// Override manipulation of globals by nested matchers
+			if ( outermost ) {
+				dirruns = dirrunsUnique;
+				outermostContext = contextBackup;
+			}
+
+			return unmatched;
+		};
+
+	return bySet ?
+		markFunction( superMatcher ) :
+		superMatcher;
+}
+
+compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
+	var i,
+		setMatchers = [],
+		elementMatchers = [],
+		cached = compilerCache[ selector + " " ];
+
+	if ( !cached ) {
+		// Generate a function of recursive functions that can be used to check each element
+		if ( !match ) {
+			match = tokenize( selector );
+		}
+		i = match.length;
+		while ( i-- ) {
+			cached = matcherFromTokens( match[i] );
+			if ( cached[ expando ] ) {
+				setMatchers.push( cached );
+			} else {
+				elementMatchers.push( cached );
+			}
+		}
+
+		// Cache the compiled function
+		cached = compilerCache( selector, matcherFromGroupMatchers( elementMatchers, setMatchers ) );
+
+		// Save selector and tokenization
+		cached.selector = selector;
+	}
+	return cached;
+};
+
+/**
+ * A low-level selection function that works with Sizzle's compiled
+ *  selector functions
+ * @param {String|Function} selector A selector or a pre-compiled
+ *  selector function built with Sizzle.compile
+ * @param {Element} context
+ * @param {Array} [results]
+ * @param {Array} [seed] A set of elements to match against
+ */
+select = Sizzle.select = function( selector, context, results, seed ) {
+	var i, tokens, token, type, find,
+		compiled = typeof selector === "function" && selector,
+		match = !seed && tokenize( (selector = compiled.selector || selector) );
+
+	results = results || [];
+
+	// Try to minimize operations if there is only one selector in the list and no seed
+	// (the latter of which guarantees us context)
+	if ( match.length === 1 ) {
+
+		// Reduce context if the leading compound selector is an ID
+		tokens = match[0] = match[0].slice( 0 );
+		if ( tokens.length > 2 && (token = tokens[0]).type === "ID" &&
+				context.nodeType === 9 && documentIsHTML && Expr.relative[ tokens[1].type ] ) {
+
+			context = ( Expr.find["ID"]( token.matches[0].replace(runescape, funescape), context ) || [] )[0];
+			if ( !context ) {
+				return results;
+
+			// Precompiled matchers will still verify ancestry, so step up a level
+			} else if ( compiled ) {
+				context = context.parentNode;
+			}
+
+			selector = selector.slice( tokens.shift().value.length );
+		}
+
+		// Fetch a seed set for right-to-left matching
+		i = matchExpr["needsContext"].test( selector ) ? 0 : tokens.length;
+		while ( i-- ) {
+			token = tokens[i];
+
+			// Abort if we hit a combinator
+			if ( Expr.relative[ (type = token.type) ] ) {
+				break;
+			}
+			if ( (find = Expr.find[ type ]) ) {
+				// Search, expanding context for leading sibling combinators
+				if ( (seed = find(
+					token.matches[0].replace( runescape, funescape ),
+					rsibling.test( tokens[0].type ) && testContext( context.parentNode ) || context
+				)) ) {
+
+					// If seed is empty or no tokens remain, we can return early
+					tokens.splice( i, 1 );
+					selector = seed.length && toSelector( tokens );
+					if ( !selector ) {
+						push.apply( results, seed );
+						return results;
+					}
+
+					break;
+				}
+			}
+		}
+	}
+
+	// Compile and execute a filtering function if one is not provided
+	// Provide `match` to avoid retokenization if we modified the selector above
+	( compiled || compile( selector, match ) )(
+		seed,
+		context,
+		!documentIsHTML,
+		results,
+		!context || rsibling.test( selector ) && testContext( context.parentNode ) || context
+	);
+	return results;
+};
+
+// One-time assignments
+
+// Sort stability
+support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
+
+// Support: Chrome 14-35+
+// Always assume duplicates if they aren't passed to the comparison function
+support.detectDuplicates = !!hasDuplicate;
+
+// Initialize against the default document
+setDocument();
+
+// Support: Webkit<537.32 - Safari 6.0.3/Chrome 25 (fixed in Chrome 27)
+// Detached nodes confoundingly follow *each other*
+support.sortDetached = assert(function( el ) {
+	// Should return 1, but returns 4 (following)
+	return el.compareDocumentPosition( document.createElement("fieldset") ) & 1;
+});
+
+// Support: IE<8
+// Prevent attribute/property "interpolation"
+// https://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
+if ( !assert(function( el ) {
+	el.innerHTML = "<a href='#'></a>";
+	return el.firstChild.getAttribute("href") === "#" ;
+}) ) {
+	addHandle( "type|href|height|width", function( elem, name, isXML ) {
+		if ( !isXML ) {
+			return elem.getAttribute( name, name.toLowerCase() === "type" ? 1 : 2 );
+		}
+	});
+}
+
+// Support: IE<9
+// Use defaultValue in place of getAttribute("value")
+if ( !support.attributes || !assert(function( el ) {
+	el.innerHTML = "<input/>";
+	el.firstChild.setAttribute( "value", "" );
+	return el.firstChild.getAttribute( "value" ) === "";
+}) ) {
+	addHandle( "value", function( elem, name, isXML ) {
+		if ( !isXML && elem.nodeName.toLowerCase() === "input" ) {
+			return elem.defaultValue;
+		}
+	});
+}
+
+// Support: IE<9
+// Use getAttributeNode to fetch booleans when getAttribute lies
+if ( !assert(function( el ) {
+	return el.getAttribute("disabled") == null;
+}) ) {
+	addHandle( booleans, function( elem, name, isXML ) {
+		var val;
+		if ( !isXML ) {
+			return elem[ name ] === true ? name.toLowerCase() :
+					(val = elem.getAttributeNode( name )) && val.specified ?
+					val.value :
+				null;
+		}
+	});
+}
+
+return Sizzle;
+
+})( window );
+
+
+
+jQuery.find = Sizzle;
+jQuery.expr = Sizzle.selectors;
+
+// Deprecated
+jQuery.expr[ ":" ] = jQuery.expr.pseudos;
+jQuery.uniqueSort = jQuery.unique = Sizzle.uniqueSort;
+jQuery.text = Sizzle.getText;
+jQuery.isXMLDoc = Sizzle.isXML;
+jQuery.contains = Sizzle.contains;
+jQuery.escapeSelector = Sizzle.escape;
+
+
+
+
+var dir = function( elem, dir, until ) {
+	var matched = [],
+		truncate = until !== undefined;
+
+	while ( ( elem = elem[ dir ] ) && elem.nodeType !== 9 ) {
+		if ( elem.nodeType === 1 ) {
+			if ( truncate && jQuery( elem ).is( until ) ) {
+				break;
+			}
+			matched.push( elem );
+		}
+	}
+	return matched;
+};
+
+
+var siblings = function( n, elem ) {
+	var matched = [];
+
+	for ( ; n; n = n.nextSibling ) {
+		if ( n.nodeType === 1 && n !== elem ) {
+			matched.push( n );
+		}
+	}
+
+	return matched;
+};
+
+
+var rneedsContext = jQuery.expr.match.needsContext;
+
+
+
+function nodeName( elem, name ) {
+
+  return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
+
+};
+var rsingleTag = ( /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i );
+
+
+
+// Implement the identical functionality for filter and not
+function winnow( elements, qualifier, not ) {
+	if ( isFunction( qualifier ) ) {
+		return jQuery.grep( elements, function( elem, i ) {
+			return !!qualifier.call( elem, i, elem ) !== not;
+		} );
+	}
+
+	// Single element
+	if ( qualifier.nodeType ) {
+		return jQuery.grep( elements, function( elem ) {
+			return ( elem === qualifier ) !== not;
+		} );
+	}
+
+	// Arraylike of elements (jQuery, arguments, Array)
+	if ( typeof qualifier !== "string" ) {
+		return jQuery.grep( elements, function( elem ) {
+			return ( indexOf.call( qualifier, elem ) > -1 ) !== not;
+		} );
+	}
+
+	// Filtered directly for both simple and complex selectors
+	return jQuery.filter( qualifier, elements, not );
+}
+
+jQuery.filter = function( expr, elems, not ) {
+	var elem = elems[ 0 ];
+
+	if ( not ) {
+		expr = ":not(" + expr + ")";
+	}
+
+	if ( elems.length === 1 && elem.nodeType === 1 ) {
+		return jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [];
+	}
+
+	return jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {
+		return elem.nodeType === 1;
+	} ) );
+};
+
+jQuery.fn.extend( {
+	find: function( selector ) {
+		var i, ret,
+			len = this.length,
+			self = this;
+
+		if ( typeof selector !== "string" ) {
+			return this.pushStack( jQuery( selector ).filter( function() {
+				for ( i = 0; i < len; i++ ) {
+					if ( jQuery.contains( self[ i ], this ) ) {
+						return true;
+					}
+				}
+			} ) );
+		}
+
+		ret = this.pushStack( [] );
+
+		for ( i = 0; i < len; i++ ) {
+			jQuery.find( selector, self[ i ], ret );
+		}
+
+		return len > 1 ? jQuery.uniqueSort( ret ) : ret;
+	},
+	filter: function( selector ) {
+		return this.pushStack( winnow( this, selector || [], false ) );
+	},
+	not: function( selector ) {
+		return this.pushStack( winnow( this, selector || [], true ) );
+	},
+	is: function( selector ) {
+		return !!winnow(
+			this,
+
+			// If this is a positional/relative selector, check membership in the returned set
+			// so $("p:first").is("p:last") won't return true for a doc with two "p".
+			typeof selector === "string" && rneedsContext.test( selector ) ?
+				jQuery( selector ) :
+				selector || [],
+			false
+		).length;
+	}
+} );
+
+
+// Initialize a jQuery object
+
+
+// A central reference to the root jQuery(document)
+var rootjQuery,
+
+	// A simple way to check for HTML strings
+	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
+	// Strict HTML recognition (#11290: must start with <)
+	// Shortcut simple #id case for speed
+	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
+
+	init = jQuery.fn.init = function( selector, context, root ) {
+		var match, elem;
+
+		// HANDLE: $(""), $(null), $(undefined), $(false)
+		if ( !selector ) {
+			return this;
+		}
+
+		// Method init() accepts an alternate rootjQuery
+		// so migrate can support jQuery.sub (gh-2101)
+		root = root || rootjQuery;
+
+		// Handle HTML strings
+		if ( typeof selector === "string" ) {
+			if ( selector[ 0 ] === "<" &&
+				selector[ selector.length - 1 ] === ">" &&
+				selector.length >= 3 ) {
+
+				// Assume that strings that start and end with <> are HTML and skip the regex check
+				match = [ null, selector, null ];
+
+			} else {
+				match = rquickExpr.exec( selector );
+			}
+
+			// Match html or make sure no context is specified for #id
+			if ( match && ( match[ 1 ] || !context ) ) {
+
+				// HANDLE: $(html) -> $(array)
+				if ( match[ 1 ] ) {
+					context = context instanceof jQuery ? context[ 0 ] : context;
+
+					// Option to run scripts is true for back-compat
+					// Intentionally let the error be thrown if parseHTML is not present
+					jQuery.merge( this, jQuery.parseHTML(
+						match[ 1 ],
+						context && context.nodeType ? context.ownerDocument || context : document,
+						true
+					) );
+
+					// HANDLE: $(html, props)
+					if ( rsingleTag.test( match[ 1 ] ) && jQuery.isPlainObject( context ) ) {
+						for ( match in context ) {
+
+							// Properties of context are called as methods if possible
+							if ( isFunction( this[ match ] ) ) {
+								this[ match ]( context[ match ] );
+
+							// ...and otherwise set as attributes
+							} else {
+								this.attr( match, context[ match ] );
+							}
+						}
+					}
+
+					return this;
+
+				// HANDLE: $(#id)
+				} else {
+					elem = document.getElementById( match[ 2 ] );
+
+					if ( elem ) {
+
+						// Inject the element directly into the jQuery object
+						this[ 0 ] = elem;
+						this.length = 1;
+					}
+					return this;
+				}
+
+			// HANDLE: $(expr, $(...))
+			} else if ( !context || context.jquery ) {
+				return ( context || root ).find( selector );
+
+			// HANDLE: $(expr, context)
+			// (which is just equivalent to: $(context).find(expr)
+			} else {
+				return this.constructor( context ).find( selector );
+			}
+
+		// HANDLE: $(DOMElement)
+		} else if ( selector.nodeType ) {
+			this[ 0 ] = selector;
+			this.length = 1;
+			return this;
+
+		// HANDLE: $(function)
+		// Shortcut for document ready
+		} else if ( isFunction( selector ) ) {
+			return root.ready !== undefined ?
+				root.ready( selector ) :
+
+				// Execute immediately if ready is not present
+				selector( jQuery );
+		}
+
+		return jQuery.makeArray( selector, this );
+	};
+
+// Give the init function the jQuery prototype for later instantiation
+init.prototype = jQuery.fn;
+
+// Initialize central reference
+rootjQuery = jQuery( document );
+
+
+var rparentsprev = /^(?:parents|prev(?:Until|All))/,
+
+	// Methods guaranteed to produce a unique set when starting from a unique set
+	guaranteedUnique = {
+		children: true,
+		contents: true,
+		next: true,
+		prev: true
+	};
+
+jQuery.fn.extend( {
+	has: function( target ) {
+		var targets = jQuery( target, this ),
+			l = targets.length;
+
+		return this.filter( function() {
+			var i = 0;
+			for ( ; i < l; i++ ) {
+				if ( jQuery.contains( this, targets[ i ] ) ) {
+					return true;
+				}
+			}
+		} );
+	},
+
+	closest: function( selectors, context ) {
+		var cur,
+			i = 0,
+			l = this.length,
+			matched = [],
+			targets = typeof selectors !== "string" && jQuery( selectors );
+
+		// Positional selectors never match, since there's no _selection_ context
+		if ( !rneedsContext.test( selectors ) ) {
+			for ( ; i < l; i++ ) {
+				for ( cur = this[ i ]; cur && cur !== context; cur = cur.parentNode ) {
+
+					// Always skip document fragments
+					if ( cur.nodeType < 11 && ( targets ?
+						targets.index( cur ) > -1 :
+
+						// Don't pass non-elements to Sizzle
+						cur.nodeType === 1 &&
+							jQuery.find.matchesSelector( cur, selectors ) ) ) {
+
+						matched.push( cur );
+						break;
+					}
+				}
+			}
+		}
+
+		return this.pushStack( matched.length > 1 ? jQuery.uniqueSort( matched ) : matched );
+	},
+
+	// Determine the position of an element within the set
+	index: function( elem ) {
+
+		// No argument, return index in parent
+		if ( !elem ) {
+			return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
+		}
+
+		// Index in selector
+		if ( typeof elem === "string" ) {
+			return indexOf.call( jQuery( elem ), this[ 0 ] );
+		}
+
+		// Locate the position of the desired element
+		return indexOf.call( this,
+
+			// If it receives a jQuery object, the first element is used
+			elem.jquery ? elem[ 0 ] : elem
+		);
+	},
+
+	add: function( selector, context ) {
+		return this.pushStack(
+			jQuery.uniqueSort(
+				jQuery.merge( this.get(), jQuery( selector, context ) )
+			)
+		);
+	},
+
+	addBack: function( selector ) {
+		return this.add( selector == null ?
+			this.prevObject : this.prevObject.filter( selector )
+		);
+	}
+} );
+
+function sibling( cur, dir ) {
+	while ( ( cur = cur[ dir ] ) && cur.nodeType !== 1 ) {}
+	return cur;
+}
+
+jQuery.each( {
+	parent: function( elem ) {
+		var parent = elem.parentNode;
+		return parent && parent.nodeType !== 11 ? parent : null;
+	},
+	parents: function( elem ) {
+		return dir( elem, "parentNode" );
+	},
+	parentsUntil: function( elem, i, until ) {
+		return dir( elem, "parentNode", until );
+	},
+	next: function( elem ) {
+		return sibling( elem, "nextSibling" );
+	},
+	prev: function( elem ) {
+		return sibling( elem, "previousSibling" );
+	},
+	nextAll: function( elem ) {
+		return dir( elem, "nextSibling" );
+	},
+	prevAll: function( elem ) {
+		return dir( elem, "previousSibling" );
+	},
+	nextUntil: function( elem, i, until ) {
+		return dir( elem, "nextSibling", until );
+	},
+	prevUntil: function( elem, i, until ) {
+		return dir( elem, "previousSibling", until );
+	},
+	siblings: function( elem ) {
+		return siblings( ( elem.parentNode || {} ).firstChild, elem );
+	},
+	children: function( elem ) {
+		return siblings( elem.firstChild );
+	},
+	contents: function( elem ) {
+		if ( typeof elem.contentDocument !== "undefined" ) {
+			return elem.contentDocument;
+		}
+
+		// Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
+		// Treat the template element as a regular one in browsers that
+		// don't support it.
+		if ( nodeName( elem, "template" ) ) {
+			elem = elem.content || elem;
+		}
+
+		return jQuery.merge( [], elem.childNodes );
+	}
+}, function( name, fn ) {
+	jQuery.fn[ name ] = function( until, selector ) {
+		var matched = jQuery.map( this, fn, until );
+
+		if ( name.slice( -5 ) !== "Until" ) {
+			selector = until;
+		}
+
+		if ( selector && typeof selector === "string" ) {
+			matched = jQuery.filter( selector, matched );
+		}
+
+		if ( this.length > 1 ) {
+
+			// Remove duplicates
+			if ( !guaranteedUnique[ name ] ) {
+				jQuery.uniqueSort( matched );
+			}
+
+			// Reverse order for parents* and prev-derivatives
+			if ( rparentsprev.test( name ) ) {
+				matched.reverse();
+			}
+		}
+
+		return this.pushStack( matched );
+	};
+} );
+var rnothtmlwhite = ( /[^\x20\t\r\n\f]+/g );
+
+
+
+// Convert String-formatted options into Object-formatted ones
+function createOptions( options ) {
+	var object = {};
+	jQuery.each( options.match( rnothtmlwhite ) || [], function( _, flag ) {
+		object[ flag ] = true;
+	} );
+	return object;
+}
+
+/*
+ * Create a callback list using the following parameters:
+ *
+ *	options: an optional list of space-separated options that will change how
+ *			the callback list behaves or a more traditional option object
+ *
+ * By default a callback list will act like an event callback list and can be
+ * "fired" multiple times.
+ *
+ * Possible options:
+ *
+ *	once:			will ensure the callback list can only be fired once (like a Deferred)
+ *
+ *	memory:			will keep track of previous values and will call any callback added
+ *					after the list has been fired right away with the latest "memorized"
+ *					values (like a Deferred)
+ *
+ *	unique:			will ensure a callback can only be added once (no duplicate in the list)
+ *
+ *	stopOnFalse:	interrupt callings when a callback returns false
+ *
+ */
+jQuery.Callbacks = function( options ) {
+
+	// Convert options from String-formatted to Object-formatted if needed
+	// (we check in cache first)
+	options = typeof options === "string" ?
+		createOptions( options ) :
+		jQuery.extend( {}, options );
+
+	var // Flag to know if list is currently firing
+		firing,
+
+		// Last fire value for non-forgettable lists
+		memory,
+
+		// Flag to know if list was already fired
+		fired,
+
+		// Flag to prevent firing
+		locked,
+
+		// Actual callback list
+		list = [],
+
+		// Queue of execution data for repeatable lists
+		queue = [],
+
+		// Index of currently firing callback (modified by add/remove as needed)
+		firingIndex = -1,
+
+		// Fire callbacks
+		fire = function() {
+
+			// Enforce single-firing
+			locked = locked || options.once;
+
+			// Execute callbacks for all pending executions,
+			// respecting firingIndex overrides and runtime changes
+			fired = firing = true;
+			for ( ; queue.length; firingIndex = -1 ) {
+				memory = queue.shift();
+				while ( ++firingIndex < list.length ) {
+
+					// Run callback and check for early termination
+					if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
+						options.stopOnFalse ) {
+
+						// Jump to end and forget the data so .add doesn't re-fire
+						firingIndex = list.length;
+						memory = false;
+					}
+				}
+			}
+
+			// Forget the data if we're done with it
+			if ( !options.memory ) {
+				memory = false;
+			}
+
+			firing = false;
+
+			// Clean up if we're done firing for good
+			if ( locked ) {
+
+				// Keep an empty list if we have data for future add calls
+				if ( memory ) {
+					list = [];
+
+				// Otherwise, this object is spent
+				} else {
+					list = "";
+				}
+			}
+		},
+
+		// Actual Callbacks object
+		self = {
+
+			// Add a callback or a collection of callbacks to the list
+			add: function() {
+				if ( list ) {
+
+					// If we have memory from a past run, we should fire after adding
+					if ( memory && !firing ) {
+						firingIndex = list.length - 1;
+						queue.push( memory );
+					}
+
+					( function add( args ) {
+						jQuery.each( args, function( _, arg ) {
+							if ( isFunction( arg ) ) {
+								if ( !options.unique || !self.has( arg ) ) {
+									list.push( arg );
+								}
+							} else if ( arg && arg.length && toType( arg ) !== "string" ) {
+
+								// Inspect recursively
+								add( arg );
+							}
+						} );
+					} )( arguments );
+
+					if ( memory && !firing ) {
+						fire();
+					}
+				}
+				return this;
+			},
+
+			// Remove a callback from the list
+			remove: function() {
+				jQuery.each( arguments, function( _, arg ) {
+					var index;
+					while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
+						list.splice( index, 1 );
+
+						// Handle firing indexes
+						if ( index <= firingIndex ) {
+							firingIndex--;
+						}
+					}
+				} );
+				return this;
+			},
+
+			// Check if a given callback is in the list.
+			// If no argument is given, return whether or not list has callbacks attached.
+			has: function( fn ) {
+				return fn ?
+					jQuery.inArray( fn, list ) > -1 :
+					list.length > 0;
+			},
+
+			// Remove all callbacks from the list
+			empty: function() {
+				if ( list ) {
+					list = [];
+				}
+				return this;
+			},
+
+			// Disable .fire and .add
+			// Abort any current/pending executions
+			// Clear all callbacks and values
+			disable: function() {
+				locked = queue = [];
+				list = memory = "";
+				return this;
+			},
+			disabled: function() {
+				return !list;
+			},
+
+			// Disable .fire
+			// Also disable .add unless we have memory (since it would have no effect)
+			// Abort any pending executions
+			lock: function() {
+				locked = queue = [];
+				if ( !memory && !firing ) {
+					list = memory = "";
+				}
+				return this;
+			},
+			locked: function() {
+				return !!locked;
+			},
+
+			// Call all callbacks with the given context and arguments
+			fireWith: function( context, args ) {
+				if ( !locked ) {
+					args = args || [];
+					args = [ context, args.slice ? args.slice() : args ];
+					queue.push( args );
+					if ( !firing ) {
+						fire();
+					}
+				}
+				return this;
+			},
+
+			// Call all the callbacks with the given arguments
+			fire: function() {
+				self.fireWith( this, arguments );
+				return this;
+			},
+
+			// To know if the callbacks have already been called at least once
+			fired: function() {
+				return !!fired;
+			}
+		};
+
+	return self;
+};
+
+
+function Identity( v ) {
+	return v;
+}
+function Thrower( ex ) {
+	throw ex;
+}
+
+function adoptValue( value, resolve, reject, noValue ) {
+	var method;
+
+	try {
+
+		// Check for promise aspect first to privilege synchronous behavior
+		if ( value && isFunction( ( method = value.promise ) ) ) {
+			method.call( value ).done( resolve ).fail( reject );
+
+		// Other thenables
+		} else if ( value && isFunction( ( method = value.then ) ) ) {
+			method.call( value, resolve, reject );
+
+		// Other non-thenables
+		} else {
+
+			// Control `resolve` arguments by letting Array#slice cast boolean `noValue` to integer:
+			// * false: [ value ].slice( 0 ) => resolve( value )
+			// * true: [ value ].slice( 1 ) => resolve()
+			resolve.apply( undefined, [ value ].slice( noValue ) );
+		}
+
+	// For Promises/A+, convert exceptions into rejections
+	// Since jQuery.when doesn't unwrap thenables, we can skip the extra checks appearing in
+	// Deferred#then to conditionally suppress rejection.
+	} catch ( value ) {
+
+		// Support: Android 4.0 only
+		// Strict mode functions invoked without .call/.apply get global-object context
+		reject.apply( undefined, [ value ] );
+	}
+}
+
+jQuery.extend( {
+
+	Deferred: function( func ) {
+		var tuples = [
+
+				// action, add listener, callbacks,
+				// ... .then handlers, argument index, [final state]
+				[ "notify", "progress", jQuery.Callbacks( "memory" ),
+					jQuery.Callbacks( "memory" ), 2 ],
+				[ "resolve", "done", jQuery.Callbacks( "once memory" ),
+					jQuery.Callbacks( "once memory" ), 0, "resolved" ],
+				[ "reject", "fail", jQuery.Callbacks( "once memory" ),
+					jQuery.Callbacks( "once memory" ), 1, "rejected" ]
+			],
+			state = "pending",
+			promise = {
+				state: function() {
+					return state;
+				},
+				always: function() {
+					deferred.done( arguments ).fail( arguments );
+					return this;
+				},
+				"catch": function( fn ) {
+					return promise.then( null, fn );
+				},
+
+				// Keep pipe for back-compat
+				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
+					var fns = arguments;
+
+					return jQuery.Deferred( function( newDefer ) {
+						jQuery.each( tuples, function( i, tuple ) {
+
+							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
+							var fn = isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
+
+							// deferred.progress(function() { bind to newDefer or newDefer.notify })
+							// deferred.done(function() { bind to newDefer or newDefer.resolve })
+							// deferred.fail(function() { bind to newDefer or newDefer.reject })
+							deferred[ tuple[ 1 ] ]( function() {
+								var returned = fn && fn.apply( this, arguments );
+								if ( returned && isFunction( returned.promise ) ) {
+									returned.promise()
+										.progress( newDefer.notify )
+										.done( newDefer.resolve )
+										.fail( newDefer.reject );
+								} else {
+									newDefer[ tuple[ 0 ] + "With" ](
+										this,
+										fn ? [ returned ] : arguments
+									);
+								}
+							} );
+						} );
+						fns = null;
+					} ).promise();
+				},
+				then: function( onFulfilled, onRejected, onProgress ) {
+					var maxDepth = 0;
+					function resolve( depth, deferred, handler, special ) {
+						return function() {
+							var that = this,
+								args = arguments,
+								mightThrow = function() {
+									var returned, then;
+
+									// Support: Promises/A+ section 2.3.3.3.3
+									// https://promisesaplus.com/#point-59
+									// Ignore double-resolution attempts
+									if ( depth < maxDepth ) {
+										return;
+									}
+
+									returned = handler.apply( that, args );
+
+									// Support: Promises/A+ section 2.3.1
+									// https://promisesaplus.com/#point-48
+									if ( returned === deferred.promise() ) {
+										throw new TypeError( "Thenable self-resolution" );
+									}
+
+									// Support: Promises/A+ sections 2.3.3.1, 3.5
+									// https://promisesaplus.com/#point-54
+									// https://promisesaplus.com/#point-75
+									// Retrieve `then` only once
+									then = returned &&
+
+										// Support: Promises/A+ section 2.3.4
+										// https://promisesaplus.com/#point-64
+										// Only check objects and functions for thenability
+										( typeof returned === "object" ||
+											typeof returned === "function" ) &&
+										returned.then;
+
+									// Handle a returned thenable
+									if ( isFunction( then ) ) {
+
+										// Special processors (notify) just wait for resolution
+										if ( special ) {
+											then.call(
+												returned,
+												resolve( maxDepth, deferred, Identity, special ),
+												resolve( maxDepth, deferred, Thrower, special )
+											);
+
+										// Normal processors (resolve) also hook into progress
+										} else {
+
+											// ...and disregard older resolution values
+											maxDepth++;
+
+											then.call(
+												returned,
+												resolve( maxDepth, deferred, Identity, special ),
+												resolve( maxDepth, deferred, Thrower, special ),
+												resolve( maxDepth, deferred, Identity,
+													deferred.notifyWith )
+											);
+										}
+
+									// Handle all other returned values
+									} else {
+
+										// Only substitute handlers pass on context
+										// and multiple values (non-spec behavior)
+										if ( handler !== Identity ) {
+											that = undefined;
+											args = [ returned ];
+										}
+
+										// Process the value(s)
+										// Default process is resolve
+										( special || deferred.resolveWith )( that, args );
+									}
+								},
+
+								// Only normal processors (resolve) catch and reject exceptions
+								process = special ?
+									mightThrow :
+									function() {
+										try {
+											mightThrow();
+										} catch ( e ) {
+
+											if ( jQuery.Deferred.exceptionHook ) {
+												jQuery.Deferred.exceptionHook( e,
+													process.stackTrace );
+											}
+
+											// Support: Promises/A+ section 2.3.3.3.4.1
+											// https://promisesaplus.com/#point-61
+											// Ignore post-resolution exceptions
+											if ( depth + 1 >= maxDepth ) {
+
+												// Only substitute handlers pass on context
+												// and multiple values (non-spec behavior)
+												if ( handler !== Thrower ) {
+													that = undefined;
+													args = [ e ];
+												}
+
+												deferred.rejectWith( that, args );
+											}
+										}
+									};
+
+							// Support: Promises/A+ section 2.3.3.3.1
+							// https://promisesaplus.com/#point-57
+							// Re-resolve promises immediately to dodge false rejection from
+							// subsequent errors
+							if ( depth ) {
+								process();
+							} else {
+
+								// Call an optional hook to record the stack, in case of exception
+								// since it's otherwise lost when execution goes async
+								if ( jQuery.Deferred.getStackHook ) {
+									process.stackTrace = jQuery.Deferred.getStackHook();
+								}
+								window.setTimeout( process );
+							}
+						};
+					}
+
+					return jQuery.Deferred( function( newDefer ) {
+
+						// progress_handlers.add( ... )
+						tuples[ 0 ][ 3 ].add(
+							resolve(
+								0,
+								newDefer,
+								isFunction( onProgress ) ?
+									onProgress :
+									Identity,
+								newDefer.notifyWith
+							)
+						);
+
+						// fulfilled_handlers.add( ... )
+						tuples[ 1 ][ 3 ].add(
+							resolve(
+								0,
+								newDefer,
+								isFunction( onFulfilled ) ?
+									onFulfilled :
+									Identity
+							)
+						);
+
+						// rejected_handlers.add( ... )
+						tuples[ 2 ][ 3 ].add(
+							resolve(
+								0,
+								newDefer,
+								isFunction( onRejected ) ?
+									onRejected :
+									Thrower
+							)
+						);
+					} ).promise();
+				},
+
+				// Get a promise for this deferred
+				// If obj is provided, the promise aspect is added to the object
+				promise: function( obj ) {
+					return obj != null ? jQuery.extend( obj, promise ) : promise;
+				}
+			},
+			deferred = {};
+
+		// Add list-specific methods
+		jQuery.each( tuples, function( i, tuple ) {
+			var list = tuple[ 2 ],
+				stateString = tuple[ 5 ];
+
+			// promise.progress = list.add
+			// promise.done = list.add
+			// promise.fail = list.add
+			promise[ tuple[ 1 ] ] = list.add;
+
+			// Handle state
+			if ( stateString ) {
+				list.add(
+					function() {
+
+						// state = "resolved" (i.e., fulfilled)
+						// state = "rejected"
+						state = stateString;
+					},
+
+					// rejected_callbacks.disable
+					// fulfilled_callbacks.disable
+					tuples[ 3 - i ][ 2 ].disable,
+
+					// rejected_handlers.disable
+					// fulfilled_handlers.disable
+					tuples[ 3 - i ][ 3 ].disable,
+
+					// progress_callbacks.lock
+					tuples[ 0 ][ 2 ].lock,
+
+					// progress_handlers.lock
+					tuples[ 0 ][ 3 ].lock
+				);
+			}
+
+			// progress_handlers.fire
+			// fulfilled_handlers.fire
+			// rejected_handlers.fire
+			list.add( tuple[ 3 ].fire );
+
+			// deferred.notify = function() { deferred.notifyWith(...) }
+			// deferred.resolve = function() { deferred.resolveWith(...) }
+			// deferred.reject = function() { deferred.rejectWith(...) }
+			deferred[ tuple[ 0 ] ] = function() {
+				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? undefined : this, arguments );
+				return this;
+			};
+
+			// deferred.notifyWith = list.fireWith
+			// deferred.resolveWith = list.fireWith
+			// deferred.rejectWith = list.fireWith
+			deferred[ tuple[ 0 ] + "With" ] = list.fireWith;
+		} );
+
+		// Make the deferred a promise
+		promise.promise( deferred );
+
+		// Call given func if any
+		if ( func ) {
+			func.call( deferred, deferred );
+		}
+
+		// All done!
+		return deferred;
+	},
+
+	// Deferred helper
+	when: function( singleValue ) {
+		var
+
+			// count of uncompleted subordinates
+			remaining = arguments.length,
+
+			// count of unprocessed arguments
+			i = remaining,
+
+			// subordinate fulfillment data
+			resolveContexts = Array( i ),
+			resolveValues = slice.call( arguments ),
+
+			// the master Deferred
+			master = jQuery.Deferred(),
+
+			// subordinate callback factory
+			updateFunc = function( i ) {
+				return function( value ) {
+					resolveContexts[ i ] = this;
+					resolveValues[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
+					if ( !( --remaining ) ) {
+						master.resolveWith( resolveContexts, resolveValues );
+					}
+				};
+			};
+
+		// Single- and empty arguments are adopted like Promise.resolve
+		if ( remaining <= 1 ) {
+			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject,
+				!remaining );
+
+			// Use .then() to unwrap secondary thenables (cf. gh-3000)
+			if ( master.state() === "pending" ||
+				isFunction( resolveValues[ i ] && resolveValues[ i ].then ) ) {
+
+				return master.then();
+			}
+		}
+
+		// Multiple arguments are aggregated like Promise.all array elements
+		while ( i-- ) {
+			adoptValue( resolveValues[ i ], updateFunc( i ), master.reject );
+		}
+
+		return master.promise();
+	}
+} );
+
+
+// These usually indicate a programmer mistake during development,
+// warn about them ASAP rather than swallowing them by default.
+var rerrorNames = /^(Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
+
+jQuery.Deferred.exceptionHook = function( error, stack ) {
+
+	// Support: IE 8 - 9 only
+	// Console exists when dev tools are open, which can happen at any time
+	if ( window.console && window.console.warn && error && rerrorNames.test( error.name ) ) {
+		window.console.warn( "jQuery.Deferred exception: " + error.message, error.stack, stack );
+	}
+};
+
+
+
+
+jQuery.readyException = function( error ) {
+	window.setTimeout( function() {
+		throw error;
+	} );
+};
+
+
+
+
+// The deferred used on DOM ready
+var readyList = jQuery.Deferred();
+
+jQuery.fn.ready = function( fn ) {
+
+	readyList
+		.then( fn )
+
+		// Wrap jQuery.readyException in a function so that the lookup
+		// happens at the time of error handling instead of callback
+		// registration.
+		.catch( function( error ) {
+			jQuery.readyException( error );
+		} );
+
+	return this;
+};
+
+jQuery.extend( {
+
+	// Is the DOM ready to be used? Set to true once it occurs.
+	isReady: false,
+
+	// A counter to track how many items to wait for before
+	// the ready event fires. See #6781
+	readyWait: 1,
+
+	// Handle when the DOM is ready
+	ready: function( wait ) {
+
+		// Abort if there are pending holds or we're already ready
+		if ( wait === true ? --jQuery.readyWait : jQuery.isReady ) {
+			return;
+		}
+
+		// Remember that the DOM is ready
+		jQuery.isReady = true;
+
+		// If a normal DOM Ready event fired, decrement, and wait if need be
+		if ( wait !== true && --jQuery.readyWait > 0 ) {
+			return;
+		}
+
+		// If there are functions bound, to execute
+		readyList.resolveWith( document, [ jQuery ] );
+	}
+} );
+
+jQuery.ready.then = readyList.then;
+
+// The ready event handler and self cleanup method
+function completed() {
+	document.removeEventListener( "DOMContentLoaded", completed );
+	window.removeEventListener( "load", completed );
+	jQuery.ready();
+}
+
+// Catch cases where $(document).ready() is called
+// after the browser event has already occurred.
+// Support: IE <=9 - 10 only
+// Older IE sometimes signals "interactive" too soon
+if ( document.readyState === "complete" ||
+	( document.readyState !== "loading" && !document.documentElement.doScroll ) ) {
+
+	// Handle it asynchronously to allow scripts the opportunity to delay ready
+	window.setTimeout( jQuery.ready );
+
+} else {
+
+	// Use the handy event callback
+	document.addEventListener( "DOMContentLoaded", completed );
+
+	// A fallback to window.onload, that will always work
+	window.addEventListener( "load", completed );
+}
+
+
+
+
+// Multifunctional method to get and set values of a collection
+// The value/s can optionally be executed if it's a function
+var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
+	var i = 0,
+		len = elems.length,
+		bulk = key == null;
+
+	// Sets many values
+	if ( toType( key ) === "object" ) {
+		chainable = true;
+		for ( i in key ) {
+			access( elems, fn, i, key[ i ], true, emptyGet, raw );
+		}
+
+	// Sets one value
+	} else if ( value !== undefined ) {
+		chainable = true;
+
+		if ( !isFunction( value ) ) {
+			raw = true;
+		}
+
+		if ( bulk ) {
+
+			// Bulk operations run against the entire set
+			if ( raw ) {
+				fn.call( elems, value );
+				fn = null;
+
+			// ...except when executing function values
+			} else {
+				bulk = fn;
+				fn = function( elem, key, value ) {
+					return bulk.call( jQuery( elem ), value );
+				};
+			}
+		}
+
+		if ( fn ) {
+			for ( ; i < len; i++ ) {
+				fn(
+					elems[ i ], key, raw ?
+					value :
+					value.call( elems[ i ], i, fn( elems[ i ], key ) )
+				);
+			}
+		}
+	}
+
+	if ( chainable ) {
+		return elems;
+	}
+
+	// Gets
+	if ( bulk ) {
+		return fn.call( elems );
+	}
+
+	return len ? fn( elems[ 0 ], key ) : emptyGet;
+};
+
+
+// Matches dashed string for camelizing
+var rmsPrefix = /^-ms-/,
+	rdashAlpha = /-([a-z])/g;
+
+// Used by camelCase as callback to replace()
+function fcamelCase( all, letter ) {
+	return letter.toUpperCase();
+}
+
+// Convert dashed to camelCase; used by the css and data modules
+// Support: IE <=9 - 11, Edge 12 - 15
+// Microsoft forgot to hump their vendor prefix (#9572)
+function camelCase( string ) {
+	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+}
+var acceptData = function( owner ) {
+
+	// Accepts only:
+	//  - Node
+	//    - Node.ELEMENT_NODE
+	//    - Node.DOCUMENT_NODE
+	//  - Object
+	//    - Any
+	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
+};
+
+
+
+
+function Data() {
+	this.expando = jQuery.expando + Data.uid++;
+}
+
+Data.uid = 1;
+
+Data.prototype = {
+
+	cache: function( owner ) {
+
+		// Check if the owner object already has a cache
+		var value = owner[ this.expando ];
+
+		// If not, create one
+		if ( !value ) {
+			value = {};
+
+			// We can accept data for non-element nodes in modern browsers,
+			// but we should not, see #8335.
+			// Always return an empty object.
+			if ( acceptData( owner ) ) {
+
+				// If it is a node unlikely to be stringify-ed or looped over
+				// use plain assignment
+				if ( owner.nodeType ) {
+					owner[ this.expando ] = value;
+
+				// Otherwise secure it in a non-enumerable property
+				// configurable must be true to allow the property to be
+				// deleted when data is removed
+				} else {
+					Object.defineProperty( owner, this.expando, {
+						value: value,
+						configurable: true
+					} );
+				}
+			}
+		}
+
+		return value;
+	},
+	set: function( owner, data, value ) {
+		var prop,
+			cache = this.cache( owner );
+
+		// Handle: [ owner, key, value ] args
+		// Always use camelCase key (gh-2257)
+		if ( typeof data === "string" ) {
+			cache[ camelCase( data ) ] = value;
+
+		// Handle: [ owner, { properties } ] args
+		} else {
+
+			// Copy the properties one-by-one to the cache object
+			for ( prop in data ) {
+				cache[ camelCase( prop ) ] = data[ prop ];
+			}
+		}
+		return cache;
+	},
+	get: function( owner, key ) {
+		return key === undefined ?
+			this.cache( owner ) :
+
+			// Always use camelCase key (gh-2257)
+			owner[ this.expando ] && owner[ this.expando ][ camelCase( key ) ];
+	},
+	access: function( owner, key, value ) {
+
+		// In cases where either:
+		//
+		//   1. No key was specified
+		//   2. A string key was specified, but no value provided
+		//
+		// Take the "read" path and allow the get method to determine
+		// which value to return, respectively either:
+		//
+		//   1. The entire cache object
+		//   2. The data stored at the key
+		//
+		if ( key === undefined ||
+				( ( key && typeof key === "string" ) && value === undefined ) ) {
+
+			return this.get( owner, key );
+		}
+
+		// When the key is not a string, or both a key and value
+		// are specified, set or extend (existing objects) with either:
+		//
+		//   1. An object of properties
+		//   2. A key and value
+		//
+		this.set( owner, key, value );
+
+		// Since the "set" path can have two possible entry points
+		// return the expected data based on which path was taken[*]
+		return value !== undefined ? value : key;
+	},
+	remove: function( owner, key ) {
+		var i,
+			cache = owner[ this.expando ];
+
+		if ( cache === undefined ) {
+			return;
+		}
+
+		if ( key !== undefined ) {
+
+			// Support array or space separated string of keys
+			if ( Array.isArray( key ) ) {
+
+				// If key is an array of keys...
+				// We always set camelCase keys, so remove that.
+				key = key.map( camelCase );
+			} else {
+				key = camelCase( key );
+
+				// If a key with the spaces exists, use it.
+				// Otherwise, create an array by matching non-whitespace
+				key = key in cache ?
+					[ key ] :
+					( key.match( rnothtmlwhite ) || [] );
+			}
+
+			i = key.length;
+
+			while ( i-- ) {
+				delete cache[ key[ i ] ];
+			}
+		}
+
+		// Remove the expando if there's no more data
+		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
+
+			// Support: Chrome <=35 - 45
+			// Webkit & Blink performance suffers when deleting properties
+			// from DOM nodes, so set to undefined instead
+			// https://bugs.chromium.org/p/chromium/issues/detail?id=378607 (bug restricted)
+			if ( owner.nodeType ) {
+				owner[ this.expando ] = undefined;
+			} else {
+				delete owner[ this.expando ];
+			}
+		}
+	},
+	hasData: function( owner ) {
+		var cache = owner[ this.expando ];
+		return cache !== undefined && !jQuery.isEmptyObject( cache );
+	}
+};
+var dataPriv = new Data();
+
+var dataUser = new Data();
+
+
+
+//	Implementation Summary
+//
+//	1. Enforce API surface and semantic compatibility with 1.9.x branch
+//	2. Improve the module's maintainability by reducing the storage
+//		paths to a single mechanism.
+//	3. Use the same single mechanism to support "private" and "user" data.
+//	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
+//	5. Avoid exposing implementation details on user objects (eg. expando properties)
+//	6. Provide a clear path for implementation upgrade to WeakMap in 2014
+
+var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
+	rmultiDash = /[A-Z]/g;
+
+function getData( data ) {
+	if ( data === "true" ) {
+		return true;
+	}
+
+	if ( data === "false" ) {
+		return false;
+	}
+
+	if ( data === "null" ) {
+		return null;
+	}
+
+	// Only convert to a number if it doesn't change the string
+	if ( data === +data + "" ) {
+		return +data;
+	}
+
+	if ( rbrace.test( data ) ) {
+		return JSON.parse( data );
+	}
+
+	return data;
+}
+
+function dataAttr( elem, key, data ) {
+	var name;
+
+	// If nothing was found internally, try to fetch any
+	// data from the HTML5 data-* attribute
+	if ( data === undefined && elem.nodeType === 1 ) {
+		name = "data-" + key.replace( rmultiDash, "-$&" ).toLowerCase();
+		data = elem.getAttribute( name );
+
+		if ( typeof data === "string" ) {
+			try {
+				data = getData( data );
+			} catch ( e ) {}
+
+			// Make sure we set the data so it isn't changed later
+			dataUser.set( elem, key, data );
+		} else {
+			data = undefined;
+		}
+	}
+	return data;
+}
+
+jQuery.extend( {
+	hasData: function( elem ) {
+		return dataUser.hasData( elem ) || dataPriv.hasData( elem );
+	},
+
+	data: function( elem, name, data ) {
+		return dataUser.access( elem, name, data );
+	},
+
+	removeData: function( elem, name ) {
+		dataUser.remove( elem, name );
+	},
+
+	// TODO: Now that all calls to _data and _removeData have been replaced
+	// with direct calls to dataPriv methods, these can be deprecated.
+	_data: function( elem, name, data ) {
+		return dataPriv.access( elem, name, data );
+	},
+
+	_removeData: function( elem, name ) {
+		dataPriv.remove( elem, name );
+	}
+} );
+
+jQuery.fn.extend( {
+	data: function( key, value ) {
+		var i, name, data,
+			elem = this[ 0 ],
+			attrs = elem && elem.attributes;
+
+		// Gets all values
+		if ( key === undefined ) {
+			if ( this.length ) {
+				data = dataUser.get( elem );
+
+				if ( elem.nodeType === 1 && !dataPriv.get( elem, "hasDataAttrs" ) ) {
+					i = attrs.length;
+					while ( i-- ) {
+
+						// Support: IE 11 only
+						// The attrs elements can be null (#14894)
+						if ( attrs[ i ] ) {
+							name = attrs[ i ].name;
+							if ( name.indexOf( "data-" ) === 0 ) {
+								name = camelCase( name.slice( 5 ) );
+								dataAttr( elem, name, data[ name ] );
+							}
+						}
+					}
+					dataPriv.set( elem, "hasDataAttrs", true );
+				}
+			}
+
+			return data;
+		}
+
+		// Sets multiple values
+		if ( typeof key === "object" ) {
+			return this.each( function() {
+				dataUser.set( this, key );
+			} );
+		}
+
+		return access( this, function( value ) {
+			var data;
+
+			// The calling jQuery object (element matches) is not empty
+			// (and therefore has an element appears at this[ 0 ]) and the
+			// `value` parameter was not undefined. An empty jQuery object
+			// will result in `undefined` for elem = this[ 0 ] which will
+			// throw an exception if an attempt to read a data cache is made.
+			if ( elem && value === undefined ) {
+
+				// Attempt to get data from the cache
+				// The key will always be camelCased in Data
+				data = dataUser.get( elem, key );
+				if ( data !== undefined ) {
+					return data;
+				}
+
+				// Attempt to "discover" the data in
+				// HTML5 custom data-* attrs
+				data = dataAttr( elem, key );
+				if ( data !== undefined ) {
+					return data;
+				}
+
+				// We tried really hard, but the data doesn't exist.
+				return;
+			}
+
+			// Set the data...
+			this.each( function() {
+
+				// We always store the camelCased key
+				dataUser.set( this, key, value );
+			} );
+		}, null, value, arguments.length > 1, null, true );
+	},
+
+	removeData: function( key ) {
+		return this.each( function() {
+			dataUser.remove( this, key );
+		} );
+	}
+} );
+
+
+jQuery.extend( {
+	queue: function( elem, type, data ) {
+		var queue;
+
+		if ( elem ) {
+			type = ( type || "fx" ) + "queue";
+			queue = dataPriv.get( elem, type );
+
+			// Speed up dequeue by getting out quickly if this is just a lookup
+			if ( data ) {
+				if ( !queue || Array.isArray( data ) ) {
+					queue = dataPriv.access( elem, type, jQuery.makeArray( data ) );
+				} else {
+					queue.push( data );
+				}
+			}
+			return queue || [];
+		}
+	},
+
+	dequeue: function( elem, type ) {
+		type = type || "fx";
+
+		var queue = jQuery.queue( elem, type ),
+			startLength = queue.length,
+			fn = queue.shift(),
+			hooks = jQuery._queueHooks( elem, type ),
+			next = function() {
+				jQuery.dequeue( elem, type );
+			};
+
+		// If the fx queue is dequeued, always remove the progress sentinel
+		if ( fn === "inprogress" ) {
+			fn = queue.shift();
+			startLength--;
+		}
+
+		if ( fn ) {
+
+			// Add a progress sentinel to prevent the fx queue from being
+			// automatically dequeued
+			if ( type === "fx" ) {
+				queue.unshift( "inprogress" );
+			}
+
+			// Clear up the last queue stop function
+			delete hooks.stop;
+			fn.call( elem, next, hooks );
+		}
+
+		if ( !startLength && hooks ) {
+			hooks.empty.fire();
+		}
+	},
+
+	// Not public - generate a queueHooks object, or return the current one
+	_queueHooks: function( elem, type ) {
+		var key = type + "queueHooks";
+		return dataPriv.get( elem, key ) || dataPriv.access( elem, key, {
+			empty: jQuery.Callbacks( "once memory" ).add( function() {
+				dataPriv.remove( elem, [ type + "queue", key ] );
+			} )
+		} );
+	}
+} );
+
+jQuery.fn.extend( {
+	queue: function( type, data ) {
+		var setter = 2;
+
+		if ( typeof type !== "string" ) {
+			data = type;
+			type = "fx";
+			setter--;
+		}
+
+		if ( arguments.length < setter ) {
+			return jQuery.queue( this[ 0 ], type );
+		}
+
+		return data === undefined ?
+			this :
+			this.each( function() {
+				var queue = jQuery.queue( this, type, data );
+
+				// Ensure a hooks for this queue
+				jQuery._queueHooks( this, type );
+
+				if ( type === "fx" && queue[ 0 ] !== "inprogress" ) {
+					jQuery.dequeue( this, type );
+				}
+			} );
+	},
+	dequeue: function( type ) {
+		return this.each( function() {
+			jQuery.dequeue( this, type );
+		} );
+	},
+	clearQueue: function( type ) {
+		return this.queue( type || "fx", [] );
+	},
+
+	// Get a promise resolved when queues of a certain type
+	// are emptied (fx is the type by default)
+	promise: function( type, obj ) {
+		var tmp,
+			count = 1,
+			defer = jQuery.Deferred(),
+			elements = this,
+			i = this.length,
+			resolve = function() {
+				if ( !( --count ) ) {
+					defer.resolveWith( elements, [ elements ] );
+				}
+			};
+
+		if ( typeof type !== "string" ) {
+			obj = type;
+			type = undefined;
+		}
+		type = type || "fx";
+
+		while ( i-- ) {
+			tmp = dataPriv.get( elements[ i ], type + "queueHooks" );
+			if ( tmp && tmp.empty ) {
+				count++;
+				tmp.empty.add( resolve );
+			}
+		}
+		resolve();
+		return defer.promise( obj );
+	}
+} );
+var pnum = ( /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/ ).source;
+
+var rcssNum = new RegExp( "^(?:([+-])=|)(" + pnum + ")([a-z%]*)$", "i" );
+
+
+var cssExpand = [ "Top", "Right", "Bottom", "Left" ];
+
+var documentElement = document.documentElement;
+
+
+
+	var isAttached = function( elem ) {
+			return jQuery.contains( elem.ownerDocument, elem );
+		},
+		composed = { composed: true };
+
+	// Support: IE 9 - 11+, Edge 12 - 18+, iOS 10.0 - 10.2 only
+	// Check attachment across shadow DOM boundaries when possible (gh-3504)
+	// Support: iOS 10.0-10.2 only
+	// Early iOS 10 versions support `attachShadow` but not `getRootNode`,
+	// leading to errors. We need to check for `getRootNode`.
+	if ( documentElement.getRootNode ) {
+		isAttached = function( elem ) {
+			return jQuery.contains( elem.ownerDocument, elem ) ||
+				elem.getRootNode( composed ) === elem.ownerDocument;
+		};
+	}
+var isHiddenWithinTree = function( elem, el ) {
+
+		// isHiddenWithinTree might be called from jQuery#filter function;
+		// in that case, element will be second argument
+		elem = el || elem;
+
+		// Inline style trumps all
+		return elem.style.display === "none" ||
+			elem.style.display === "" &&
+
+			// Otherwise, check computed style
+			// Support: Firefox <=43 - 45
+			// Disconnected elements can have computed display: none, so first confirm that elem is
+			// in the document.
+			isAttached( elem ) &&
+
+			jQuery.css( elem, "display" ) === "none";
+	};
+
+var swap = function( elem, options, callback, args ) {
+	var ret, name,
+		old = {};
+
+	// Remember the old values, and insert the new ones
+	for ( name in options ) {
+		old[ name ] = elem.style[ name ];
+		elem.style[ name ] = options[ name ];
+	}
+
+	ret = callback.apply( elem, args || [] );
+
+	// Revert the old values
+	for ( name in options ) {
+		elem.style[ name ] = old[ name ];
+	}
+
+	return ret;
+};
+
+
+
+
+function adjustCSS( elem, prop, valueParts, tween ) {
+	var adjusted, scale,
+		maxIterations = 20,
+		currentValue = tween ?
+			function() {
+				return tween.cur();
+			} :
+			function() {
+				return jQuery.css( elem, prop, "" );
+			},
+		initial = currentValue(),
+		unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
+
+		// Starting value computation is required for potential unit mismatches
+		initialInUnit = elem.nodeType &&
+			( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
+			rcssNum.exec( jQuery.css( elem, prop ) );
+
+	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
+
+		// Support: Firefox <=54
+		// Halve the iteration target value to prevent interference from CSS upper bounds (gh-2144)
+		initial = initial / 2;
+
+		// Trust units reported by jQuery.css
+		unit = unit || initialInUnit[ 3 ];
+
+		// Iteratively approximate from a nonzero starting point
+		initialInUnit = +initial || 1;
+
+		while ( maxIterations-- ) {
+
+			// Evaluate and update our best guess (doubling guesses that zero out).
+			// Finish if the scale equals or crosses 1 (making the old*new product non-positive).
+			jQuery.style( elem, prop, initialInUnit + unit );
+			if ( ( 1 - scale ) * ( 1 - ( scale = currentValue() / initial || 0.5 ) ) <= 0 ) {
+				maxIterations = 0;
+			}
+			initialInUnit = initialInUnit / scale;
+
+		}
+
+		initialInUnit = initialInUnit * 2;
+		jQuery.style( elem, prop, initialInUnit + unit );
+
+		// Make sure we update the tween properties later on
+		valueParts = valueParts || [];
+	}
+
+	if ( valueParts ) {
+		initialInUnit = +initialInUnit || +initial || 0;
+
+		// Apply relative offset (+=/-=) if specified
+		adjusted = valueParts[ 1 ] ?
+			initialInUnit + ( valueParts[ 1 ] + 1 ) * valueParts[ 2 ] :
+			+valueParts[ 2 ];
+		if ( tween ) {
+			tween.unit = unit;
+			tween.start = initialInUnit;
+			tween.end = adjusted;
+		}
+	}
+	return adjusted;
+}
+
+
+var defaultDisplayMap = {};
+
+function getDefaultDisplay( elem ) {
+	var temp,
+		doc = elem.ownerDocument,
+		nodeName = elem.nodeName,
+		display = defaultDisplayMap[ nodeName ];
+
+	if ( display ) {
+		return display;
+	}
+
+	temp = doc.body.appendChild( doc.createElement( nodeName ) );
+	display = jQuery.css( temp, "display" );
+
+	temp.parentNode.removeChild( temp );
+
+	if ( display === "none" ) {
+		display = "block";
+	}
+	defaultDisplayMap[ nodeName ] = display;
+
+	return display;
+}
+
+function showHide( elements, show ) {
+	var display, elem,
+		values = [],
+		index = 0,
+		length = elements.length;
+
+	// Determine new display value for elements that need to change
+	for ( ; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( !elem.style ) {
+			continue;
+		}
+
+		display = elem.style.display;
+		if ( show ) {
+
+			// Since we force visibility upon cascade-hidden elements, an immediate (and slow)
+			// check is required in this first loop unless we have a nonempty display value (either
+			// inline or about-to-be-restored)
+			if ( display === "none" ) {
+				values[ index ] = dataPriv.get( elem, "display" ) || null;
+				if ( !values[ index ] ) {
+					elem.style.display = "";
+				}
+			}
+			if ( elem.style.display === "" && isHiddenWithinTree( elem ) ) {
+				values[ index ] = getDefaultDisplay( elem );
+			}
+		} else {
+			if ( display !== "none" ) {
+				values[ index ] = "none";
+
+				// Remember what we're overwriting
+				dataPriv.set( elem, "display", display );
+			}
+		}
+	}
+
+	// Set the display of the elements in a second loop to avoid constant reflow
+	for ( index = 0; index < length; index++ ) {
+		if ( values[ index ] != null ) {
+			elements[ index ].style.display = values[ index ];
+		}
+	}
+
+	return elements;
+}
+
+jQuery.fn.extend( {
+	show: function() {
+		return showHide( this, true );
+	},
+	hide: function() {
+		return showHide( this );
+	},
+	toggle: function( state ) {
+		if ( typeof state === "boolean" ) {
+			return state ? this.show() : this.hide();
+		}
+
+		return this.each( function() {
+			if ( isHiddenWithinTree( this ) ) {
+				jQuery( this ).show();
+			} else {
+				jQuery( this ).hide();
+			}
+		} );
+	}
+} );
+var rcheckableType = ( /^(?:checkbox|radio)$/i );
+
+var rtagName = ( /<([a-z][^\/\0>\x20\t\r\n\f]*)/i );
+
+var rscriptType = ( /^$|^module$|\/(?:java|ecma)script/i );
+
+
+
+// We have to close these tags to support XHTML (#13200)
+var wrapMap = {
+
+	// Support: IE <=9 only
+	option: [ 1, "<select multiple='multiple'>", "</select>" ],
+
+	// XHTML parsers do not magically insert elements in the
+	// same way that tag soup parsers do. So we cannot shorten
+	// this by omitting <tbody> or other required elements.
+	thead: [ 1, "<table>", "</table>" ],
+	col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
+	tr: [ 2, "<table><tbody>", "</tbody></table>" ],
+	td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+
+	_default: [ 0, "", "" ]
+};
+
+// Support: IE <=9 only
+wrapMap.optgroup = wrapMap.option;
+
+wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+wrapMap.th = wrapMap.td;
+
+
+function getAll( context, tag ) {
+
+	// Support: IE <=9 - 11 only
+	// Use typeof to avoid zero-argument method invocation on host objects (#15151)
+	var ret;
+
+	if ( typeof context.getElementsByTagName !== "undefined" ) {
+		ret = context.getElementsByTagName( tag || "*" );
+
+	} else if ( typeof context.querySelectorAll !== "undefined" ) {
+		ret = context.querySelectorAll( tag || "*" );
+
+	} else {
+		ret = [];
+	}
+
+	if ( tag === undefined || tag && nodeName( context, tag ) ) {
+		return jQuery.merge( [ context ], ret );
+	}
+
+	return ret;
+}
+
+
+// Mark scripts as having already been evaluated
+function setGlobalEval( elems, refElements ) {
+	var i = 0,
+		l = elems.length;
+
+	for ( ; i < l; i++ ) {
+		dataPriv.set(
+			elems[ i ],
+			"globalEval",
+			!refElements || dataPriv.get( refElements[ i ], "globalEval" )
+		);
+	}
+}
+
+
+var rhtml = /<|&#?\w+;/;
+
+function buildFragment( elems, context, scripts, selection, ignored ) {
+	var elem, tmp, tag, wrap, attached, j,
+		fragment = context.createDocumentFragment(),
+		nodes = [],
+		i = 0,
+		l = elems.length;
+
+	for ( ; i < l; i++ ) {
+		elem = elems[ i ];
+
+		if ( elem || elem === 0 ) {
+
+			// Add nodes directly
+			if ( toType( elem ) === "object" ) {
+
+				// Support: Android <=4.0 only, PhantomJS 1 only
+				// push.apply(_, arraylike) throws on ancient WebKit
+				jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
+
+			// Convert non-html into a text node
+			} else if ( !rhtml.test( elem ) ) {
+				nodes.push( context.createTextNode( elem ) );
+
+			// Convert html into DOM nodes
+			} else {
+				tmp = tmp || fragment.appendChild( context.createElement( "div" ) );
+
+				// Deserialize a standard representation
+				tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
+				wrap = wrapMap[ tag ] || wrapMap._default;
+				tmp.innerHTML = wrap[ 1 ] + jQuery.htmlPrefilter( elem ) + wrap[ 2 ];
+
+				// Descend through wrappers to the right content
+				j = wrap[ 0 ];
+				while ( j-- ) {
+					tmp = tmp.lastChild;
+				}
+
+				// Support: Android <=4.0 only, PhantomJS 1 only
+				// push.apply(_, arraylike) throws on ancient WebKit
+				jQuery.merge( nodes, tmp.childNodes );
+
+				// Remember the top-level container
+				tmp = fragment.firstChild;
+
+				// Ensure the created nodes are orphaned (#12392)
+				tmp.textContent = "";
+			}
+		}
+	}
+
+	// Remove wrapper from fragment
+	fragment.textContent = "";
+
+	i = 0;
+	while ( ( elem = nodes[ i++ ] ) ) {
+
+		// Skip elements already in the context collection (trac-4087)
+		if ( selection && jQuery.inArray( elem, selection ) > -1 ) {
+			if ( ignored ) {
+				ignored.push( elem );
+			}
+			continue;
+		}
+
+		attached = isAttached( elem );
+
+		// Append to fragment
+		tmp = getAll( fragment.appendChild( elem ), "script" );
+
+		// Preserve script evaluation history
+		if ( attached ) {
+			setGlobalEval( tmp );
+		}
+
+		// Capture executables
+		if ( scripts ) {
+			j = 0;
+			while ( ( elem = tmp[ j++ ] ) ) {
+				if ( rscriptType.test( elem.type || "" ) ) {
+					scripts.push( elem );
+				}
+			}
+		}
+	}
+
+	return fragment;
+}
+
+
+( function() {
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement( "div" ) ),
+		input = document.createElement( "input" );
+
+	// Support: Android 4.0 - 4.3 only
+	// Check state lost if the name is set (#11217)
+	// Support: Windows Web Apps (WWA)
+	// `name` and `type` must use .setAttribute for WWA (#14901)
+	input.setAttribute( "type", "radio" );
+	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "name", "t" );
+
+	div.appendChild( input );
+
+	// Support: Android <=4.1 only
+	// Older WebKit doesn't clone checked state correctly in fragments
+	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
+
+	// Support: IE <=11 only
+	// Make sure textarea (and checkbox) defaultValue is properly cloned
+	div.innerHTML = "<textarea>x</textarea>";
+	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
+} )();
+
+
+var
+	rkeyEvent = /^key/,
+	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+
+function returnTrue() {
+	return true;
+}
+
+function returnFalse() {
+	return false;
+}
+
+// Support: IE <=9 - 11+
+// focus() and blur() are asynchronous, except when they are no-op.
+// So expect focus to be synchronous when the element is already active,
+// and blur to be synchronous when the element is not already active.
+// (focus and blur are always synchronous in other supported browsers,
+// this just defines when we can count on it).
+function expectSync( elem, type ) {
+	return ( elem === safeActiveElement() ) === ( type === "focus" );
+}
+
+// Support: IE <=9 only
+// Accessing document.activeElement can throw unexpectedly
+// https://bugs.jquery.com/ticket/13393
+function safeActiveElement() {
+	try {
+		return document.activeElement;
+	} catch ( err ) { }
+}
+
+function on( elem, types, selector, data, fn, one ) {
+	var origFn, type;
+
+	// Types can be a map of types/handlers
+	if ( typeof types === "object" ) {
+
+		// ( types-Object, selector, data )
+		if ( typeof selector !== "string" ) {
+
+			// ( types-Object, data )
+			data = data || selector;
+			selector = undefined;
+		}
+		for ( type in types ) {
+			on( elem, type, selector, data, types[ type ], one );
+		}
+		return elem;
+	}
+
+	if ( data == null && fn == null ) {
+
+		// ( types, fn )
+		fn = selector;
+		data = selector = undefined;
+	} else if ( fn == null ) {
+		if ( typeof selector === "string" ) {
+
+			// ( types, selector, fn )
+			fn = data;
+			data = undefined;
+		} else {
+
+			// ( types, data, fn )
+			fn = data;
+			data = selector;
+			selector = undefined;
+		}
+	}
+	if ( fn === false ) {
+		fn = returnFalse;
+	} else if ( !fn ) {
+		return elem;
+	}
+
+	if ( one === 1 ) {
+		origFn = fn;
+		fn = function( event ) {
+
+			// Can use an empty set, since event contains the info
+			jQuery().off( event );
+			return origFn.apply( this, arguments );
+		};
+
+		// Use same guid so caller can remove using origFn
+		fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
+	}
+	return elem.each( function() {
+		jQuery.event.add( this, types, fn, data, selector );
+	} );
+}
+
+/*
+ * Helper functions for managing events -- not part of the public interface.
+ * Props to Dean Edwards' addEvent library for many of the ideas.
+ */
+jQuery.event = {
+
+	global: {},
+
+	add: function( elem, types, handler, data, selector ) {
+
+		var handleObjIn, eventHandle, tmp,
+			events, t, handleObj,
+			special, handlers, type, namespaces, origType,
+			elemData = dataPriv.get( elem );
+
+		// Don't attach events to noData or text/comment nodes (but allow plain objects)
+		if ( !elemData ) {
+			return;
+		}
+
+		// Caller can pass in an object of custom data in lieu of the handler
+		if ( handler.handler ) {
+			handleObjIn = handler;
+			handler = handleObjIn.handler;
+			selector = handleObjIn.selector;
+		}
+
+		// Ensure that invalid selectors throw exceptions at attach time
+		// Evaluate against documentElement in case elem is a non-element node (e.g., document)
+		if ( selector ) {
+			jQuery.find.matchesSelector( documentElement, selector );
+		}
+
+		// Make sure that the handler has a unique ID, used to find/remove it later
+		if ( !handler.guid ) {
+			handler.guid = jQuery.guid++;
+		}
+
+		// Init the element's event structure and main handler, if this is the first
+		if ( !( events = elemData.events ) ) {
+			events = elemData.events = {};
+		}
+		if ( !( eventHandle = elemData.handle ) ) {
+			eventHandle = elemData.handle = function( e ) {
+
+				// Discard the second event of a jQuery.event.trigger() and
+				// when an event is called after a page has unloaded
+				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
+					jQuery.event.dispatch.apply( elem, arguments ) : undefined;
+			};
+		}
+
+		// Handle multiple events separated by a space
+		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
+		t = types.length;
+		while ( t-- ) {
+			tmp = rtypenamespace.exec( types[ t ] ) || [];
+			type = origType = tmp[ 1 ];
+			namespaces = ( tmp[ 2 ] || "" ).split( "." ).sort();
+
+			// There *must* be a type, no attaching namespace-only handlers
+			if ( !type ) {
+				continue;
+			}
+
+			// If event changes its type, use the special event handlers for the changed type
+			special = jQuery.event.special[ type ] || {};
+
+			// If selector defined, determine special event api type, otherwise given type
+			type = ( selector ? special.delegateType : special.bindType ) || type;
+
+			// Update special based on newly reset type
+			special = jQuery.event.special[ type ] || {};
+
+			// handleObj is passed to all event handlers
+			handleObj = jQuery.extend( {
+				type: type,
+				origType: origType,
+				data: data,
+				handler: handler,
+				guid: handler.guid,
+				selector: selector,
+				needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
+				namespace: namespaces.join( "." )
+			}, handleObjIn );
+
+			// Init the event handler queue if we're the first
+			if ( !( handlers = events[ type ] ) ) {
+				handlers = events[ type ] = [];
+				handlers.delegateCount = 0;
+
+				// Only use addEventListener if the special events handler returns false
+				if ( !special.setup ||
+					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+
+					if ( elem.addEventListener ) {
+						elem.addEventListener( type, eventHandle );
+					}
+				}
+			}
+
+			if ( special.add ) {
+				special.add.call( elem, handleObj );
+
+				if ( !handleObj.handler.guid ) {
+					handleObj.handler.guid = handler.guid;
+				}
+			}
+
+			// Add to the element's handler list, delegates in front
+			if ( selector ) {
+				handlers.splice( handlers.delegateCount++, 0, handleObj );
+			} else {
+				handlers.push( handleObj );
+			}
+
+			// Keep track of which events have ever been used, for event optimization
+			jQuery.event.global[ type ] = true;
+		}
+
+	},
+
+	// Detach an event or set of events from an element
+	remove: function( elem, types, handler, selector, mappedTypes ) {
+
+		var j, origCount, tmp,
+			events, t, handleObj,
+			special, handlers, type, namespaces, origType,
+			elemData = dataPriv.hasData( elem ) && dataPriv.get( elem );
+
+		if ( !elemData || !( events = elemData.events ) ) {
+			return;
+		}
+
+		// Once for each type.namespace in types; type may be omitted
+		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
+		t = types.length;
+		while ( t-- ) {
+			tmp = rtypenamespace.exec( types[ t ] ) || [];
+			type = origType = tmp[ 1 ];
+			namespaces = ( tmp[ 2 ] || "" ).split( "." ).sort();
+
+			// Unbind all events (on this namespace, if provided) for the element
+			if ( !type ) {
+				for ( type in events ) {
+					jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
+				}
+				continue;
+			}
+
+			special = jQuery.event.special[ type ] || {};
+			type = ( selector ? special.delegateType : special.bindType ) || type;
+			handlers = events[ type ] || [];
+			tmp = tmp[ 2 ] &&
+				new RegExp( "(^|\\.)" + namespaces.join( "\\.(?:.*\\.|)" ) + "(\\.|$)" );
+
+			// Remove matching events
+			origCount = j = handlers.length;
+			while ( j-- ) {
+				handleObj = handlers[ j ];
+
+				if ( ( mappedTypes || origType === handleObj.origType ) &&
+					( !handler || handler.guid === handleObj.guid ) &&
+					( !tmp || tmp.test( handleObj.namespace ) ) &&
+					( !selector || selector === handleObj.selector ||
+						selector === "**" && handleObj.selector ) ) {
+					handlers.splice( j, 1 );
+
+					if ( handleObj.selector ) {
+						handlers.delegateCount--;
+					}
+					if ( special.remove ) {
+						special.remove.call( elem, handleObj );
+					}
+				}
+			}
+
+			// Remove generic event handler if we removed something and no more handlers exist
+			// (avoids potential for endless recursion during removal of special event handlers)
+			if ( origCount && !handlers.length ) {
+				if ( !special.teardown ||
+					special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
+
+					jQuery.removeEvent( elem, type, elemData.handle );
+				}
+
+				delete events[ type ];
+			}
+		}
+
+		// Remove data and the expando if it's no longer used
+		if ( jQuery.isEmptyObject( events ) ) {
+			dataPriv.remove( elem, "handle events" );
+		}
+	},
+
+	dispatch: function( nativeEvent ) {
+
+		// Make a writable jQuery.Event from the native event object
+		var event = jQuery.event.fix( nativeEvent );
+
+		var i, j, ret, matched, handleObj, handlerQueue,
+			args = new Array( arguments.length ),
+			handlers = ( dataPriv.get( this, "events" ) || {} )[ event.type ] || [],
+			special = jQuery.event.special[ event.type ] || {};
+
+		// Use the fix-ed jQuery.Event rather than the (read-only) native event
+		args[ 0 ] = event;
+
+		for ( i = 1; i < arguments.length; i++ ) {
+			args[ i ] = arguments[ i ];
+		}
+
+		event.delegateTarget = this;
+
+		// Call the preDispatch hook for the mapped type, and let it bail if desired
+		if ( special.preDispatch && special.preDispatch.call( this, event ) === false ) {
+			return;
+		}
+
+		// Determine handlers
+		handlerQueue = jQuery.event.handlers.call( this, event, handlers );
+
+		// Run delegates first; they may want to stop propagation beneath us
+		i = 0;
+		while ( ( matched = handlerQueue[ i++ ] ) && !event.isPropagationStopped() ) {
+			event.currentTarget = matched.elem;
+
+			j = 0;
+			while ( ( handleObj = matched.handlers[ j++ ] ) &&
+				!event.isImmediatePropagationStopped() ) {
+
+				// If the event is namespaced, then each handler is only invoked if it is
+				// specially universal or its namespaces are a superset of the event's.
+				if ( !event.rnamespace || handleObj.namespace === false ||
+					event.rnamespace.test( handleObj.namespace ) ) {
+
+					event.handleObj = handleObj;
+					event.data = handleObj.data;
+
+					ret = ( ( jQuery.event.special[ handleObj.origType ] || {} ).handle ||
+						handleObj.handler ).apply( matched.elem, args );
+
+					if ( ret !== undefined ) {
+						if ( ( event.result = ret ) === false ) {
+							event.preventDefault();
+							event.stopPropagation();
+						}
+					}
+				}
+			}
+		}
+
+		// Call the postDispatch hook for the mapped type
+		if ( special.postDispatch ) {
+			special.postDispatch.call( this, event );
+		}
+
+		return event.result;
+	},
+
+	handlers: function( event, handlers ) {
+		var i, handleObj, sel, matchedHandlers, matchedSelectors,
+			handlerQueue = [],
+			delegateCount = handlers.delegateCount,
+			cur = event.target;
+
+		// Find delegate handlers
+		if ( delegateCount &&
+
+			// Support: IE <=9
+			// Black-hole SVG <use> instance trees (trac-13180)
+			cur.nodeType &&
+
+			// Support: Firefox <=42
+			// Suppress spec-violating clicks indicating a non-primary pointer button (trac-3861)
+			// https://www.w3.org/TR/DOM-Level-3-Events/#event-type-click
+			// Support: IE 11 only
+			// ...but not arrow key "clicks" of radio inputs, which can have `button` -1 (gh-2343)
+			!( event.type === "click" && event.button >= 1 ) ) {
+
+			for ( ; cur !== this; cur = cur.parentNode || this ) {
+
+				// Don't check non-elements (#13208)
+				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
+				if ( cur.nodeType === 1 && !( event.type === "click" && cur.disabled === true ) ) {
+					matchedHandlers = [];
+					matchedSelectors = {};
+					for ( i = 0; i < delegateCount; i++ ) {
+						handleObj = handlers[ i ];
+
+						// Don't conflict with Object.prototype properties (#13203)
+						sel = handleObj.selector + " ";
+
+						if ( matchedSelectors[ sel ] === undefined ) {
+							matchedSelectors[ sel ] = handleObj.needsContext ?
+								jQuery( sel, this ).index( cur ) > -1 :
+								jQuery.find( sel, this, null, [ cur ] ).length;
+						}
+						if ( matchedSelectors[ sel ] ) {
+							matchedHandlers.push( handleObj );
+						}
+					}
+					if ( matchedHandlers.length ) {
+						handlerQueue.push( { elem: cur, handlers: matchedHandlers } );
+					}
+				}
+			}
+		}
+
+		// Add the remaining (directly-bound) handlers
+		cur = this;
+		if ( delegateCount < handlers.length ) {
+			handlerQueue.push( { elem: cur, handlers: handlers.slice( delegateCount ) } );
+		}
+
+		return handlerQueue;
+	},
+
+	addProp: function( name, hook ) {
+		Object.defineProperty( jQuery.Event.prototype, name, {
+			enumerable: true,
+			configurable: true,
+
+			get: isFunction( hook ) ?
+				function() {
+					if ( this.originalEvent ) {
+							return hook( this.originalEvent );
+					}
+				} :
+				function() {
+					if ( this.originalEvent ) {
+							return this.originalEvent[ name ];
+					}
+				},
+
+			set: function( value ) {
+				Object.defineProperty( this, name, {
+					enumerable: true,
+					configurable: true,
+					writable: true,
+					value: value
+				} );
+			}
+		} );
+	},
+
+	fix: function( originalEvent ) {
+		return originalEvent[ jQuery.expando ] ?
+			originalEvent :
+			new jQuery.Event( originalEvent );
+	},
+
+	special: {
+		load: {
+
+			// Prevent triggered image.load events from bubbling to window.load
+			noBubble: true
+		},
+		click: {
+
+			// Utilize native event to ensure correct state for checkable inputs
+			setup: function( data ) {
+
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
+
+				// Claim the first handler
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) ) {
+
+					// dataPriv.set( el, "click", ... )
+					leverageNative( el, "click", returnTrue );
+				}
+
+				// Return false to allow normal processing in the caller
+				return false;
+			},
+			trigger: function( data ) {
+
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
+
+				// Force setup before triggering a click
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) ) {
+
+					leverageNative( el, "click" );
+				}
+
+				// Return non-false to allow normal event-path propagation
+				return true;
+			},
+
+			// For cross-browser consistency, suppress native .click() on links
+			// Also prevent it if we're currently inside a leveraged native-event stack
+			_default: function( event ) {
+				var target = event.target;
+				return rcheckableType.test( target.type ) &&
+					target.click && nodeName( target, "input" ) &&
+					dataPriv.get( target, "click" ) ||
+					nodeName( target, "a" );
+			}
+		},
+
+		beforeunload: {
+			postDispatch: function( event ) {
+
+				// Support: Firefox 20+
+				// Firefox doesn't alert if the returnValue field is not set.
+				if ( event.result !== undefined && event.originalEvent ) {
+					event.originalEvent.returnValue = event.result;
+				}
+			}
+		}
+	}
+};
+
+// Ensure the presence of an event listener that handles manually-triggered
+// synthetic events by interrupting progress until reinvoked in response to
+// *native* events that it fires directly, ensuring that state changes have
+// already occurred before other listeners are invoked.
+function leverageNative( el, type, expectSync ) {
+
+	// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
+	if ( !expectSync ) {
+		if ( dataPriv.get( el, type ) === undefined ) {
+			jQuery.event.add( el, type, returnTrue );
+		}
+		return;
+	}
+
+	// Register the controller as a special universal handler for all event namespaces
+	dataPriv.set( el, type, false );
+	jQuery.event.add( el, type, {
+		namespace: false,
+		handler: function( event ) {
+			var notAsync, result,
+				saved = dataPriv.get( this, type );
+
+			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
+
+				// Interrupt processing of the outer synthetic .trigger()ed event
+				// Saved data should be false in such cases, but might be a leftover capture object
+				// from an async native handler (gh-4350)
+				if ( !saved.length ) {
+
+					// Store arguments for use when handling the inner native event
+					// There will always be at least one argument (an event object), so this array
+					// will not be confused with a leftover capture object.
+					saved = slice.call( arguments );
+					dataPriv.set( this, type, saved );
+
+					// Trigger the native event and capture its result
+					// Support: IE <=9 - 11+
+					// focus() and blur() are asynchronous
+					notAsync = expectSync( this, type );
+					this[ type ]();
+					result = dataPriv.get( this, type );
+					if ( saved !== result || notAsync ) {
+						dataPriv.set( this, type, false );
+					} else {
+						result = {};
+					}
+					if ( saved !== result ) {
+
+						// Cancel the outer synthetic event
+						event.stopImmediatePropagation();
+						event.preventDefault();
+						return result.value;
+					}
+
+				// If this is an inner synthetic event for an event with a bubbling surrogate
+				// (focus or blur), assume that the surrogate already propagated from triggering the
+				// native event and prevent that from happening again here.
+				// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
+				// bubbling surrogate propagates *after* the non-bubbling base), but that seems
+				// less bad than duplication.
+				} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
+					event.stopPropagation();
+				}
+
+			// If this is a native event triggered above, everything is now in order
+			// Fire an inner synthetic event with the original arguments
+			} else if ( saved.length ) {
+
+				// ...and capture the result
+				dataPriv.set( this, type, {
+					value: jQuery.event.trigger(
+
+						// Support: IE <=9 - 11+
+						// Extend with the prototype to reset the above stopImmediatePropagation()
+						jQuery.extend( saved[ 0 ], jQuery.Event.prototype ),
+						saved.slice( 1 ),
+						this
+					)
+				} );
+
+				// Abort handling of the native event
+				event.stopImmediatePropagation();
+			}
+		}
+	} );
+}
+
+jQuery.removeEvent = function( elem, type, handle ) {
+
+	// This "if" is needed for plain objects
+	if ( elem.removeEventListener ) {
+		elem.removeEventListener( type, handle );
+	}
+};
+
+jQuery.Event = function( src, props ) {
+
+	// Allow instantiation without the 'new' keyword
+	if ( !( this instanceof jQuery.Event ) ) {
+		return new jQuery.Event( src, props );
+	}
+
+	// Event object
+	if ( src && src.type ) {
+		this.originalEvent = src;
+		this.type = src.type;
+
+		// Events bubbling up the document may have been marked as prevented
+		// by a handler lower down the tree; reflect the correct value.
+		this.isDefaultPrevented = src.defaultPrevented ||
+				src.defaultPrevented === undefined &&
+
+				// Support: Android <=2.3 only
+				src.returnValue === false ?
+			returnTrue :
+			returnFalse;
+
+		// Create target properties
+		// Support: Safari <=6 - 7 only
+		// Target should not be a text node (#504, #13143)
+		this.target = ( src.target && src.target.nodeType === 3 ) ?
+			src.target.parentNode :
+			src.target;
+
+		this.currentTarget = src.currentTarget;
+		this.relatedTarget = src.relatedTarget;
+
+	// Event type
+	} else {
+		this.type = src;
+	}
+
+	// Put explicitly provided properties onto the event object
+	if ( props ) {
+		jQuery.extend( this, props );
+	}
+
+	// Create a timestamp if incoming event doesn't have one
+	this.timeStamp = src && src.timeStamp || Date.now();
+
+	// Mark it as fixed
+	this[ jQuery.expando ] = true;
+};
+
+// jQuery.Event is based on DOM3 Events as specified by the ECMAScript Language Binding
+// https://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
+jQuery.Event.prototype = {
+	constructor: jQuery.Event,
+	isDefaultPrevented: returnFalse,
+	isPropagationStopped: returnFalse,
+	isImmediatePropagationStopped: returnFalse,
+	isSimulated: false,
+
+	preventDefault: function() {
+		var e = this.originalEvent;
+
+		this.isDefaultPrevented = returnTrue;
+
+		if ( e && !this.isSimulated ) {
+			e.preventDefault();
+		}
+	},
+	stopPropagation: function() {
+		var e = this.originalEvent;
+
+		this.isPropagationStopped = returnTrue;
+
+		if ( e && !this.isSimulated ) {
+			e.stopPropagation();
+		}
+	},
+	stopImmediatePropagation: function() {
+		var e = this.originalEvent;
+
+		this.isImmediatePropagationStopped = returnTrue;
+
+		if ( e && !this.isSimulated ) {
+			e.stopImmediatePropagation();
+		}
+
+		this.stopPropagation();
+	}
+};
+
+// Includes all common event props including KeyEvent and MouseEvent specific props
+jQuery.each( {
+	altKey: true,
+	bubbles: true,
+	cancelable: true,
+	changedTouches: true,
+	ctrlKey: true,
+	detail: true,
+	eventPhase: true,
+	metaKey: true,
+	pageX: true,
+	pageY: true,
+	shiftKey: true,
+	view: true,
+	"char": true,
+	code: true,
+	charCode: true,
+	key: true,
+	keyCode: true,
+	button: true,
+	buttons: true,
+	clientX: true,
+	clientY: true,
+	offsetX: true,
+	offsetY: true,
+	pointerId: true,
+	pointerType: true,
+	screenX: true,
+	screenY: true,
+	targetTouches: true,
+	toElement: true,
+	touches: true,
+
+	which: function( event ) {
+		var button = event.button;
+
+		// Add which for key events
+		if ( event.which == null && rkeyEvent.test( event.type ) ) {
+			return event.charCode != null ? event.charCode : event.keyCode;
+		}
+
+		// Add which for click: 1 === left; 2 === middle; 3 === right
+		if ( !event.which && button !== undefined && rmouseEvent.test( event.type ) ) {
+			if ( button & 1 ) {
+				return 1;
+			}
+
+			if ( button & 2 ) {
+				return 3;
+			}
+
+			if ( button & 4 ) {
+				return 2;
+			}
+
+			return 0;
+		}
+
+		return event.which;
+	}
+}, jQuery.event.addProp );
+
+jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
+	jQuery.event.special[ type ] = {
+
+		// Utilize native event if possible so blur/focus sequence is correct
+		setup: function() {
+
+			// Claim the first handler
+			// dataPriv.set( this, "focus", ... )
+			// dataPriv.set( this, "blur", ... )
+			leverageNative( this, type, expectSync );
+
+			// Return false to allow normal processing in the caller
+			return false;
+		},
+		trigger: function() {
+
+			// Force setup before trigger
+			leverageNative( this, type );
+
+			// Return non-false to allow normal event-path propagation
+			return true;
+		},
+
+		delegateType: delegateType
+	};
+} );
+
+// Create mouseenter/leave events using mouseover/out and event-time checks
+// so that event delegation works in jQuery.
+// Do the same for pointerenter/pointerleave and pointerover/pointerout
+//
+// Support: Safari 7 only
+// Safari sends mouseenter too often; see:
+// https://bugs.chromium.org/p/chromium/issues/detail?id=470258
+// for the description of the bug (it existed in older Chrome versions as well).
+jQuery.each( {
+	mouseenter: "mouseover",
+	mouseleave: "mouseout",
+	pointerenter: "pointerover",
+	pointerleave: "pointerout"
+}, function( orig, fix ) {
+	jQuery.event.special[ orig ] = {
+		delegateType: fix,
+		bindType: fix,
+
+		handle: function( event ) {
+			var ret,
+				target = this,
+				related = event.relatedTarget,
+				handleObj = event.handleObj;
+
+			// For mouseenter/leave call the handler if related is outside the target.
+			// NB: No relatedTarget if the mouse left/entered the browser window
+			if ( !related || ( related !== target && !jQuery.contains( target, related ) ) ) {
+				event.type = handleObj.origType;
+				ret = handleObj.handler.apply( this, arguments );
+				event.type = fix;
+			}
+			return ret;
+		}
+	};
+} );
+
+jQuery.fn.extend( {
+
+	on: function( types, selector, data, fn ) {
+		return on( this, types, selector, data, fn );
+	},
+	one: function( types, selector, data, fn ) {
+		return on( this, types, selector, data, fn, 1 );
+	},
+	off: function( types, selector, fn ) {
+		var handleObj, type;
+		if ( types && types.preventDefault && types.handleObj ) {
+
+			// ( event )  dispatched jQuery.Event
+			handleObj = types.handleObj;
+			jQuery( types.delegateTarget ).off(
+				handleObj.namespace ?
+					handleObj.origType + "." + handleObj.namespace :
+					handleObj.origType,
+				handleObj.selector,
+				handleObj.handler
+			);
+			return this;
+		}
+		if ( typeof types === "object" ) {
+
+			// ( types-object [, selector] )
+			for ( type in types ) {
+				this.off( type, selector, types[ type ] );
+			}
+			return this;
+		}
+		if ( selector === false || typeof selector === "function" ) {
+
+			// ( types [, fn] )
+			fn = selector;
+			selector = undefined;
+		}
+		if ( fn === false ) {
+			fn = returnFalse;
+		}
+		return this.each( function() {
+			jQuery.event.remove( this, types, fn, selector );
+		} );
+	}
+} );
+
+
+var
+
+	/* eslint-disable max-len */
+
+	// See https://github.com/eslint/eslint/issues/3229
+	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
+
+	/* eslint-enable */
+
+	// Support: IE <=10 - 11, Edge 12 - 13 only
+	// In IE/Edge using regex groups here causes severe slowdowns.
+	// See https://connect.microsoft.com/IE/feedback/details/1736512/
+	rnoInnerhtml = /<script|<style|<link/i,
+
+	// checked="checked" or checked
+	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
+	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
+
+// Prefer a tbody over its parent table for containing new rows
+function manipulationTarget( elem, content ) {
+	if ( nodeName( elem, "table" ) &&
+		nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
+
+		return jQuery( elem ).children( "tbody" )[ 0 ] || elem;
+	}
+
+	return elem;
+}
+
+// Replace/restore the type attribute of script elements for safe DOM manipulation
+function disableScript( elem ) {
+	elem.type = ( elem.getAttribute( "type" ) !== null ) + "/" + elem.type;
+	return elem;
+}
+function restoreScript( elem ) {
+	if ( ( elem.type || "" ).slice( 0, 5 ) === "true/" ) {
+		elem.type = elem.type.slice( 5 );
+	} else {
+		elem.removeAttribute( "type" );
+	}
+
+	return elem;
+}
+
+function cloneCopyEvent( src, dest ) {
+	var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
+
+	if ( dest.nodeType !== 1 ) {
+		return;
+	}
+
+	// 1. Copy private data: events, handlers, etc.
+	if ( dataPriv.hasData( src ) ) {
+		pdataOld = dataPriv.access( src );
+		pdataCur = dataPriv.set( dest, pdataOld );
+		events = pdataOld.events;
+
+		if ( events ) {
+			delete pdataCur.handle;
+			pdataCur.events = {};
+
+			for ( type in events ) {
+				for ( i = 0, l = events[ type ].length; i < l; i++ ) {
+					jQuery.event.add( dest, type, events[ type ][ i ] );
+				}
+			}
+		}
+	}
+
+	// 2. Copy user data
+	if ( dataUser.hasData( src ) ) {
+		udataOld = dataUser.access( src );
+		udataCur = jQuery.extend( {}, udataOld );
+
+		dataUser.set( dest, udataCur );
+	}
+}
+
+// Fix IE bugs, see support tests
+function fixInput( src, dest ) {
+	var nodeName = dest.nodeName.toLowerCase();
+
+	// Fails to persist the checked state of a cloned checkbox or radio button.
+	if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
+		dest.checked = src.checked;
+
+	// Fails to return the selected option to the default selected state when cloning options
+	} else if ( nodeName === "input" || nodeName === "textarea" ) {
+		dest.defaultValue = src.defaultValue;
+	}
+}
+
+function domManip( collection, args, callback, ignored ) {
+
+	// Flatten any nested arrays
+	args = concat.apply( [], args );
+
+	var fragment, first, scripts, hasScripts, node, doc,
+		i = 0,
+		l = collection.length,
+		iNoClone = l - 1,
+		value = args[ 0 ],
+		valueIsFunction = isFunction( value );
+
+	// We can't cloneNode fragments that contain checked, in WebKit
+	if ( valueIsFunction ||
+			( l > 1 && typeof value === "string" &&
+				!support.checkClone && rchecked.test( value ) ) ) {
+		return collection.each( function( index ) {
+			var self = collection.eq( index );
+			if ( valueIsFunction ) {
+				args[ 0 ] = value.call( this, index, self.html() );
+			}
+			domManip( self, args, callback, ignored );
+		} );
+	}
+
+	if ( l ) {
+		fragment = buildFragment( args, collection[ 0 ].ownerDocument, false, collection, ignored );
+		first = fragment.firstChild;
+
+		if ( fragment.childNodes.length === 1 ) {
+			fragment = first;
+		}
+
+		// Require either new content or an interest in ignored elements to invoke the callback
+		if ( first || ignored ) {
+			scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
+			hasScripts = scripts.length;
+
+			// Use the original fragment for the last item
+			// instead of the first because it can end up
+			// being emptied incorrectly in certain situations (#8070).
+			for ( ; i < l; i++ ) {
+				node = fragment;
+
+				if ( i !== iNoClone ) {
+					node = jQuery.clone( node, true, true );
+
+					// Keep references to cloned scripts for later restoration
+					if ( hasScripts ) {
+
+						// Support: Android <=4.0 only, PhantomJS 1 only
+						// push.apply(_, arraylike) throws on ancient WebKit
+						jQuery.merge( scripts, getAll( node, "script" ) );
+					}
+				}
+
+				callback.call( collection[ i ], node, i );
+			}
+
+			if ( hasScripts ) {
+				doc = scripts[ scripts.length - 1 ].ownerDocument;
+
+				// Reenable scripts
+				jQuery.map( scripts, restoreScript );
+
+				// Evaluate executable scripts on first document insertion
+				for ( i = 0; i < hasScripts; i++ ) {
+					node = scripts[ i ];
+					if ( rscriptType.test( node.type || "" ) &&
+						!dataPriv.access( node, "globalEval" ) &&
+						jQuery.contains( doc, node ) ) {
+
+						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
+
+							// Optional AJAX dependency, but won't run scripts if not present
+							if ( jQuery._evalUrl && !node.noModule ) {
+								jQuery._evalUrl( node.src, {
+									nonce: node.nonce || node.getAttribute( "nonce" )
+								} );
+							}
+						} else {
+							DOMEval( node.textContent.replace( rcleanScript, "" ), node, doc );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return collection;
+}
+
+function remove( elem, selector, keepData ) {
+	var node,
+		nodes = selector ? jQuery.filter( selector, elem ) : elem,
+		i = 0;
+
+	for ( ; ( node = nodes[ i ] ) != null; i++ ) {
+		if ( !keepData && node.nodeType === 1 ) {
+			jQuery.cleanData( getAll( node ) );
+		}
+
+		if ( node.parentNode ) {
+			if ( keepData && isAttached( node ) ) {
+				setGlobalEval( getAll( node, "script" ) );
+			}
+			node.parentNode.removeChild( node );
+		}
+	}
+
+	return elem;
+}
+
+jQuery.extend( {
+	htmlPrefilter: function( html ) {
+		return html.replace( rxhtmlTag, "<$1></$2>" );
+	},
+
+	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
+		var i, l, srcElements, destElements,
+			clone = elem.cloneNode( true ),
+			inPage = isAttached( elem );
+
+		// Fix IE cloning issues
+		if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
+				!jQuery.isXMLDoc( elem ) ) {
+
+			// We eschew Sizzle here for performance reasons: https://jsperf.com/getall-vs-sizzle/2
+			destElements = getAll( clone );
+			srcElements = getAll( elem );
+
+			for ( i = 0, l = srcElements.length; i < l; i++ ) {
+				fixInput( srcElements[ i ], destElements[ i ] );
+			}
+		}
+
+		// Copy the events from the original to the clone
+		if ( dataAndEvents ) {
+			if ( deepDataAndEvents ) {
+				srcElements = srcElements || getAll( elem );
+				destElements = destElements || getAll( clone );
+
+				for ( i = 0, l = srcElements.length; i < l; i++ ) {
+					cloneCopyEvent( srcElements[ i ], destElements[ i ] );
+				}
+			} else {
+				cloneCopyEvent( elem, clone );
+			}
+		}
+
+		// Preserve script evaluation history
+		destElements = getAll( clone, "script" );
+		if ( destElements.length > 0 ) {
+			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
+		}
+
+		// Return the cloned set
+		return clone;
+	},
+
+	cleanData: function( elems ) {
+		var data, elem, type,
+			special = jQuery.event.special,
+			i = 0;
+
+		for ( ; ( elem = elems[ i ] ) !== undefined; i++ ) {
+			if ( acceptData( elem ) ) {
+				if ( ( data = elem[ dataPriv.expando ] ) ) {
+					if ( data.events ) {
+						for ( type in data.events ) {
+							if ( special[ type ] ) {
+								jQuery.event.remove( elem, type );
+
+							// This is a shortcut to avoid jQuery.event.remove's overhead
+							} else {
+								jQuery.removeEvent( elem, type, data.handle );
+							}
+						}
+					}
+
+					// Support: Chrome <=35 - 45+
+					// Assign undefined instead of using delete, see Data#remove
+					elem[ dataPriv.expando ] = undefined;
+				}
+				if ( elem[ dataUser.expando ] ) {
+
+					// Support: Chrome <=35 - 45+
+					// Assign undefined instead of using delete, see Data#remove
+					elem[ dataUser.expando ] = undefined;
+				}
+			}
+		}
+	}
+} );
+
+jQuery.fn.extend( {
+	detach: function( selector ) {
+		return remove( this, selector, true );
+	},
+
+	remove: function( selector ) {
+		return remove( this, selector );
+	},
+
+	text: function( value ) {
+		return access( this, function( value ) {
+			return value === undefined ?
+				jQuery.text( this ) :
+				this.empty().each( function() {
+					if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+						this.textContent = value;
+					}
+				} );
+		}, null, value, arguments.length );
+	},
+
+	append: function() {
+		return domManip( this, arguments, function( elem ) {
+			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+				var target = manipulationTarget( this, elem );
+				target.appendChild( elem );
+			}
+		} );
+	},
+
+	prepend: function() {
+		return domManip( this, arguments, function( elem ) {
+			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+				var target = manipulationTarget( this, elem );
+				target.insertBefore( elem, target.firstChild );
+			}
+		} );
+	},
+
+	before: function() {
+		return domManip( this, arguments, function( elem ) {
+			if ( this.parentNode ) {
+				this.parentNode.insertBefore( elem, this );
+			}
+		} );
+	},
+
+	after: function() {
+		return domManip( this, arguments, function( elem ) {
+			if ( this.parentNode ) {
+				this.parentNode.insertBefore( elem, this.nextSibling );
+			}
+		} );
+	},
+
+	empty: function() {
+		var elem,
+			i = 0;
+
+		for ( ; ( elem = this[ i ] ) != null; i++ ) {
+			if ( elem.nodeType === 1 ) {
+
+				// Prevent memory leaks
+				jQuery.cleanData( getAll( elem, false ) );
+
+				// Remove any remaining nodes
+				elem.textContent = "";
+			}
+		}
+
+		return this;
+	},
+
+	clone: function( dataAndEvents, deepDataAndEvents ) {
+		dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
+		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
+
+		return this.map( function() {
+			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
+		} );
+	},
+
+	html: function( value ) {
+		return access( this, function( value ) {
+			var elem = this[ 0 ] || {},
+				i = 0,
+				l = this.length;
+
+			if ( value === undefined && elem.nodeType === 1 ) {
+				return elem.innerHTML;
+			}
+
+			// See if we can take a shortcut and just use innerHTML
+			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
+				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
+
+				value = jQuery.htmlPrefilter( value );
+
+				try {
+					for ( ; i < l; i++ ) {
+						elem = this[ i ] || {};
+
+						// Remove element nodes and prevent memory leaks
+						if ( elem.nodeType === 1 ) {
+							jQuery.cleanData( getAll( elem, false ) );
+							elem.innerHTML = value;
+						}
+					}
+
+					elem = 0;
+
+				// If using innerHTML throws an exception, use the fallback method
+				} catch ( e ) {}
+			}
+
+			if ( elem ) {
+				this.empty().append( value );
+			}
+		}, null, value, arguments.length );
+	},
+
+	replaceWith: function() {
+		var ignored = [];
+
+		// Make the changes, replacing each non-ignored context element with the new content
+		return domManip( this, arguments, function( elem ) {
+			var parent = this.parentNode;
+
+			if ( jQuery.inArray( this, ignored ) < 0 ) {
+				jQuery.cleanData( getAll( this ) );
+				if ( parent ) {
+					parent.replaceChild( elem, this );
+				}
+			}
+
+		// Force callback invocation
+		}, ignored );
+	}
+} );
+
+jQuery.each( {
+	appendTo: "append",
+	prependTo: "prepend",
+	insertBefore: "before",
+	insertAfter: "after",
+	replaceAll: "replaceWith"
+}, function( name, original ) {
+	jQuery.fn[ name ] = function( selector ) {
+		var elems,
+			ret = [],
+			insert = jQuery( selector ),
+			last = insert.length - 1,
+			i = 0;
+
+		for ( ; i <= last; i++ ) {
+			elems = i === last ? this : this.clone( true );
+			jQuery( insert[ i ] )[ original ]( elems );
+
+			// Support: Android <=4.0 only, PhantomJS 1 only
+			// .get() because push.apply(_, arraylike) throws on ancient WebKit
+			push.apply( ret, elems.get() );
+		}
+
+		return this.pushStack( ret );
+	};
+} );
+var rnumnonpx = new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );
+
+var getStyles = function( elem ) {
+
+		// Support: IE <=11 only, Firefox <=30 (#15098, #14150)
+		// IE throws on elements created in popups
+		// FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
+		var view = elem.ownerDocument.defaultView;
+
+		if ( !view || !view.opener ) {
+			view = window;
+		}
+
+		return view.getComputedStyle( elem );
+	};
+
+var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
+
+
+
+( function() {
+
+	// Executing both pixelPosition & boxSizingReliable tests require only one layout
+	// so they're executed at the same time to save the second computation.
+	function computeStyleTests() {
+
+		// This is a singleton, we need to execute it only once
+		if ( !div ) {
+			return;
+		}
+
+		container.style.cssText = "position:absolute;left:-11111px;width:60px;" +
+			"margin-top:1px;padding:0;border:0";
+		div.style.cssText =
+			"position:relative;display:block;box-sizing:border-box;overflow:scroll;" +
+			"margin:auto;border:1px;padding:1px;" +
+			"width:60%;top:1%";
+		documentElement.appendChild( container ).appendChild( div );
+
+		var divStyle = window.getComputedStyle( div );
+		pixelPositionVal = divStyle.top !== "1%";
+
+		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
+		reliableMarginLeftVal = roundPixelMeasures( divStyle.marginLeft ) === 12;
+
+		// Support: Android 4.0 - 4.3 only, Safari <=9.1 - 10.1, iOS <=7.0 - 9.3
+		// Some styles come back with percentage values, even though they shouldn't
+		div.style.right = "60%";
+		pixelBoxStylesVal = roundPixelMeasures( divStyle.right ) === 36;
+
+		// Support: IE 9 - 11 only
+		// Detect misreporting of content dimensions for box-sizing:border-box elements
+		boxSizingReliableVal = roundPixelMeasures( divStyle.width ) === 36;
+
+		// Support: IE 9 only
+		// Detect overflow:scroll screwiness (gh-3699)
+		// Support: Chrome <=64
+		// Don't get tricked when zoom affects offsetWidth (gh-4029)
+		div.style.position = "absolute";
+		scrollboxSizeVal = roundPixelMeasures( div.offsetWidth / 3 ) === 12;
+
+		documentElement.removeChild( container );
+
+		// Nullify the div so it wouldn't be stored in the memory and
+		// it will also be a sign that checks already performed
+		div = null;
+	}
+
+	function roundPixelMeasures( measure ) {
+		return Math.round( parseFloat( measure ) );
+	}
+
+	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
+		reliableMarginLeftVal,
+		container = document.createElement( "div" ),
+		div = document.createElement( "div" );
+
+	// Finish early in limited (non-browser) environments
+	if ( !div.style ) {
+		return;
+	}
+
+	// Support: IE <=9 - 11 only
+	// Style of cloned element affects source element cloned (#8908)
+	div.style.backgroundClip = "content-box";
+	div.cloneNode( true ).style.backgroundClip = "";
+	support.clearCloneStyle = div.style.backgroundClip === "content-box";
+
+	jQuery.extend( support, {
+		boxSizingReliable: function() {
+			computeStyleTests();
+			return boxSizingReliableVal;
+		},
+		pixelBoxStyles: function() {
+			computeStyleTests();
+			return pixelBoxStylesVal;
+		},
+		pixelPosition: function() {
+			computeStyleTests();
+			return pixelPositionVal;
+		},
+		reliableMarginLeft: function() {
+			computeStyleTests();
+			return reliableMarginLeftVal;
+		},
+		scrollboxSize: function() {
+			computeStyleTests();
+			return scrollboxSizeVal;
+		}
+	} );
+} )();
+
+
+function curCSS( elem, name, computed ) {
+	var width, minWidth, maxWidth, ret,
+
+		// Support: Firefox 51+
+		// Retrieving style before computed somehow
+		// fixes an issue with getting wrong values
+		// on detached elements
+		style = elem.style;
+
+	computed = computed || getStyles( elem );
+
+	// getPropertyValue is needed for:
+	//   .css('filter') (IE 9 only, #12537)
+	//   .css('--customProperty) (#3144)
+	if ( computed ) {
+		ret = computed.getPropertyValue( name ) || computed[ name ];
+
+		if ( ret === "" && !isAttached( elem ) ) {
+			ret = jQuery.style( elem, name );
+		}
+
+		// A tribute to the "awesome hack by Dean Edwards"
+		// Android Browser returns percentage for some values,
+		// but width seems to be reliably pixels.
+		// This is against the CSSOM draft spec:
+		// https://drafts.csswg.org/cssom/#resolved-values
+		if ( !support.pixelBoxStyles() && rnumnonpx.test( ret ) && rboxStyle.test( name ) ) {
+
+			// Remember the original values
+			width = style.width;
+			minWidth = style.minWidth;
+			maxWidth = style.maxWidth;
+
+			// Put in the new values to get a computed value out
+			style.minWidth = style.maxWidth = style.width = ret;
+			ret = computed.width;
+
+			// Revert the changed values
+			style.width = width;
+			style.minWidth = minWidth;
+			style.maxWidth = maxWidth;
+		}
+	}
+
+	return ret !== undefined ?
+
+		// Support: IE <=9 - 11 only
+		// IE returns zIndex value as an integer.
+		ret + "" :
+		ret;
+}
+
+
+function addGetHookIf( conditionFn, hookFn ) {
+
+	// Define the hook, we'll check on the first run if it's really needed.
+	return {
+		get: function() {
+			if ( conditionFn() ) {
+
+				// Hook not needed (or it's not possible to use it due
+				// to missing dependency), remove it.
+				delete this.get;
+				return;
+			}
+
+			// Hook needed; redefine it so that the support test is not executed again.
+			return ( this.get = hookFn ).apply( this, arguments );
+		}
+	};
+}
+
+
+var cssPrefixes = [ "Webkit", "Moz", "ms" ],
+	emptyStyle = document.createElement( "div" ).style,
+	vendorProps = {};
+
+// Return a vendor-prefixed property or undefined
+function vendorPropName( name ) {
+
+	// Check for vendor prefixed names
+	var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
+		i = cssPrefixes.length;
+
+	while ( i-- ) {
+		name = cssPrefixes[ i ] + capName;
+		if ( name in emptyStyle ) {
+			return name;
+		}
+	}
+}
+
+// Return a potentially-mapped jQuery.cssProps or vendor prefixed property
+function finalPropName( name ) {
+	var final = jQuery.cssProps[ name ] || vendorProps[ name ];
+
+	if ( final ) {
+		return final;
+	}
+	if ( name in emptyStyle ) {
+		return name;
+	}
+	return vendorProps[ name ] = vendorPropName( name ) || name;
+}
+
+
+var
+
+	// Swappable if display is none or starts with table
+	// except "table", "table-cell", or "table-caption"
+	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rcustomProp = /^--/,
+	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+	cssNormalTransform = {
+		letterSpacing: "0",
+		fontWeight: "400"
+	};
+
+function setPositiveNumber( elem, value, subtract ) {
+
+	// Any relative (+/-) values have already been
+	// normalized at this point
+	var matches = rcssNum.exec( value );
+	return matches ?
+
+		// Guard against undefined "subtract", e.g., when used as in cssHooks
+		Math.max( 0, matches[ 2 ] - ( subtract || 0 ) ) + ( matches[ 3 ] || "px" ) :
+		value;
+}
+
+function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computedVal ) {
+	var i = dimension === "width" ? 1 : 0,
+		extra = 0,
+		delta = 0;
+
+	// Adjustment may not be necessary
+	if ( box === ( isBorderBox ? "border" : "content" ) ) {
+		return 0;
+	}
+
+	for ( ; i < 4; i += 2 ) {
+
+		// Both box models exclude margin
+		if ( box === "margin" ) {
+			delta += jQuery.css( elem, box + cssExpand[ i ], true, styles );
+		}
+
+		// If we get here with a content-box, we're seeking "padding" or "border" or "margin"
+		if ( !isBorderBox ) {
+
+			// Add padding
+			delta += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+
+			// For "border" or "margin", add border
+			if ( box !== "padding" ) {
+				delta += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+
+			// But still keep track of it otherwise
+			} else {
+				extra += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+			}
+
+		// If we get here with a border-box (content + padding + border), we're seeking "content" or
+		// "padding" or "margin"
+		} else {
+
+			// For "content", subtract padding
+			if ( box === "content" ) {
+				delta -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			}
+
+			// For "content" or "padding", subtract border
+			if ( box !== "margin" ) {
+				delta -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+			}
+		}
+	}
+
+	// Account for positive content-box scroll gutter when requested by providing computedVal
+	if ( !isBorderBox && computedVal >= 0 ) {
+
+		// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
+		// Assuming integer scroll gutter, subtract the rest and round down
+		delta += Math.max( 0, Math.ceil(
+			elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+			computedVal -
+			delta -
+			extra -
+			0.5
+
+		// If offsetWidth/offsetHeight is unknown, then we can't determine content-box scroll gutter
+		// Use an explicit zero to avoid NaN (gh-3964)
+		) ) || 0;
+	}
+
+	return delta;
+}
+
+function getWidthOrHeight( elem, dimension, extra ) {
+
+	// Start with computed style
+	var styles = getStyles( elem ),
+
+		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
+		// Fake content-box until we know it's needed to know the true value.
+		boxSizingNeeded = !support.boxSizingReliable() || extra,
+		isBorderBox = boxSizingNeeded &&
+			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+		valueIsBorderBox = isBorderBox,
+
+		val = curCSS( elem, dimension, styles ),
+		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
+
+	// Support: Firefox <=54
+	// Return a confounding non-pixel value or feign ignorance, as appropriate.
+	if ( rnumnonpx.test( val ) ) {
+		if ( !extra ) {
+			return val;
+		}
+		val = "auto";
+	}
+
+
+	// Fall back to offsetWidth/offsetHeight when value is "auto"
+	// This happens for inline elements with no explicit setting (gh-3571)
+	// Support: Android <=4.1 - 4.3 only
+	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
+	// Support: IE 9-11 only
+	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
+	// We use getClientRects() to check for hidden/disconnected.
+	// In those cases, the computed value can be trusted to be border-box
+	if ( ( !support.boxSizingReliable() && isBorderBox ||
+		val === "auto" ||
+		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+		elem.getClientRects().length ) {
+
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+
+		// Where available, offsetWidth/offsetHeight approximate border box dimensions.
+		// Where not available (e.g., SVG), assume unreliable box-sizing and interpret the
+		// retrieved value as a content box dimension.
+		valueIsBorderBox = offsetProp in elem;
+		if ( valueIsBorderBox ) {
+			val = elem[ offsetProp ];
+		}
+	}
+
+	// Normalize "" and auto
+	val = parseFloat( val ) || 0;
+
+	// Adjust for the element's box model
+	return ( val +
+		boxModelAdjustment(
+			elem,
+			dimension,
+			extra || ( isBorderBox ? "border" : "content" ),
+			valueIsBorderBox,
+			styles,
+
+			// Provide the current computed size to request scroll gutter calculation (gh-3589)
+			val
+		)
+	) + "px";
+}
+
+jQuery.extend( {
+
+	// Add in style property hooks for overriding the default
+	// behavior of getting and setting a style property
+	cssHooks: {
+		opacity: {
+			get: function( elem, computed ) {
+				if ( computed ) {
+
+					// We should always get a number back from opacity
+					var ret = curCSS( elem, "opacity" );
+					return ret === "" ? "1" : ret;
+				}
+			}
+		}
+	},
+
+	// Don't automatically add "px" to these possibly-unitless properties
+	cssNumber: {
+		"animationIterationCount": true,
+		"columnCount": true,
+		"fillOpacity": true,
+		"flexGrow": true,
+		"flexShrink": true,
+		"fontWeight": true,
+		"gridArea": true,
+		"gridColumn": true,
+		"gridColumnEnd": true,
+		"gridColumnStart": true,
+		"gridRow": true,
+		"gridRowEnd": true,
+		"gridRowStart": true,
+		"lineHeight": true,
+		"opacity": true,
+		"order": true,
+		"orphans": true,
+		"widows": true,
+		"zIndex": true,
+		"zoom": true
+	},
+
+	// Add in properties whose names you wish to fix before
+	// setting or getting the value
+	cssProps: {},
+
+	// Get and set the style property on a DOM Node
+	style: function( elem, name, value, extra ) {
+
+		// Don't set styles on text and comment nodes
+		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
+			return;
+		}
+
+		// Make sure that we're working with the right name
+		var ret, type, hooks,
+			origName = camelCase( name ),
+			isCustomProp = rcustomProp.test( name ),
+			style = elem.style;
+
+		// Make sure that we're working with the right name. We don't
+		// want to query the value if it is a CSS custom property
+		// since they are user-defined.
+		if ( !isCustomProp ) {
+			name = finalPropName( origName );
+		}
+
+		// Gets hook for the prefixed version, then unprefixed version
+		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
+
+		// Check if we're setting a value
+		if ( value !== undefined ) {
+			type = typeof value;
+
+			// Convert "+=" or "-=" to relative numbers (#7345)
+			if ( type === "string" && ( ret = rcssNum.exec( value ) ) && ret[ 1 ] ) {
+				value = adjustCSS( elem, name, ret );
+
+				// Fixes bug #9237
+				type = "number";
+			}
+
+			// Make sure that null and NaN values aren't set (#7116)
+			if ( value == null || value !== value ) {
+				return;
+			}
+
+			// If a number was passed in, add the unit (except for certain CSS properties)
+			// The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
+			// "px" to a few hardcoded values.
+			if ( type === "number" && !isCustomProp ) {
+				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
+			}
+
+			// background-* props affect original clone's values
+			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
+				style[ name ] = "inherit";
+			}
+
+			// If a hook was provided, use that value, otherwise just set the specified value
+			if ( !hooks || !( "set" in hooks ) ||
+				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
+
+				if ( isCustomProp ) {
+					style.setProperty( name, value );
+				} else {
+					style[ name ] = value;
+				}
+			}
+
+		} else {
+
+			// If a hook was provided get the non-computed value from there
+			if ( hooks && "get" in hooks &&
+				( ret = hooks.get( elem, false, extra ) ) !== undefined ) {
+
+				return ret;
+			}
+
+			// Otherwise just get the value from the style object
+			return style[ name ];
+		}
+	},
+
+	css: function( elem, name, extra, styles ) {
+		var val, num, hooks,
+			origName = camelCase( name ),
+			isCustomProp = rcustomProp.test( name );
+
+		// Make sure that we're working with the right name. We don't
+		// want to modify the value if it is a CSS custom property
+		// since they are user-defined.
+		if ( !isCustomProp ) {
+			name = finalPropName( origName );
+		}
+
+		// Try prefixed name followed by the unprefixed name
+		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
+
+		// If a hook was provided get the computed value from there
+		if ( hooks && "get" in hooks ) {
+			val = hooks.get( elem, true, extra );
+		}
+
+		// Otherwise, if a way to get the computed value exists, use that
+		if ( val === undefined ) {
+			val = curCSS( elem, name, styles );
+		}
+
+		// Convert "normal" to computed value
+		if ( val === "normal" && name in cssNormalTransform ) {
+			val = cssNormalTransform[ name ];
+		}
+
+		// Make numeric if forced or a qualifier was provided and val looks numeric
+		if ( extra === "" || extra ) {
+			num = parseFloat( val );
+			return extra === true || isFinite( num ) ? num || 0 : val;
+		}
+
+		return val;
+	}
+} );
+
+jQuery.each( [ "height", "width" ], function( i, dimension ) {
+	jQuery.cssHooks[ dimension ] = {
+		get: function( elem, computed, extra ) {
+			if ( computed ) {
+
+				// Certain elements can have dimension info if we invisibly show them
+				// but it must have a current display style that would benefit
+				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
+
+					// Support: Safari 8+
+					// Table columns in Safari have non-zero offsetWidth & zero
+					// getBoundingClientRect().width unless display is changed.
+					// Support: IE <=11 only
+					// Running getBoundingClientRect on a disconnected node
+					// in IE throws an error.
+					( !elem.getClientRects().length || !elem.getBoundingClientRect().width ) ?
+						swap( elem, cssShow, function() {
+							return getWidthOrHeight( elem, dimension, extra );
+						} ) :
+						getWidthOrHeight( elem, dimension, extra );
+			}
+		},
+
+		set: function( elem, value, extra ) {
+			var matches,
+				styles = getStyles( elem ),
+
+				// Only read styles.position if the test has a chance to fail
+				// to avoid forcing a reflow.
+				scrollboxSizeBuggy = !support.scrollboxSize() &&
+					styles.position === "absolute",
+
+				// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
+				boxSizingNeeded = scrollboxSizeBuggy || extra,
+				isBorderBox = boxSizingNeeded &&
+					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+				subtract = extra ?
+					boxModelAdjustment(
+						elem,
+						dimension,
+						extra,
+						isBorderBox,
+						styles
+					) :
+					0;
+
+			// Account for unreliable border-box dimensions by comparing offset* to computed and
+			// faking a content-box to get border and padding (gh-3699)
+			if ( isBorderBox && scrollboxSizeBuggy ) {
+				subtract -= Math.ceil(
+					elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+					parseFloat( styles[ dimension ] ) -
+					boxModelAdjustment( elem, dimension, "border", false, styles ) -
+					0.5
+				);
+			}
+
+			// Convert to pixels if value adjustment is needed
+			if ( subtract && ( matches = rcssNum.exec( value ) ) &&
+				( matches[ 3 ] || "px" ) !== "px" ) {
+
+				elem.style[ dimension ] = value;
+				value = jQuery.css( elem, dimension );
+			}
+
+			return setPositiveNumber( elem, value, subtract );
+		}
+	};
+} );
+
+jQuery.cssHooks.marginLeft = addGetHookIf( support.reliableMarginLeft,
+	function( elem, computed ) {
+		if ( computed ) {
+			return ( parseFloat( curCSS( elem, "marginLeft" ) ) ||
+				elem.getBoundingClientRect().left -
+					swap( elem, { marginLeft: 0 }, function() {
+						return elem.getBoundingClientRect().left;
+					} )
+				) + "px";
+		}
+	}
+);
+
+// These hooks are used by animate to expand properties
+jQuery.each( {
+	margin: "",
+	padding: "",
+	border: "Width"
+}, function( prefix, suffix ) {
+	jQuery.cssHooks[ prefix + suffix ] = {
+		expand: function( value ) {
+			var i = 0,
+				expanded = {},
+
+				// Assumes a single number if not a string
+				parts = typeof value === "string" ? value.split( " " ) : [ value ];
+
+			for ( ; i < 4; i++ ) {
+				expanded[ prefix + cssExpand[ i ] + suffix ] =
+					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
+			}
+
+			return expanded;
+		}
+	};
+
+	if ( prefix !== "margin" ) {
+		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
+	}
+} );
+
+jQuery.fn.extend( {
+	css: function( name, value ) {
+		return access( this, function( elem, name, value ) {
+			var styles, len,
+				map = {},
+				i = 0;
+
+			if ( Array.isArray( name ) ) {
+				styles = getStyles( elem );
+				len = name.length;
+
+				for ( ; i < len; i++ ) {
+					map[ name[ i ] ] = jQuery.css( elem, name[ i ], false, styles );
+				}
+
+				return map;
+			}
+
+			return value !== undefined ?
+				jQuery.style( elem, name, value ) :
+				jQuery.css( elem, name );
+		}, name, value, arguments.length > 1 );
+	}
+} );
+
+
+function Tween( elem, options, prop, end, easing ) {
+	return new Tween.prototype.init( elem, options, prop, end, easing );
+}
+jQuery.Tween = Tween;
+
+Tween.prototype = {
+	constructor: Tween,
+	init: function( elem, options, prop, end, easing, unit ) {
+		this.elem = elem;
+		this.prop = prop;
+		this.easing = easing || jQuery.easing._default;
+		this.options = options;
+		this.start = this.now = this.cur();
+		this.end = end;
+		this.unit = unit || ( jQuery.cssNumber[ prop ] ? "" : "px" );
+	},
+	cur: function() {
+		var hooks = Tween.propHooks[ this.prop ];
+
+		return hooks && hooks.get ?
+			hooks.get( this ) :
+			Tween.propHooks._default.get( this );
+	},
+	run: function( percent ) {
+		var eased,
+			hooks = Tween.propHooks[ this.prop ];
+
+		if ( this.options.duration ) {
+			this.pos = eased = jQuery.easing[ this.easing ](
+				percent, this.options.duration * percent, 0, 1, this.options.duration
+			);
+		} else {
+			this.pos = eased = percent;
+		}
+		this.now = ( this.end - this.start ) * eased + this.start;
+
+		if ( this.options.step ) {
+			this.options.step.call( this.elem, this.now, this );
+		}
+
+		if ( hooks && hooks.set ) {
+			hooks.set( this );
+		} else {
+			Tween.propHooks._default.set( this );
+		}
+		return this;
+	}
+};
+
+Tween.prototype.init.prototype = Tween.prototype;
+
+Tween.propHooks = {
+	_default: {
+		get: function( tween ) {
+			var result;
+
+			// Use a property on the element directly when it is not a DOM element,
+			// or when there is no matching style property that exists.
+			if ( tween.elem.nodeType !== 1 ||
+				tween.elem[ tween.prop ] != null && tween.elem.style[ tween.prop ] == null ) {
+				return tween.elem[ tween.prop ];
+			}
+
+			// Passing an empty string as a 3rd parameter to .css will automatically
+			// attempt a parseFloat and fallback to a string if the parse fails.
+			// Simple values such as "10px" are parsed to Float;
+			// complex values such as "rotate(1rad)" are returned as-is.
+			result = jQuery.css( tween.elem, tween.prop, "" );
+
+			// Empty strings, null, undefined and "auto" are converted to 0.
+			return !result || result === "auto" ? 0 : result;
+		},
+		set: function( tween ) {
+
+			// Use step hook for back compat.
+			// Use cssHook if its there.
+			// Use .style if available and use plain properties where available.
+			if ( jQuery.fx.step[ tween.prop ] ) {
+				jQuery.fx.step[ tween.prop ]( tween );
+			} else if ( tween.elem.nodeType === 1 && (
+					jQuery.cssHooks[ tween.prop ] ||
+					tween.elem.style[ finalPropName( tween.prop ) ] != null ) ) {
+				jQuery.style( tween.elem, tween.prop, tween.now + tween.unit );
+			} else {
+				tween.elem[ tween.prop ] = tween.now;
+			}
+		}
+	}
+};
+
+// Support: IE <=9 only
+// Panic based approach to setting things on disconnected nodes
+Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
+	set: function( tween ) {
+		if ( tween.elem.nodeType && tween.elem.parentNode ) {
+			tween.elem[ tween.prop ] = tween.now;
+		}
+	}
+};
+
+jQuery.easing = {
+	linear: function( p ) {
+		return p;
+	},
+	swing: function( p ) {
+		return 0.5 - Math.cos( p * Math.PI ) / 2;
+	},
+	_default: "swing"
+};
+
+jQuery.fx = Tween.prototype.init;
+
+// Back compat <1.8 extension point
+jQuery.fx.step = {};
+
+
+
+
+var
+	fxNow, inProgress,
+	rfxtypes = /^(?:toggle|show|hide)$/,
+	rrun = /queueHooks$/;
+
+function schedule() {
+	if ( inProgress ) {
+		if ( document.hidden === false && window.requestAnimationFrame ) {
+			window.requestAnimationFrame( schedule );
+		} else {
+			window.setTimeout( schedule, jQuery.fx.interval );
+		}
+
+		jQuery.fx.tick();
+	}
+}
+
+// Animations created synchronously will run synchronously
+function createFxNow() {
+	window.setTimeout( function() {
+		fxNow = undefined;
+	} );
+	return ( fxNow = Date.now() );
+}
+
+// Generate parameters to create a standard animation
+function genFx( type, includeWidth ) {
+	var which,
+		i = 0,
+		attrs = { height: type };
+
+	// If we include width, step value is 1 to do all cssExpand values,
+	// otherwise step value is 2 to skip over Left and Right
+	includeWidth = includeWidth ? 1 : 0;
+	for ( ; i < 4; i += 2 - includeWidth ) {
+		which = cssExpand[ i ];
+		attrs[ "margin" + which ] = attrs[ "padding" + which ] = type;
+	}
+
+	if ( includeWidth ) {
+		attrs.opacity = attrs.width = type;
+	}
+
+	return attrs;
+}
+
+function createTween( value, prop, animation ) {
+	var tween,
+		collection = ( Animation.tweeners[ prop ] || [] ).concat( Animation.tweeners[ "*" ] ),
+		index = 0,
+		length = collection.length;
+	for ( ; index < length; index++ ) {
+		if ( ( tween = collection[ index ].call( animation, prop, value ) ) ) {
+
+			// We're done with this property
+			return tween;
+		}
+	}
+}
+
+function defaultPrefilter( elem, props, opts ) {
+	var prop, value, toggle, hooks, oldfire, propTween, restoreDisplay, display,
+		isBox = "width" in props || "height" in props,
+		anim = this,
+		orig = {},
+		style = elem.style,
+		hidden = elem.nodeType && isHiddenWithinTree( elem ),
+		dataShow = dataPriv.get( elem, "fxshow" );
+
+	// Queue-skipping animations hijack the fx hooks
+	if ( !opts.queue ) {
+		hooks = jQuery._queueHooks( elem, "fx" );
+		if ( hooks.unqueued == null ) {
+			hooks.unqueued = 0;
+			oldfire = hooks.empty.fire;
+			hooks.empty.fire = function() {
+				if ( !hooks.unqueued ) {
+					oldfire();
+				}
+			};
+		}
+		hooks.unqueued++;
+
+		anim.always( function() {
+
+			// Ensure the complete handler is called before this completes
+			anim.always( function() {
+				hooks.unqueued--;
+				if ( !jQuery.queue( elem, "fx" ).length ) {
+					hooks.empty.fire();
+				}
+			} );
+		} );
+	}
+
+	// Detect show/hide animations
+	for ( prop in props ) {
+		value = props[ prop ];
+		if ( rfxtypes.test( value ) ) {
+			delete props[ prop ];
+			toggle = toggle || value === "toggle";
+			if ( value === ( hidden ? "hide" : "show" ) ) {
+
+				// Pretend to be hidden if this is a "show" and
+				// there is still data from a stopped show/hide
+				if ( value === "show" && dataShow && dataShow[ prop ] !== undefined ) {
+					hidden = true;
+
+				// Ignore all other no-op show/hide data
+				} else {
+					continue;
+				}
+			}
+			orig[ prop ] = dataShow && dataShow[ prop ] || jQuery.style( elem, prop );
+		}
+	}
+
+	// Bail out if this is a no-op like .hide().hide()
+	propTween = !jQuery.isEmptyObject( props );
+	if ( !propTween && jQuery.isEmptyObject( orig ) ) {
+		return;
+	}
+
+	// Restrict "overflow" and "display" styles during box animations
+	if ( isBox && elem.nodeType === 1 ) {
+
+		// Support: IE <=9 - 11, Edge 12 - 15
+		// Record all 3 overflow attributes because IE does not infer the shorthand
+		// from identically-valued overflowX and overflowY and Edge just mirrors
+		// the overflowX value there.
+		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
+
+		// Identify a display type, preferring old show/hide data over the CSS cascade
+		restoreDisplay = dataShow && dataShow.display;
+		if ( restoreDisplay == null ) {
+			restoreDisplay = dataPriv.get( elem, "display" );
+		}
+		display = jQuery.css( elem, "display" );
+		if ( display === "none" ) {
+			if ( restoreDisplay ) {
+				display = restoreDisplay;
+			} else {
+
+				// Get nonempty value(s) by temporarily forcing visibility
+				showHide( [ elem ], true );
+				restoreDisplay = elem.style.display || restoreDisplay;
+				display = jQuery.css( elem, "display" );
+				showHide( [ elem ] );
+			}
+		}
+
+		// Animate inline elements as inline-block
+		if ( display === "inline" || display === "inline-block" && restoreDisplay != null ) {
+			if ( jQuery.css( elem, "float" ) === "none" ) {
+
+				// Restore the original display value at the end of pure show/hide animations
+				if ( !propTween ) {
+					anim.done( function() {
+						style.display = restoreDisplay;
+					} );
+					if ( restoreDisplay == null ) {
+						display = style.display;
+						restoreDisplay = display === "none" ? "" : display;
+					}
+				}
+				style.display = "inline-block";
+			}
+		}
+	}
+
+	if ( opts.overflow ) {
+		style.overflow = "hidden";
+		anim.always( function() {
+			style.overflow = opts.overflow[ 0 ];
+			style.overflowX = opts.overflow[ 1 ];
+			style.overflowY = opts.overflow[ 2 ];
+		} );
+	}
+
+	// Implement show/hide animations
+	propTween = false;
+	for ( prop in orig ) {
+
+		// General show/hide setup for this element animation
+		if ( !propTween ) {
+			if ( dataShow ) {
+				if ( "hidden" in dataShow ) {
+					hidden = dataShow.hidden;
+				}
+			} else {
+				dataShow = dataPriv.access( elem, "fxshow", { display: restoreDisplay } );
+			}
+
+			// Store hidden/visible for toggle so `.stop().toggle()` "reverses"
+			if ( toggle ) {
+				dataShow.hidden = !hidden;
+			}
+
+			// Show elements before animating them
+			if ( hidden ) {
+				showHide( [ elem ], true );
+			}
+
+			/* eslint-disable no-loop-func */
+
+			anim.done( function() {
+
+			/* eslint-enable no-loop-func */
+
+				// The final step of a "hide" animation is actually hiding the element
+				if ( !hidden ) {
+					showHide( [ elem ] );
+				}
+				dataPriv.remove( elem, "fxshow" );
+				for ( prop in orig ) {
+					jQuery.style( elem, prop, orig[ prop ] );
+				}
+			} );
+		}
+
+		// Per-property setup
+		propTween = createTween( hidden ? dataShow[ prop ] : 0, prop, anim );
+		if ( !( prop in dataShow ) ) {
+			dataShow[ prop ] = propTween.start;
+			if ( hidden ) {
+				propTween.end = propTween.start;
+				propTween.start = 0;
+			}
+		}
+	}
+}
+
+function propFilter( props, specialEasing ) {
+	var index, name, easing, value, hooks;
+
+	// camelCase, specialEasing and expand cssHook pass
+	for ( index in props ) {
+		name = camelCase( index );
+		easing = specialEasing[ name ];
+		value = props[ index ];
+		if ( Array.isArray( value ) ) {
+			easing = value[ 1 ];
+			value = props[ index ] = value[ 0 ];
+		}
+
+		if ( index !== name ) {
+			props[ name ] = value;
+			delete props[ index ];
+		}
+
+		hooks = jQuery.cssHooks[ name ];
+		if ( hooks && "expand" in hooks ) {
+			value = hooks.expand( value );
+			delete props[ name ];
+
+			// Not quite $.extend, this won't overwrite existing keys.
+			// Reusing 'index' because we have the correct "name"
+			for ( index in value ) {
+				if ( !( index in props ) ) {
+					props[ index ] = value[ index ];
+					specialEasing[ index ] = easing;
+				}
+			}
+		} else {
+			specialEasing[ name ] = easing;
+		}
+	}
+}
+
+function Animation( elem, properties, options ) {
+	var result,
+		stopped,
+		index = 0,
+		length = Animation.prefilters.length,
+		deferred = jQuery.Deferred().always( function() {
+
+			// Don't match elem in the :animated selector
+			delete tick.elem;
+		} ),
+		tick = function() {
+			if ( stopped ) {
+				return false;
+			}
+			var currentTime = fxNow || createFxNow(),
+				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+
+				// Support: Android 2.3 only
+				// Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
+				temp = remaining / animation.duration || 0,
+				percent = 1 - temp,
+				index = 0,
+				length = animation.tweens.length;
+
+			for ( ; index < length; index++ ) {
+				animation.tweens[ index ].run( percent );
+			}
+
+			deferred.notifyWith( elem, [ animation, percent, remaining ] );
+
+			// If there's more to do, yield
+			if ( percent < 1 && length ) {
+				return remaining;
+			}
+
+			// If this was an empty animation, synthesize a final progress notification
+			if ( !length ) {
+				deferred.notifyWith( elem, [ animation, 1, 0 ] );
+			}
+
+			// Resolve the animation and report its conclusion
+			deferred.resolveWith( elem, [ animation ] );
+			return false;
+		},
+		animation = deferred.promise( {
+			elem: elem,
+			props: jQuery.extend( {}, properties ),
+			opts: jQuery.extend( true, {
+				specialEasing: {},
+				easing: jQuery.easing._default
+			}, options ),
+			originalProperties: properties,
+			originalOptions: options,
+			startTime: fxNow || createFxNow(),
+			duration: options.duration,
+			tweens: [],
+			createTween: function( prop, end ) {
+				var tween = jQuery.Tween( elem, animation.opts, prop, end,
+						animation.opts.specialEasing[ prop ] || animation.opts.easing );
+				animation.tweens.push( tween );
+				return tween;
+			},
+			stop: function( gotoEnd ) {
+				var index = 0,
+
+					// If we are going to the end, we want to run all the tweens
+					// otherwise we skip this part
+					length = gotoEnd ? animation.tweens.length : 0;
+				if ( stopped ) {
+					return this;
+				}
+				stopped = true;
+				for ( ; index < length; index++ ) {
+					animation.tweens[ index ].run( 1 );
+				}
+
+				// Resolve when we played the last frame; otherwise, reject
+				if ( gotoEnd ) {
+					deferred.notifyWith( elem, [ animation, 1, 0 ] );
+					deferred.resolveWith( elem, [ animation, gotoEnd ] );
+				} else {
+					deferred.rejectWith( elem, [ animation, gotoEnd ] );
+				}
+				return this;
+			}
+		} ),
+		props = animation.props;
+
+	propFilter( props, animation.opts.specialEasing );
+
+	for ( ; index < length; index++ ) {
+		result = Animation.prefilters[ index ].call( animation, elem, props, animation.opts );
+		if ( result ) {
+			if ( isFunction( result.stop ) ) {
+				jQuery._queueHooks( animation.elem, animation.opts.queue ).stop =
+					result.stop.bind( result );
+			}
+			return result;
+		}
+	}
+
+	jQuery.map( props, createTween, animation );
+
+	if ( isFunction( animation.opts.start ) ) {
+		animation.opts.start.call( elem, animation );
+	}
+
+	// Attach callbacks from options
+	animation
+		.progress( animation.opts.progress )
+		.done( animation.opts.done, animation.opts.complete )
+		.fail( animation.opts.fail )
+		.always( animation.opts.always );
+
+	jQuery.fx.timer(
+		jQuery.extend( tick, {
+			elem: elem,
+			anim: animation,
+			queue: animation.opts.queue
+		} )
+	);
+
+	return animation;
+}
+
+jQuery.Animation = jQuery.extend( Animation, {
+
+	tweeners: {
+		"*": [ function( prop, value ) {
+			var tween = this.createTween( prop, value );
+			adjustCSS( tween.elem, prop, rcssNum.exec( value ), tween );
+			return tween;
+		} ]
+	},
+
+	tweener: function( props, callback ) {
+		if ( isFunction( props ) ) {
+			callback = props;
+			props = [ "*" ];
+		} else {
+			props = props.match( rnothtmlwhite );
+		}
+
+		var prop,
+			index = 0,
+			length = props.length;
+
+		for ( ; index < length; index++ ) {
+			prop = props[ index ];
+			Animation.tweeners[ prop ] = Animation.tweeners[ prop ] || [];
+			Animation.tweeners[ prop ].unshift( callback );
+		}
+	},
+
+	prefilters: [ defaultPrefilter ],
+
+	prefilter: function( callback, prepend ) {
+		if ( prepend ) {
+			Animation.prefilters.unshift( callback );
+		} else {
+			Animation.prefilters.push( callback );
+		}
+	}
+} );
+
+jQuery.speed = function( speed, easing, fn ) {
+	var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
+		complete: fn || !fn && easing ||
+			isFunction( speed ) && speed,
+		duration: speed,
+		easing: fn && easing || easing && !isFunction( easing ) && easing
+	};
+
+	// Go to the end state if fx are off
+	if ( jQuery.fx.off ) {
+		opt.duration = 0;
+
+	} else {
+		if ( typeof opt.duration !== "number" ) {
+			if ( opt.duration in jQuery.fx.speeds ) {
+				opt.duration = jQuery.fx.speeds[ opt.duration ];
+
+			} else {
+				opt.duration = jQuery.fx.speeds._default;
+			}
+		}
+	}
+
+	// Normalize opt.queue - true/undefined/null -> "fx"
+	if ( opt.queue == null || opt.queue === true ) {
+		opt.queue = "fx";
+	}
+
+	// Queueing
+	opt.old = opt.complete;
+
+	opt.complete = function() {
+		if ( isFunction( opt.old ) ) {
+			opt.old.call( this );
+		}
+
+		if ( opt.queue ) {
+			jQuery.dequeue( this, opt.queue );
+		}
+	};
+
+	return opt;
+};
+
+jQuery.fn.extend( {
+	fadeTo: function( speed, to, easing, callback ) {
+
+		// Show any hidden elements after setting opacity to 0
+		return this.filter( isHiddenWithinTree ).css( "opacity", 0 ).show()
+
+			// Animate to the value specified
+			.end().animate( { opacity: to }, speed, easing, callback );
+	},
+	animate: function( prop, speed, easing, callback ) {
+		var empty = jQuery.isEmptyObject( prop ),
+			optall = jQuery.speed( speed, easing, callback ),
+			doAnimation = function() {
+
+				// Operate on a copy of prop so per-property easing won't be lost
+				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
+
+				// Empty animations, or finishing resolves immediately
+				if ( empty || dataPriv.get( this, "finish" ) ) {
+					anim.stop( true );
+				}
+			};
+			doAnimation.finish = doAnimation;
+
+		return empty || optall.queue === false ?
+			this.each( doAnimation ) :
+			this.queue( optall.queue, doAnimation );
+	},
+	stop: function( type, clearQueue, gotoEnd ) {
+		var stopQueue = function( hooks ) {
+			var stop = hooks.stop;
+			delete hooks.stop;
+			stop( gotoEnd );
+		};
+
+		if ( typeof type !== "string" ) {
+			gotoEnd = clearQueue;
+			clearQueue = type;
+			type = undefined;
+		}
+		if ( clearQueue && type !== false ) {
+			this.queue( type || "fx", [] );
+		}
+
+		return this.each( function() {
+			var dequeue = true,
+				index = type != null && type + "queueHooks",
+				timers = jQuery.timers,
+				data = dataPriv.get( this );
+
+			if ( index ) {
+				if ( data[ index ] && data[ index ].stop ) {
+					stopQueue( data[ index ] );
+				}
+			} else {
+				for ( index in data ) {
+					if ( data[ index ] && data[ index ].stop && rrun.test( index ) ) {
+						stopQueue( data[ index ] );
+					}
+				}
+			}
+
+			for ( index = timers.length; index--; ) {
+				if ( timers[ index ].elem === this &&
+					( type == null || timers[ index ].queue === type ) ) {
+
+					timers[ index ].anim.stop( gotoEnd );
+					dequeue = false;
+					timers.splice( index, 1 );
+				}
+			}
+
+			// Start the next in the queue if the last step wasn't forced.
+			// Timers currently will call their complete callbacks, which
+			// will dequeue but only if they were gotoEnd.
+			if ( dequeue || !gotoEnd ) {
+				jQuery.dequeue( this, type );
+			}
+		} );
+	},
+	finish: function( type ) {
+		if ( type !== false ) {
+			type = type || "fx";
+		}
+		return this.each( function() {
+			var index,
+				data = dataPriv.get( this ),
+				queue = data[ type + "queue" ],
+				hooks = data[ type + "queueHooks" ],
+				timers = jQuery.timers,
+				length = queue ? queue.length : 0;
+
+			// Enable finishing flag on private data
+			data.finish = true;
+
+			// Empty the queue first
+			jQuery.queue( this, type, [] );
+
+			if ( hooks && hooks.stop ) {
+				hooks.stop.call( this, true );
+			}
+
+			// Look for any active animations, and finish them
+			for ( index = timers.length; index--; ) {
+				if ( timers[ index ].elem === this && timers[ index ].queue === type ) {
+					timers[ index ].anim.stop( true );
+					timers.splice( index, 1 );
+				}
+			}
+
+			// Look for any animations in the old queue and finish them
+			for ( index = 0; index < length; index++ ) {
+				if ( queue[ index ] && queue[ index ].finish ) {
+					queue[ index ].finish.call( this );
+				}
+			}
+
+			// Turn off finishing flag
+			delete data.finish;
+		} );
+	}
+} );
+
+jQuery.each( [ "toggle", "show", "hide" ], function( i, name ) {
+	var cssFn = jQuery.fn[ name ];
+	jQuery.fn[ name ] = function( speed, easing, callback ) {
+		return speed == null || typeof speed === "boolean" ?
+			cssFn.apply( this, arguments ) :
+			this.animate( genFx( name, true ), speed, easing, callback );
+	};
+} );
+
+// Generate shortcuts for custom animations
+jQuery.each( {
+	slideDown: genFx( "show" ),
+	slideUp: genFx( "hide" ),
+	slideToggle: genFx( "toggle" ),
+	fadeIn: { opacity: "show" },
+	fadeOut: { opacity: "hide" },
+	fadeToggle: { opacity: "toggle" }
+}, function( name, props ) {
+	jQuery.fn[ name ] = function( speed, easing, callback ) {
+		return this.animate( props, speed, easing, callback );
+	};
+} );
+
+jQuery.timers = [];
+jQuery.fx.tick = function() {
+	var timer,
+		i = 0,
+		timers = jQuery.timers;
+
+	fxNow = Date.now();
+
+	for ( ; i < timers.length; i++ ) {
+		timer = timers[ i ];
+
+		// Run the timer and safely remove it when done (allowing for external removal)
+		if ( !timer() && timers[ i ] === timer ) {
+			timers.splice( i--, 1 );
+		}
+	}
+
+	if ( !timers.length ) {
+		jQuery.fx.stop();
+	}
+	fxNow = undefined;
+};
+
+jQuery.fx.timer = function( timer ) {
+	jQuery.timers.push( timer );
+	jQuery.fx.start();
+};
+
+jQuery.fx.interval = 13;
+jQuery.fx.start = function() {
+	if ( inProgress ) {
+		return;
+	}
+
+	inProgress = true;
+	schedule();
+};
+
+jQuery.fx.stop = function() {
+	inProgress = null;
+};
+
+jQuery.fx.speeds = {
+	slow: 600,
+	fast: 200,
+
+	// Default speed
+	_default: 400
+};
+
+
+// Based off of the plugin by Clint Helfers, with permission.
+// https://web.archive.org/web/20100324014747/http://blindsignals.com/index.php/2009/07/jquery-delay/
+jQuery.fn.delay = function( time, type ) {
+	time = jQuery.fx ? jQuery.fx.speeds[ time ] || time : time;
+	type = type || "fx";
+
+	return this.queue( type, function( next, hooks ) {
+		var timeout = window.setTimeout( next, time );
+		hooks.stop = function() {
+			window.clearTimeout( timeout );
+		};
+	} );
+};
+
+
+( function() {
+	var input = document.createElement( "input" ),
+		select = document.createElement( "select" ),
+		opt = select.appendChild( document.createElement( "option" ) );
+
+	input.type = "checkbox";
+
+	// Support: Android <=4.3 only
+	// Default value for a checkbox should be "on"
+	support.checkOn = input.value !== "";
+
+	// Support: IE <=11 only
+	// Must access selectedIndex to make default options select
+	support.optSelected = opt.selected;
+
+	// Support: IE <=11 only
+	// An input loses its value after becoming a radio
+	input = document.createElement( "input" );
+	input.value = "t";
+	input.type = "radio";
+	support.radioValue = input.value === "t";
+} )();
+
+
+var boolHook,
+	attrHandle = jQuery.expr.attrHandle;
+
+jQuery.fn.extend( {
+	attr: function( name, value ) {
+		return access( this, jQuery.attr, name, value, arguments.length > 1 );
+	},
+
+	removeAttr: function( name ) {
+		return this.each( function() {
+			jQuery.removeAttr( this, name );
+		} );
+	}
+} );
+
+jQuery.extend( {
+	attr: function( elem, name, value ) {
+		var ret, hooks,
+			nType = elem.nodeType;
+
+		// Don't get/set attributes on text, comment and attribute nodes
+		if ( nType === 3 || nType === 8 || nType === 2 ) {
+			return;
+		}
+
+		// Fallback to prop when attributes are not supported
+		if ( typeof elem.getAttribute === "undefined" ) {
+			return jQuery.prop( elem, name, value );
+		}
+
+		// Attribute hooks are determined by the lowercase version
+		// Grab necessary hook if one is defined
+		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
+			hooks = jQuery.attrHooks[ name.toLowerCase() ] ||
+				( jQuery.expr.match.bool.test( name ) ? boolHook : undefined );
+		}
+
+		if ( value !== undefined ) {
+			if ( value === null ) {
+				jQuery.removeAttr( elem, name );
+				return;
+			}
+
+			if ( hooks && "set" in hooks &&
+				( ret = hooks.set( elem, value, name ) ) !== undefined ) {
+				return ret;
+			}
+
+			elem.setAttribute( name, value + "" );
+			return value;
+		}
+
+		if ( hooks && "get" in hooks && ( ret = hooks.get( elem, name ) ) !== null ) {
+			return ret;
+		}
+
+		ret = jQuery.find.attr( elem, name );
+
+		// Non-existent attributes return null, we normalize to undefined
+		return ret == null ? undefined : ret;
+	},
+
+	attrHooks: {
+		type: {
+			set: function( elem, value ) {
+				if ( !support.radioValue && value === "radio" &&
+					nodeName( elem, "input" ) ) {
+					var val = elem.value;
+					elem.setAttribute( "type", value );
+					if ( val ) {
+						elem.value = val;
+					}
+					return value;
+				}
+			}
+		}
+	},
+
+	removeAttr: function( elem, value ) {
+		var name,
+			i = 0,
+
+			// Attribute names can contain non-HTML whitespace characters
+			// https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
+			attrNames = value && value.match( rnothtmlwhite );
+
+		if ( attrNames && elem.nodeType === 1 ) {
+			while ( ( name = attrNames[ i++ ] ) ) {
+				elem.removeAttribute( name );
+			}
+		}
+	}
+} );
+
+// Hooks for boolean attributes
+boolHook = {
+	set: function( elem, value, name ) {
+		if ( value === false ) {
+
+			// Remove boolean attributes when set to false
+			jQuery.removeAttr( elem, name );
+		} else {
+			elem.setAttribute( name, name );
+		}
+		return name;
+	}
+};
+
+jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
+	var getter = attrHandle[ name ] || jQuery.find.attr;
+
+	attrHandle[ name ] = function( elem, name, isXML ) {
+		var ret, handle,
+			lowercaseName = name.toLowerCase();
+
+		if ( !isXML ) {
+
+			// Avoid an infinite loop by temporarily removing this function from the getter
+			handle = attrHandle[ lowercaseName ];
+			attrHandle[ lowercaseName ] = ret;
+			ret = getter( elem, name, isXML ) != null ?
+				lowercaseName :
+				null;
+			attrHandle[ lowercaseName ] = handle;
+		}
+		return ret;
+	};
+} );
+
+
+
+
+var rfocusable = /^(?:input|select|textarea|button)$/i,
+	rclickable = /^(?:a|area)$/i;
+
+jQuery.fn.extend( {
+	prop: function( name, value ) {
+		return access( this, jQuery.prop, name, value, arguments.length > 1 );
+	},
+
+	removeProp: function( name ) {
+		return this.each( function() {
+			delete this[ jQuery.propFix[ name ] || name ];
+		} );
+	}
+} );
+
+jQuery.extend( {
+	prop: function( elem, name, value ) {
+		var ret, hooks,
+			nType = elem.nodeType;
+
+		// Don't get/set properties on text, comment and attribute nodes
+		if ( nType === 3 || nType === 8 || nType === 2 ) {
+			return;
+		}
+
+		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
+
+			// Fix name and attach hooks
+			name = jQuery.propFix[ name ] || name;
+			hooks = jQuery.propHooks[ name ];
+		}
+
+		if ( value !== undefined ) {
+			if ( hooks && "set" in hooks &&
+				( ret = hooks.set( elem, value, name ) ) !== undefined ) {
+				return ret;
+			}
+
+			return ( elem[ name ] = value );
+		}
+
+		if ( hooks && "get" in hooks && ( ret = hooks.get( elem, name ) ) !== null ) {
+			return ret;
+		}
+
+		return elem[ name ];
+	},
+
+	propHooks: {
+		tabIndex: {
+			get: function( elem ) {
+
+				// Support: IE <=9 - 11 only
+				// elem.tabIndex doesn't always return the
+				// correct value when it hasn't been explicitly set
+				// https://web.archive.org/web/20141116233347/http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				// Use proper attribute retrieval(#12072)
+				var tabindex = jQuery.find.attr( elem, "tabindex" );
+
+				if ( tabindex ) {
+					return parseInt( tabindex, 10 );
+				}
+
+				if (
+					rfocusable.test( elem.nodeName ) ||
+					rclickable.test( elem.nodeName ) &&
+					elem.href
+				) {
+					return 0;
+				}
+
+				return -1;
+			}
+		}
+	},
+
+	propFix: {
+		"for": "htmlFor",
+		"class": "className"
+	}
+} );
+
+// Support: IE <=11 only
+// Accessing the selectedIndex property
+// forces the browser to respect setting selected
+// on the option
+// The getter ensures a default option is selected
+// when in an optgroup
+// eslint rule "no-unused-expressions" is disabled for this code
+// since it considers such accessions noop
+if ( !support.optSelected ) {
+	jQuery.propHooks.selected = {
+		get: function( elem ) {
+
+			/* eslint no-unused-expressions: "off" */
+
+			var parent = elem.parentNode;
+			if ( parent && parent.parentNode ) {
+				parent.parentNode.selectedIndex;
+			}
+			return null;
+		},
+		set: function( elem ) {
+
+			/* eslint no-unused-expressions: "off" */
+
+			var parent = elem.parentNode;
+			if ( parent ) {
+				parent.selectedIndex;
+
+				if ( parent.parentNode ) {
+					parent.parentNode.selectedIndex;
+				}
+			}
+		}
+	};
+}
+
+jQuery.each( [
+	"tabIndex",
+	"readOnly",
+	"maxLength",
+	"cellSpacing",
+	"cellPadding",
+	"rowSpan",
+	"colSpan",
+	"useMap",
+	"frameBorder",
+	"contentEditable"
+], function() {
+	jQuery.propFix[ this.toLowerCase() ] = this;
+} );
+
+
+
+
+	// Strip and collapse whitespace according to HTML spec
+	// https://infra.spec.whatwg.org/#strip-and-collapse-ascii-whitespace
+	function stripAndCollapse( value ) {
+		var tokens = value.match( rnothtmlwhite ) || [];
+		return tokens.join( " " );
+	}
+
+
+function getClass( elem ) {
+	return elem.getAttribute && elem.getAttribute( "class" ) || "";
+}
+
+function classesToArray( value ) {
+	if ( Array.isArray( value ) ) {
+		return value;
+	}
+	if ( typeof value === "string" ) {
+		return value.match( rnothtmlwhite ) || [];
+	}
+	return [];
+}
+
+jQuery.fn.extend( {
+	addClass: function( value ) {
+		var classes, elem, cur, curValue, clazz, j, finalValue,
+			i = 0;
+
+		if ( isFunction( value ) ) {
+			return this.each( function( j ) {
+				jQuery( this ).addClass( value.call( this, j, getClass( this ) ) );
+			} );
+		}
+
+		classes = classesToArray( value );
+
+		if ( classes.length ) {
+			while ( ( elem = this[ i++ ] ) ) {
+				curValue = getClass( elem );
+				cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
+
+				if ( cur ) {
+					j = 0;
+					while ( ( clazz = classes[ j++ ] ) ) {
+						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
+							cur += clazz + " ";
+						}
+					}
+
+					// Only assign if different to avoid unneeded rendering.
+					finalValue = stripAndCollapse( cur );
+					if ( curValue !== finalValue ) {
+						elem.setAttribute( "class", finalValue );
+					}
+				}
+			}
+		}
+
+		return this;
+	},
+
+	removeClass: function( value ) {
+		var classes, elem, cur, curValue, clazz, j, finalValue,
+			i = 0;
+
+		if ( isFunction( value ) ) {
+			return this.each( function( j ) {
+				jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
+			} );
+		}
+
+		if ( !arguments.length ) {
+			return this.attr( "class", "" );
+		}
+
+		classes = classesToArray( value );
+
+		if ( classes.length ) {
+			while ( ( elem = this[ i++ ] ) ) {
+				curValue = getClass( elem );
+
+				// This expression is here for better compressibility (see addClass)
+				cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
+
+				if ( cur ) {
+					j = 0;
+					while ( ( clazz = classes[ j++ ] ) ) {
+
+						// Remove *all* instances
+						while ( cur.indexOf( " " + clazz + " " ) > -1 ) {
+							cur = cur.replace( " " + clazz + " ", " " );
+						}
+					}
+
+					// Only assign if different to avoid unneeded rendering.
+					finalValue = stripAndCollapse( cur );
+					if ( curValue !== finalValue ) {
+						elem.setAttribute( "class", finalValue );
+					}
+				}
+			}
+		}
+
+		return this;
+	},
+
+	toggleClass: function( value, stateVal ) {
+		var type = typeof value,
+			isValidValue = type === "string" || Array.isArray( value );
+
+		if ( typeof stateVal === "boolean" && isValidValue ) {
+			return stateVal ? this.addClass( value ) : this.removeClass( value );
+		}
+
+		if ( isFunction( value ) ) {
+			return this.each( function( i ) {
+				jQuery( this ).toggleClass(
+					value.call( this, i, getClass( this ), stateVal ),
+					stateVal
+				);
+			} );
+		}
+
+		return this.each( function() {
+			var className, i, self, classNames;
+
+			if ( isValidValue ) {
+
+				// Toggle individual class names
+				i = 0;
+				self = jQuery( this );
+				classNames = classesToArray( value );
+
+				while ( ( className = classNames[ i++ ] ) ) {
+
+					// Check each className given, space separated list
+					if ( self.hasClass( className ) ) {
+						self.removeClass( className );
+					} else {
+						self.addClass( className );
+					}
+				}
+
+			// Toggle whole class name
+			} else if ( value === undefined || type === "boolean" ) {
+				className = getClass( this );
+				if ( className ) {
+
+					// Store className if set
+					dataPriv.set( this, "__className__", className );
+				}
+
+				// If the element has a class name or if we're passed `false`,
+				// then remove the whole classname (if there was one, the above saved it).
+				// Otherwise bring back whatever was previously saved (if anything),
+				// falling back to the empty string if nothing was stored.
+				if ( this.setAttribute ) {
+					this.setAttribute( "class",
+						className || value === false ?
+						"" :
+						dataPriv.get( this, "__className__" ) || ""
+					);
+				}
+			}
+		} );
+	},
+
+	hasClass: function( selector ) {
+		var className, elem,
+			i = 0;
+
+		className = " " + selector + " ";
+		while ( ( elem = this[ i++ ] ) ) {
+			if ( elem.nodeType === 1 &&
+				( " " + stripAndCollapse( getClass( elem ) ) + " " ).indexOf( className ) > -1 ) {
+					return true;
+			}
+		}
+
+		return false;
+	}
+} );
+
+
+
+
+var rreturn = /\r/g;
+
+jQuery.fn.extend( {
+	val: function( value ) {
+		var hooks, ret, valueIsFunction,
+			elem = this[ 0 ];
+
+		if ( !arguments.length ) {
+			if ( elem ) {
+				hooks = jQuery.valHooks[ elem.type ] ||
+					jQuery.valHooks[ elem.nodeName.toLowerCase() ];
+
+				if ( hooks &&
+					"get" in hooks &&
+					( ret = hooks.get( elem, "value" ) ) !== undefined
+				) {
+					return ret;
+				}
+
+				ret = elem.value;
+
+				// Handle most common string cases
+				if ( typeof ret === "string" ) {
+					return ret.replace( rreturn, "" );
+				}
+
+				// Handle cases where value is null/undef or number
+				return ret == null ? "" : ret;
+			}
+
+			return;
+		}
+
+		valueIsFunction = isFunction( value );
+
+		return this.each( function( i ) {
+			var val;
+
+			if ( this.nodeType !== 1 ) {
+				return;
+			}
+
+			if ( valueIsFunction ) {
+				val = value.call( this, i, jQuery( this ).val() );
+			} else {
+				val = value;
+			}
+
+			// Treat null/undefined as ""; convert numbers to string
+			if ( val == null ) {
+				val = "";
+
+			} else if ( typeof val === "number" ) {
+				val += "";
+
+			} else if ( Array.isArray( val ) ) {
+				val = jQuery.map( val, function( value ) {
+					return value == null ? "" : value + "";
+				} );
+			}
+
+			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
+
+			// If set returns undefined, fall back to normal setting
+			if ( !hooks || !( "set" in hooks ) || hooks.set( this, val, "value" ) === undefined ) {
+				this.value = val;
+			}
+		} );
+	}
+} );
+
+jQuery.extend( {
+	valHooks: {
+		option: {
+			get: function( elem ) {
+
+				var val = jQuery.find.attr( elem, "value" );
+				return val != null ?
+					val :
+
+					// Support: IE <=10 - 11 only
+					// option.text throws exceptions (#14686, #14858)
+					// Strip and collapse whitespace
+					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
+					stripAndCollapse( jQuery.text( elem ) );
+			}
+		},
+		select: {
+			get: function( elem ) {
+				var value, option, i,
+					options = elem.options,
+					index = elem.selectedIndex,
+					one = elem.type === "select-one",
+					values = one ? null : [],
+					max = one ? index + 1 : options.length;
+
+				if ( index < 0 ) {
+					i = max;
+
+				} else {
+					i = one ? index : 0;
+				}
+
+				// Loop through all the selected options
+				for ( ; i < max; i++ ) {
+					option = options[ i ];
+
+					// Support: IE <=9 only
+					// IE8-9 doesn't update selected after form reset (#2551)
+					if ( ( option.selected || i === index ) &&
+
+							// Don't return options that are disabled or in a disabled optgroup
+							!option.disabled &&
+							( !option.parentNode.disabled ||
+								!nodeName( option.parentNode, "optgroup" ) ) ) {
+
+						// Get the specific value for the option
+						value = jQuery( option ).val();
+
+						// We don't need an array for one selects
+						if ( one ) {
+							return value;
+						}
+
+						// Multi-Selects return an array
+						values.push( value );
+					}
+				}
+
+				return values;
+			},
+
+			set: function( elem, value ) {
+				var optionSet, option,
+					options = elem.options,
+					values = jQuery.makeArray( value ),
+					i = options.length;
+
+				while ( i-- ) {
+					option = options[ i ];
+
+					/* eslint-disable no-cond-assign */
+
+					if ( option.selected =
+						jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
+					) {
+						optionSet = true;
+					}
+
+					/* eslint-enable no-cond-assign */
+				}
+
+				// Force browsers to behave consistently when non-matching value is set
+				if ( !optionSet ) {
+					elem.selectedIndex = -1;
+				}
+				return values;
+			}
+		}
+	}
+} );
+
+// Radios and checkboxes getter/setter
+jQuery.each( [ "radio", "checkbox" ], function() {
+	jQuery.valHooks[ this ] = {
+		set: function( elem, value ) {
+			if ( Array.isArray( value ) ) {
+				return ( elem.checked = jQuery.inArray( jQuery( elem ).val(), value ) > -1 );
+			}
+		}
+	};
+	if ( !support.checkOn ) {
+		jQuery.valHooks[ this ].get = function( elem ) {
+			return elem.getAttribute( "value" ) === null ? "on" : elem.value;
+		};
+	}
+} );
+
+
+
+
+// Return jQuery for attributes-only inclusion
+
+
+support.focusin = "onfocusin" in window;
+
+
+var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+	stopPropagationCallback = function( e ) {
+		e.stopPropagation();
+	};
+
+jQuery.extend( jQuery.event, {
+
+	trigger: function( event, data, elem, onlyHandlers ) {
+
+		var i, cur, tmp, bubbleType, ontype, handle, special, lastElement,
+			eventPath = [ elem || document ],
+			type = hasOwn.call( event, "type" ) ? event.type : event,
+			namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split( "." ) : [];
+
+		cur = lastElement = tmp = elem = elem || document;
+
+		// Don't do events on text and comment nodes
+		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
+			return;
+		}
+
+		// focus/blur morphs to focusin/out; ensure we're not firing them right now
+		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
+			return;
+		}
+
+		if ( type.indexOf( "." ) > -1 ) {
+
+			// Namespaced trigger; create a regexp to match event type in handle()
+			namespaces = type.split( "." );
+			type = namespaces.shift();
+			namespaces.sort();
+		}
+		ontype = type.indexOf( ":" ) < 0 && "on" + type;
+
+		// Caller can pass in a jQuery.Event object, Object, or just an event type string
+		event = event[ jQuery.expando ] ?
+			event :
+			new jQuery.Event( type, typeof event === "object" && event );
+
+		// Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
+		event.isTrigger = onlyHandlers ? 2 : 3;
+		event.namespace = namespaces.join( "." );
+		event.rnamespace = event.namespace ?
+			new RegExp( "(^|\\.)" + namespaces.join( "\\.(?:.*\\.|)" ) + "(\\.|$)" ) :
+			null;
+
+		// Clean up the event in case it is being reused
+		event.result = undefined;
+		if ( !event.target ) {
+			event.target = elem;
+		}
+
+		// Clone any incoming data and prepend the event, creating the handler arg list
+		data = data == null ?
+			[ event ] :
+			jQuery.makeArray( data, [ event ] );
+
+		// Allow special events to draw outside the lines
+		special = jQuery.event.special[ type ] || {};
+		if ( !onlyHandlers && special.trigger && special.trigger.apply( elem, data ) === false ) {
+			return;
+		}
+
+		// Determine event propagation path in advance, per W3C events spec (#9951)
+		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+		if ( !onlyHandlers && !special.noBubble && !isWindow( elem ) ) {
+
+			bubbleType = special.delegateType || type;
+			if ( !rfocusMorph.test( bubbleType + type ) ) {
+				cur = cur.parentNode;
+			}
+			for ( ; cur; cur = cur.parentNode ) {
+				eventPath.push( cur );
+				tmp = cur;
+			}
+
+			// Only add window if we got to document (e.g., not plain obj or detached DOM)
+			if ( tmp === ( elem.ownerDocument || document ) ) {
+				eventPath.push( tmp.defaultView || tmp.parentWindow || window );
+			}
+		}
+
+		// Fire handlers on the event path
+		i = 0;
+		while ( ( cur = eventPath[ i++ ] ) && !event.isPropagationStopped() ) {
+			lastElement = cur;
+			event.type = i > 1 ?
+				bubbleType :
+				special.bindType || type;
+
+			// jQuery handler
+			handle = ( dataPriv.get( cur, "events" ) || {} )[ event.type ] &&
+				dataPriv.get( cur, "handle" );
+			if ( handle ) {
+				handle.apply( cur, data );
+			}
+
+			// Native handler
+			handle = ontype && cur[ ontype ];
+			if ( handle && handle.apply && acceptData( cur ) ) {
+				event.result = handle.apply( cur, data );
+				if ( event.result === false ) {
+					event.preventDefault();
+				}
+			}
+		}
+		event.type = type;
+
+		// If nobody prevented the default action, do it now
+		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
+
+			if ( ( !special._default ||
+				special._default.apply( eventPath.pop(), data ) === false ) &&
+				acceptData( elem ) ) {
+
+				// Call a native DOM method on the target with the same name as the event.
+				// Don't do default actions on window, that's where global variables be (#6170)
+				if ( ontype && isFunction( elem[ type ] ) && !isWindow( elem ) ) {
+
+					// Don't re-trigger an onFOO event when we call its FOO() method
+					tmp = elem[ ontype ];
+
+					if ( tmp ) {
+						elem[ ontype ] = null;
+					}
+
+					// Prevent re-triggering of the same event, since we already bubbled it above
+					jQuery.event.triggered = type;
+
+					if ( event.isPropagationStopped() ) {
+						lastElement.addEventListener( type, stopPropagationCallback );
+					}
+
+					elem[ type ]();
+
+					if ( event.isPropagationStopped() ) {
+						lastElement.removeEventListener( type, stopPropagationCallback );
+					}
+
+					jQuery.event.triggered = undefined;
+
+					if ( tmp ) {
+						elem[ ontype ] = tmp;
+					}
+				}
+			}
+		}
+
+		return event.result;
+	},
+
+	// Piggyback on a donor event to simulate a different one
+	// Used only for `focus(in | out)` events
+	simulate: function( type, elem, event ) {
+		var e = jQuery.extend(
+			new jQuery.Event(),
+			event,
+			{
+				type: type,
+				isSimulated: true
+			}
+		);
+
+		jQuery.event.trigger( e, null, elem );
+	}
+
+} );
+
+jQuery.fn.extend( {
+
+	trigger: function( type, data ) {
+		return this.each( function() {
+			jQuery.event.trigger( type, data, this );
+		} );
+	},
+	triggerHandler: function( type, data ) {
+		var elem = this[ 0 ];
+		if ( elem ) {
+			return jQuery.event.trigger( type, data, elem, true );
+		}
+	}
+} );
+
+
+// Support: Firefox <=44
+// Firefox doesn't have focus(in | out) events
+// Related ticket - https://bugzilla.mozilla.org/show_bug.cgi?id=687787
+//
+// Support: Chrome <=48 - 49, Safari <=9.0 - 9.1
+// focus(in | out) events fire after focus & blur events,
+// which is spec violation - http://www.w3.org/TR/DOM-Level-3-Events/#events-focusevent-event-order
+// Related ticket - https://bugs.chromium.org/p/chromium/issues/detail?id=449857
+if ( !support.focusin ) {
+	jQuery.each( { focus: "focusin", blur: "focusout" }, function( orig, fix ) {
+
+		// Attach a single capturing handler on the document while someone wants focusin/focusout
+		var handler = function( event ) {
+			jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ) );
+		};
+
+		jQuery.event.special[ fix ] = {
+			setup: function() {
+				var doc = this.ownerDocument || this,
+					attaches = dataPriv.access( doc, fix );
+
+				if ( !attaches ) {
+					doc.addEventListener( orig, handler, true );
+				}
+				dataPriv.access( doc, fix, ( attaches || 0 ) + 1 );
+			},
+			teardown: function() {
+				var doc = this.ownerDocument || this,
+					attaches = dataPriv.access( doc, fix ) - 1;
+
+				if ( !attaches ) {
+					doc.removeEventListener( orig, handler, true );
+					dataPriv.remove( doc, fix );
+
+				} else {
+					dataPriv.access( doc, fix, attaches );
+				}
+			}
+		};
+	} );
+}
+var location = window.location;
+
+var nonce = Date.now();
+
+var rquery = ( /\?/ );
+
+
+
+// Cross-browser xml parsing
+jQuery.parseXML = function( data ) {
+	var xml;
+	if ( !data || typeof data !== "string" ) {
+		return null;
+	}
+
+	// Support: IE 9 - 11 only
+	// IE throws on parseFromString with invalid input.
+	try {
+		xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
+	} catch ( e ) {
+		xml = undefined;
+	}
+
+	if ( !xml || xml.getElementsByTagName( "parsererror" ).length ) {
+		jQuery.error( "Invalid XML: " + data );
+	}
+	return xml;
+};
+
+
+var
+	rbracket = /\[\]$/,
+	rCRLF = /\r?\n/g,
+	rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
+	rsubmittable = /^(?:input|select|textarea|keygen)/i;
+
+function buildParams( prefix, obj, traditional, add ) {
+	var name;
+
+	if ( Array.isArray( obj ) ) {
+
+		// Serialize array item.
+		jQuery.each( obj, function( i, v ) {
+			if ( traditional || rbracket.test( prefix ) ) {
+
+				// Treat each array item as a scalar.
+				add( prefix, v );
+
+			} else {
+
+				// Item is non-scalar (array or object), encode its numeric index.
+				buildParams(
+					prefix + "[" + ( typeof v === "object" && v != null ? i : "" ) + "]",
+					v,
+					traditional,
+					add
+				);
+			}
+		} );
+
+	} else if ( !traditional && toType( obj ) === "object" ) {
+
+		// Serialize object item.
+		for ( name in obj ) {
+			buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+		}
+
+	} else {
+
+		// Serialize scalar item.
+		add( prefix, obj );
+	}
+}
+
+// Serialize an array of form elements or a set of
+// key/values into a query string
+jQuery.param = function( a, traditional ) {
+	var prefix,
+		s = [],
+		add = function( key, valueOrFunction ) {
+
+			// If value is a function, invoke it and use its return value
+			var value = isFunction( valueOrFunction ) ?
+				valueOrFunction() :
+				valueOrFunction;
+
+			s[ s.length ] = encodeURIComponent( key ) + "=" +
+				encodeURIComponent( value == null ? "" : value );
+		};
+
+	if ( a == null ) {
+		return "";
+	}
+
+	// If an array was passed in, assume that it is an array of form elements.
+	if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
+
+		// Serialize the form elements
+		jQuery.each( a, function() {
+			add( this.name, this.value );
+		} );
+
+	} else {
+
+		// If traditional, encode the "old" way (the way 1.3.2 or older
+		// did it), otherwise encode params recursively.
+		for ( prefix in a ) {
+			buildParams( prefix, a[ prefix ], traditional, add );
+		}
+	}
+
+	// Return the resulting serialization
+	return s.join( "&" );
+};
+
+jQuery.fn.extend( {
+	serialize: function() {
+		return jQuery.param( this.serializeArray() );
+	},
+	serializeArray: function() {
+		return this.map( function() {
+
+			// Can add propHook for "elements" to filter or add form elements
+			var elements = jQuery.prop( this, "elements" );
+			return elements ? jQuery.makeArray( elements ) : this;
+		} )
+		.filter( function() {
+			var type = this.type;
+
+			// Use .is( ":disabled" ) so that fieldset[disabled] works
+			return this.name && !jQuery( this ).is( ":disabled" ) &&
+				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
+				( this.checked || !rcheckableType.test( type ) );
+		} )
+		.map( function( i, elem ) {
+			var val = jQuery( this ).val();
+
+			if ( val == null ) {
+				return null;
+			}
+
+			if ( Array.isArray( val ) ) {
+				return jQuery.map( val, function( val ) {
+					return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
+				} );
+			}
+
+			return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
+		} ).get();
+	}
+} );
+
+
+var
+	r20 = /%20/g,
+	rhash = /#.*$/,
+	rantiCache = /([?&])_=[^&]*/,
+	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
+
+	// #7653, #8125, #8152: local protocol detection
+	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
+	rnoContent = /^(?:GET|HEAD)$/,
+	rprotocol = /^\/\//,
+
+	/* Prefilters
+	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
+	 * 2) These are called:
+	 *    - BEFORE asking for a transport
+	 *    - AFTER param serialization (s.data is a string if s.processData is true)
+	 * 3) key is the dataType
+	 * 4) the catchall symbol "*" can be used
+	 * 5) execution will start with transport dataType and THEN continue down to "*" if needed
+	 */
+	prefilters = {},
+
+	/* Transports bindings
+	 * 1) key is the dataType
+	 * 2) the catchall symbol "*" can be used
+	 * 3) selection will start with transport dataType and THEN go to "*" if needed
+	 */
+	transports = {},
+
+	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
+	allTypes = "*/".concat( "*" ),
+
+	// Anchor tag for parsing the document origin
+	originAnchor = document.createElement( "a" );
+	originAnchor.href = location.href;
+
+// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+function addToPrefiltersOrTransports( structure ) {
+
+	// dataTypeExpression is optional and defaults to "*"
+	return function( dataTypeExpression, func ) {
+
+		if ( typeof dataTypeExpression !== "string" ) {
+			func = dataTypeExpression;
+			dataTypeExpression = "*";
+		}
+
+		var dataType,
+			i = 0,
+			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
+
+		if ( isFunction( func ) ) {
+
+			// For each dataType in the dataTypeExpression
+			while ( ( dataType = dataTypes[ i++ ] ) ) {
+
+				// Prepend if requested
+				if ( dataType[ 0 ] === "+" ) {
+					dataType = dataType.slice( 1 ) || "*";
+					( structure[ dataType ] = structure[ dataType ] || [] ).unshift( func );
+
+				// Otherwise append
+				} else {
+					( structure[ dataType ] = structure[ dataType ] || [] ).push( func );
+				}
+			}
+		}
+	};
+}
+
+// Base inspection function for prefilters and transports
+function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR ) {
+
+	var inspected = {},
+		seekingTransport = ( structure === transports );
+
+	function inspect( dataType ) {
+		var selected;
+		inspected[ dataType ] = true;
+		jQuery.each( structure[ dataType ] || [], function( _, prefilterOrFactory ) {
+			var dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR );
+			if ( typeof dataTypeOrTransport === "string" &&
+				!seekingTransport && !inspected[ dataTypeOrTransport ] ) {
+
+				options.dataTypes.unshift( dataTypeOrTransport );
+				inspect( dataTypeOrTransport );
+				return false;
+			} else if ( seekingTransport ) {
+				return !( selected = dataTypeOrTransport );
+			}
+		} );
+		return selected;
+	}
+
+	return inspect( options.dataTypes[ 0 ] ) || !inspected[ "*" ] && inspect( "*" );
+}
+
+// A special extend for ajax options
+// that takes "flat" options (not to be deep extended)
+// Fixes #9887
+function ajaxExtend( target, src ) {
+	var key, deep,
+		flatOptions = jQuery.ajaxSettings.flatOptions || {};
+
+	for ( key in src ) {
+		if ( src[ key ] !== undefined ) {
+			( flatOptions[ key ] ? target : ( deep || ( deep = {} ) ) )[ key ] = src[ key ];
+		}
+	}
+	if ( deep ) {
+		jQuery.extend( true, target, deep );
+	}
+
+	return target;
+}
+
+/* Handles responses to an ajax request:
+ * - finds the right dataType (mediates between content-type and expected dataType)
+ * - returns the corresponding response
+ */
+function ajaxHandleResponses( s, jqXHR, responses ) {
+
+	var ct, type, finalDataType, firstDataType,
+		contents = s.contents,
+		dataTypes = s.dataTypes;
+
+	// Remove auto dataType and get content-type in the process
+	while ( dataTypes[ 0 ] === "*" ) {
+		dataTypes.shift();
+		if ( ct === undefined ) {
+			ct = s.mimeType || jqXHR.getResponseHeader( "Content-Type" );
+		}
+	}
+
+	// Check if we're dealing with a known content-type
+	if ( ct ) {
+		for ( type in contents ) {
+			if ( contents[ type ] && contents[ type ].test( ct ) ) {
+				dataTypes.unshift( type );
+				break;
+			}
+		}
+	}
+
+	// Check to see if we have a response for the expected dataType
+	if ( dataTypes[ 0 ] in responses ) {
+		finalDataType = dataTypes[ 0 ];
+	} else {
+
+		// Try convertible dataTypes
+		for ( type in responses ) {
+			if ( !dataTypes[ 0 ] || s.converters[ type + " " + dataTypes[ 0 ] ] ) {
+				finalDataType = type;
+				break;
+			}
+			if ( !firstDataType ) {
+				firstDataType = type;
+			}
+		}
+
+		// Or just use first one
+		finalDataType = finalDataType || firstDataType;
+	}
+
+	// If we found a dataType
+	// We add the dataType to the list if needed
+	// and return the corresponding response
+	if ( finalDataType ) {
+		if ( finalDataType !== dataTypes[ 0 ] ) {
+			dataTypes.unshift( finalDataType );
+		}
+		return responses[ finalDataType ];
+	}
+}
+
+/* Chain conversions given the request and the original response
+ * Also sets the responseXXX fields on the jqXHR instance
+ */
+function ajaxConvert( s, response, jqXHR, isSuccess ) {
+	var conv2, current, conv, tmp, prev,
+		converters = {},
+
+		// Work with a copy of dataTypes in case we need to modify it for conversion
+		dataTypes = s.dataTypes.slice();
+
+	// Create converters map with lowercased keys
+	if ( dataTypes[ 1 ] ) {
+		for ( conv in s.converters ) {
+			converters[ conv.toLowerCase() ] = s.converters[ conv ];
+		}
+	}
+
+	current = dataTypes.shift();
+
+	// Convert to each sequential dataType
+	while ( current ) {
+
+		if ( s.responseFields[ current ] ) {
+			jqXHR[ s.responseFields[ current ] ] = response;
+		}
+
+		// Apply the dataFilter if provided
+		if ( !prev && isSuccess && s.dataFilter ) {
+			response = s.dataFilter( response, s.dataType );
+		}
+
+		prev = current;
+		current = dataTypes.shift();
+
+		if ( current ) {
+
+			// There's only work to do if current dataType is non-auto
+			if ( current === "*" ) {
+
+				current = prev;
+
+			// Convert response if prev dataType is non-auto and differs from current
+			} else if ( prev !== "*" && prev !== current ) {
+
+				// Seek a direct converter
+				conv = converters[ prev + " " + current ] || converters[ "* " + current ];
+
+				// If none found, seek a pair
+				if ( !conv ) {
+					for ( conv2 in converters ) {
+
+						// If conv2 outputs current
+						tmp = conv2.split( " " );
+						if ( tmp[ 1 ] === current ) {
+
+							// If prev can be converted to accepted input
+							conv = converters[ prev + " " + tmp[ 0 ] ] ||
+								converters[ "* " + tmp[ 0 ] ];
+							if ( conv ) {
+
+								// Condense equivalence converters
+								if ( conv === true ) {
+									conv = converters[ conv2 ];
+
+								// Otherwise, insert the intermediate dataType
+								} else if ( converters[ conv2 ] !== true ) {
+									current = tmp[ 0 ];
+									dataTypes.unshift( tmp[ 1 ] );
+								}
+								break;
+							}
+						}
+					}
+				}
+
+				// Apply converter (if not an equivalence)
+				if ( conv !== true ) {
+
+					// Unless errors are allowed to bubble, catch and return them
+					if ( conv && s.throws ) {
+						response = conv( response );
+					} else {
+						try {
+							response = conv( response );
+						} catch ( e ) {
+							return {
+								state: "parsererror",
+								error: conv ? e : "No conversion from " + prev + " to " + current
+							};
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return { state: "success", data: response };
+}
+
+jQuery.extend( {
+
+	// Counter for holding the number of active queries
+	active: 0,
+
+	// Last-Modified header cache for next request
+	lastModified: {},
+	etag: {},
+
+	ajaxSettings: {
+		url: location.href,
+		type: "GET",
+		isLocal: rlocalProtocol.test( location.protocol ),
+		global: true,
+		processData: true,
+		async: true,
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+
+		/*
+		timeout: 0,
+		data: null,
+		dataType: null,
+		username: null,
+		password: null,
+		cache: null,
+		throws: false,
+		traditional: false,
+		headers: {},
+		*/
+
+		accepts: {
+			"*": allTypes,
+			text: "text/plain",
+			html: "text/html",
+			xml: "application/xml, text/xml",
+			json: "application/json, text/javascript"
+		},
+
+		contents: {
+			xml: /\bxml\b/,
+			html: /\bhtml/,
+			json: /\bjson\b/
+		},
+
+		responseFields: {
+			xml: "responseXML",
+			text: "responseText",
+			json: "responseJSON"
+		},
+
+		// Data converters
+		// Keys separate source (or catchall "*") and destination types with a single space
+		converters: {
+
+			// Convert anything to text
+			"* text": String,
+
+			// Text to html (true = no transformation)
+			"text html": true,
+
+			// Evaluate text as a json expression
+			"text json": JSON.parse,
+
+			// Parse text as xml
+			"text xml": jQuery.parseXML
+		},
+
+		// For options that shouldn't be deep extended:
+		// you can add your own custom options here if
+		// and when you create one that shouldn't be
+		// deep extended (see ajaxExtend)
+		flatOptions: {
+			url: true,
+			context: true
+		}
+	},
+
+	// Creates a full fledged settings object into target
+	// with both ajaxSettings and settings fields.
+	// If target is omitted, writes into ajaxSettings.
+	ajaxSetup: function( target, settings ) {
+		return settings ?
+
+			// Building a settings object
+			ajaxExtend( ajaxExtend( target, jQuery.ajaxSettings ), settings ) :
+
+			// Extending ajaxSettings
+			ajaxExtend( jQuery.ajaxSettings, target );
+	},
+
+	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
+	ajaxTransport: addToPrefiltersOrTransports( transports ),
+
+	// Main method
+	ajax: function( url, options ) {
+
+		// If url is an object, simulate pre-1.5 signature
+		if ( typeof url === "object" ) {
+			options = url;
+			url = undefined;
+		}
+
+		// Force options to be an object
+		options = options || {};
+
+		var transport,
+
+			// URL without anti-cache param
+			cacheURL,
+
+			// Response headers
+			responseHeadersString,
+			responseHeaders,
+
+			// timeout handle
+			timeoutTimer,
+
+			// Url cleanup var
+			urlAnchor,
+
+			// Request state (becomes false upon send and true upon completion)
+			completed,
+
+			// To know if global events are to be dispatched
+			fireGlobals,
+
+			// Loop variable
+			i,
+
+			// uncached part of the url
+			uncached,
+
+			// Create the final options object
+			s = jQuery.ajaxSetup( {}, options ),
+
+			// Callbacks context
+			callbackContext = s.context || s,
+
+			// Context for global events is callbackContext if it is a DOM node or jQuery collection
+			globalEventContext = s.context &&
+				( callbackContext.nodeType || callbackContext.jquery ) ?
+					jQuery( callbackContext ) :
+					jQuery.event,
+
+			// Deferreds
+			deferred = jQuery.Deferred(),
+			completeDeferred = jQuery.Callbacks( "once memory" ),
+
+			// Status-dependent callbacks
+			statusCode = s.statusCode || {},
+
+			// Headers (they are sent all at once)
+			requestHeaders = {},
+			requestHeadersNames = {},
+
+			// Default abort message
+			strAbort = "canceled",
+
+			// Fake xhr
+			jqXHR = {
+				readyState: 0,
+
+				// Builds headers hashtable if needed
+				getResponseHeader: function( key ) {
+					var match;
+					if ( completed ) {
+						if ( !responseHeaders ) {
+							responseHeaders = {};
+							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
+								responseHeaders[ match[ 1 ].toLowerCase() + " " ] =
+									( responseHeaders[ match[ 1 ].toLowerCase() + " " ] || [] )
+										.concat( match[ 2 ] );
+							}
+						}
+						match = responseHeaders[ key.toLowerCase() + " " ];
+					}
+					return match == null ? null : match.join( ", " );
+				},
+
+				// Raw string
+				getAllResponseHeaders: function() {
+					return completed ? responseHeadersString : null;
+				},
+
+				// Caches the header
+				setRequestHeader: function( name, value ) {
+					if ( completed == null ) {
+						name = requestHeadersNames[ name.toLowerCase() ] =
+							requestHeadersNames[ name.toLowerCase() ] || name;
+						requestHeaders[ name ] = value;
+					}
+					return this;
+				},
+
+				// Overrides response content-type header
+				overrideMimeType: function( type ) {
+					if ( completed == null ) {
+						s.mimeType = type;
+					}
+					return this;
+				},
+
+				// Status-dependent callbacks
+				statusCode: function( map ) {
+					var code;
+					if ( map ) {
+						if ( completed ) {
+
+							// Execute the appropriate callbacks
+							jqXHR.always( map[ jqXHR.status ] );
+						} else {
+
+							// Lazy-add the new callbacks in a way that preserves old ones
+							for ( code in map ) {
+								statusCode[ code ] = [ statusCode[ code ], map[ code ] ];
+							}
+						}
+					}
+					return this;
+				},
+
+				// Cancel the request
+				abort: function( statusText ) {
+					var finalText = statusText || strAbort;
+					if ( transport ) {
+						transport.abort( finalText );
+					}
+					done( 0, finalText );
+					return this;
+				}
+			};
+
+		// Attach deferreds
+		deferred.promise( jqXHR );
+
+		// Add protocol if not provided (prefilters might expect it)
+		// Handle falsy url in the settings object (#10093: consistency with old signature)
+		// We also use the url parameter if available
+		s.url = ( ( url || s.url || location.href ) + "" )
+			.replace( rprotocol, location.protocol + "//" );
+
+		// Alias method option to type as per ticket #12004
+		s.type = options.method || options.type || s.method || s.type;
+
+		// Extract dataTypes list
+		s.dataTypes = ( s.dataType || "*" ).toLowerCase().match( rnothtmlwhite ) || [ "" ];
+
+		// A cross-domain request is in order when the origin doesn't match the current origin.
+		if ( s.crossDomain == null ) {
+			urlAnchor = document.createElement( "a" );
+
+			// Support: IE <=8 - 11, Edge 12 - 15
+			// IE throws exception on accessing the href property if url is malformed,
+			// e.g. http://example.com:80x/
+			try {
+				urlAnchor.href = s.url;
+
+				// Support: IE <=8 - 11 only
+				// Anchor's host property isn't correctly set when s.url is relative
+				urlAnchor.href = urlAnchor.href;
+				s.crossDomain = originAnchor.protocol + "//" + originAnchor.host !==
+					urlAnchor.protocol + "//" + urlAnchor.host;
+			} catch ( e ) {
+
+				// If there is an error parsing the URL, assume it is crossDomain,
+				// it can be rejected by the transport if it is invalid
+				s.crossDomain = true;
+			}
+		}
+
+		// Convert data if not already a string
+		if ( s.data && s.processData && typeof s.data !== "string" ) {
+			s.data = jQuery.param( s.data, s.traditional );
+		}
+
+		// Apply prefilters
+		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
+
+		// If request was aborted inside a prefilter, stop there
+		if ( completed ) {
+			return jqXHR;
+		}
+
+		// We can fire global events as of now if asked to
+		// Don't fire events if jQuery.event is undefined in an AMD-usage scenario (#15118)
+		fireGlobals = jQuery.event && s.global;
+
+		// Watch for a new set of requests
+		if ( fireGlobals && jQuery.active++ === 0 ) {
+			jQuery.event.trigger( "ajaxStart" );
+		}
+
+		// Uppercase the type
+		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = !rnoContent.test( s.type );
+
+		// Save the URL in case we're toying with the If-Modified-Since
+		// and/or If-None-Match header later on
+		// Remove hash to simplify url manipulation
+		cacheURL = s.url.replace( rhash, "" );
+
+		// More options handling for requests with no content
+		if ( !s.hasContent ) {
+
+			// Remember the hash so we can put it back
+			uncached = s.url.slice( cacheURL.length );
+
+			// If data is available and should be processed, append data to url
+			if ( s.data && ( s.processData || typeof s.data === "string" ) ) {
+				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
+
+				// #9682: remove data so that it's not used in an eventual retry
+				delete s.data;
+			}
+
+			// Add or update anti-cache param if needed
+			if ( s.cache === false ) {
+				cacheURL = cacheURL.replace( rantiCache, "$1" );
+				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
+			}
+
+			// Put hash and anti-cache on the URL that will be requested (gh-1732)
+			s.url = cacheURL + uncached;
+
+		// Change '%20' to '+' if this is encoded form body content (gh-2658)
+		} else if ( s.data && s.processData &&
+			( s.contentType || "" ).indexOf( "application/x-www-form-urlencoded" ) === 0 ) {
+			s.data = s.data.replace( r20, "+" );
+		}
+
+		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+		if ( s.ifModified ) {
+			if ( jQuery.lastModified[ cacheURL ] ) {
+				jqXHR.setRequestHeader( "If-Modified-Since", jQuery.lastModified[ cacheURL ] );
+			}
+			if ( jQuery.etag[ cacheURL ] ) {
+				jqXHR.setRequestHeader( "If-None-Match", jQuery.etag[ cacheURL ] );
+			}
+		}
+
+		// Set the correct header, if data is being sent
+		if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
+			jqXHR.setRequestHeader( "Content-Type", s.contentType );
+		}
+
+		// Set the Accepts header for the server, depending on the dataType
+		jqXHR.setRequestHeader(
+			"Accept",
+			s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
+				s.accepts[ s.dataTypes[ 0 ] ] +
+					( s.dataTypes[ 0 ] !== "*" ? ", " + allTypes + "; q=0.01" : "" ) :
+				s.accepts[ "*" ]
+		);
+
+		// Check for headers option
+		for ( i in s.headers ) {
+			jqXHR.setRequestHeader( i, s.headers[ i ] );
+		}
+
+		// Allow custom headers/mimetypes and early abort
+		if ( s.beforeSend &&
+			( s.beforeSend.call( callbackContext, jqXHR, s ) === false || completed ) ) {
+
+			// Abort if not done already and return
+			return jqXHR.abort();
+		}
+
+		// Aborting is no longer a cancellation
+		strAbort = "abort";
+
+		// Install callbacks on deferreds
+		completeDeferred.add( s.complete );
+		jqXHR.done( s.success );
+		jqXHR.fail( s.error );
+
+		// Get transport
+		transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
+
+		// If no transport, we auto-abort
+		if ( !transport ) {
+			done( -1, "No Transport" );
+		} else {
+			jqXHR.readyState = 1;
+
+			// Send global event
+			if ( fireGlobals ) {
+				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
+			}
+
+			// If request was aborted inside ajaxSend, stop there
+			if ( completed ) {
+				return jqXHR;
+			}
+
+			// Timeout
+			if ( s.async && s.timeout > 0 ) {
+				timeoutTimer = window.setTimeout( function() {
+					jqXHR.abort( "timeout" );
+				}, s.timeout );
+			}
+
+			try {
+				completed = false;
+				transport.send( requestHeaders, done );
+			} catch ( e ) {
+
+				// Rethrow post-completion exceptions
+				if ( completed ) {
+					throw e;
+				}
+
+				// Propagate others as results
+				done( -1, e );
+			}
+		}
+
+		// Callback for when everything is done
+		function done( status, nativeStatusText, responses, headers ) {
+			var isSuccess, success, error, response, modified,
+				statusText = nativeStatusText;
+
+			// Ignore repeat invocations
+			if ( completed ) {
+				return;
+			}
+
+			completed = true;
+
+			// Clear timeout if it exists
+			if ( timeoutTimer ) {
+				window.clearTimeout( timeoutTimer );
+			}
+
+			// Dereference transport for early garbage collection
+			// (no matter how long the jqXHR object will be used)
+			transport = undefined;
+
+			// Cache response headers
+			responseHeadersString = headers || "";
+
+			// Set readyState
+			jqXHR.readyState = status > 0 ? 4 : 0;
+
+			// Determine if successful
+			isSuccess = status >= 200 && status < 300 || status === 304;
+
+			// Get response data
+			if ( responses ) {
+				response = ajaxHandleResponses( s, jqXHR, responses );
+			}
+
+			// Convert no matter what (that way responseXXX fields are always set)
+			response = ajaxConvert( s, response, jqXHR, isSuccess );
+
+			// If successful, handle type chaining
+			if ( isSuccess ) {
+
+				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+				if ( s.ifModified ) {
+					modified = jqXHR.getResponseHeader( "Last-Modified" );
+					if ( modified ) {
+						jQuery.lastModified[ cacheURL ] = modified;
+					}
+					modified = jqXHR.getResponseHeader( "etag" );
+					if ( modified ) {
+						jQuery.etag[ cacheURL ] = modified;
+					}
+				}
+
+				// if no content
+				if ( status === 204 || s.type === "HEAD" ) {
+					statusText = "nocontent";
+
+				// if not modified
+				} else if ( status === 304 ) {
+					statusText = "notmodified";
+
+				// If we have data, let's convert it
+				} else {
+					statusText = response.state;
+					success = response.data;
+					error = response.error;
+					isSuccess = !error;
+				}
+			} else {
+
+				// Extract error from statusText and normalize for non-aborts
+				error = statusText;
+				if ( status || !statusText ) {
+					statusText = "error";
+					if ( status < 0 ) {
+						status = 0;
+					}
+				}
+			}
+
+			// Set data for the fake xhr object
+			jqXHR.status = status;
+			jqXHR.statusText = ( nativeStatusText || statusText ) + "";
+
+			// Success/Error
+			if ( isSuccess ) {
+				deferred.resolveWith( callbackContext, [ success, statusText, jqXHR ] );
+			} else {
+				deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
+			}
+
+			// Status-dependent callbacks
+			jqXHR.statusCode( statusCode );
+			statusCode = undefined;
+
+			if ( fireGlobals ) {
+				globalEventContext.trigger( isSuccess ? "ajaxSuccess" : "ajaxError",
+					[ jqXHR, s, isSuccess ? success : error ] );
+			}
+
+			// Complete
+			completeDeferred.fireWith( callbackContext, [ jqXHR, statusText ] );
+
+			if ( fireGlobals ) {
+				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );
+
+				// Handle the global AJAX counter
+				if ( !( --jQuery.active ) ) {
+					jQuery.event.trigger( "ajaxStop" );
+				}
+			}
+		}
+
+		return jqXHR;
+	},
+
+	getJSON: function( url, data, callback ) {
+		return jQuery.get( url, data, callback, "json" );
+	},
+
+	getScript: function( url, callback ) {
+		return jQuery.get( url, undefined, callback, "script" );
+	}
+} );
+
+jQuery.each( [ "get", "post" ], function( i, method ) {
+	jQuery[ method ] = function( url, data, callback, type ) {
+
+		// Shift arguments if data argument was omitted
+		if ( isFunction( data ) ) {
+			type = type || callback;
+			callback = data;
+			data = undefined;
+		}
+
+		// The url can be an options object (which then must have .url)
+		return jQuery.ajax( jQuery.extend( {
+			url: url,
+			type: method,
+			dataType: type,
+			data: data,
+			success: callback
+		}, jQuery.isPlainObject( url ) && url ) );
+	};
+} );
+
+
+jQuery._evalUrl = function( url, options ) {
+	return jQuery.ajax( {
+		url: url,
+
+		// Make this explicit, since user can override this through ajaxSetup (#11264)
+		type: "GET",
+		dataType: "script",
+		cache: true,
+		async: false,
+		global: false,
+
+		// Only evaluate the response if it is successful (gh-4126)
+		// dataFilter is not invoked for failure responses, so using it instead
+		// of the default converter is kludgy but it works.
+		converters: {
+			"text script": function() {}
+		},
+		dataFilter: function( response ) {
+			jQuery.globalEval( response, options );
+		}
+	} );
+};
+
+
+jQuery.fn.extend( {
+	wrapAll: function( html ) {
+		var wrap;
+
+		if ( this[ 0 ] ) {
+			if ( isFunction( html ) ) {
+				html = html.call( this[ 0 ] );
+			}
+
+			// The elements to wrap the target around
+			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+
+			if ( this[ 0 ].parentNode ) {
+				wrap.insertBefore( this[ 0 ] );
+			}
+
+			wrap.map( function() {
+				var elem = this;
+
+				while ( elem.firstElementChild ) {
+					elem = elem.firstElementChild;
+				}
+
+				return elem;
+			} ).append( this );
+		}
+
+		return this;
+	},
+
+	wrapInner: function( html ) {
+		if ( isFunction( html ) ) {
+			return this.each( function( i ) {
+				jQuery( this ).wrapInner( html.call( this, i ) );
+			} );
+		}
+
+		return this.each( function() {
+			var self = jQuery( this ),
+				contents = self.contents();
+
+			if ( contents.length ) {
+				contents.wrapAll( html );
+
+			} else {
+				self.append( html );
+			}
+		} );
+	},
+
+	wrap: function( html ) {
+		var htmlIsFunction = isFunction( html );
+
+		return this.each( function( i ) {
+			jQuery( this ).wrapAll( htmlIsFunction ? html.call( this, i ) : html );
+		} );
+	},
+
+	unwrap: function( selector ) {
+		this.parent( selector ).not( "body" ).each( function() {
+			jQuery( this ).replaceWith( this.childNodes );
+		} );
+		return this;
+	}
+} );
+
+
+jQuery.expr.pseudos.hidden = function( elem ) {
+	return !jQuery.expr.pseudos.visible( elem );
+};
+jQuery.expr.pseudos.visible = function( elem ) {
+	return !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
+};
+
+
+
+
+jQuery.ajaxSettings.xhr = function() {
+	try {
+		return new window.XMLHttpRequest();
+	} catch ( e ) {}
+};
+
+var xhrSuccessStatus = {
+
+		// File protocol always yields status code 0, assume 200
+		0: 200,
+
+		// Support: IE <=9 only
+		// #1450: sometimes IE returns 1223 when it should be 204
+		1223: 204
+	},
+	xhrSupported = jQuery.ajaxSettings.xhr();
+
+support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
+support.ajax = xhrSupported = !!xhrSupported;
+
+jQuery.ajaxTransport( function( options ) {
+	var callback, errorCallback;
+
+	// Cross domain only allowed if supported through XMLHttpRequest
+	if ( support.cors || xhrSupported && !options.crossDomain ) {
+		return {
+			send: function( headers, complete ) {
+				var i,
+					xhr = options.xhr();
+
+				xhr.open(
+					options.type,
+					options.url,
+					options.async,
+					options.username,
+					options.password
+				);
+
+				// Apply custom fields if provided
+				if ( options.xhrFields ) {
+					for ( i in options.xhrFields ) {
+						xhr[ i ] = options.xhrFields[ i ];
+					}
+				}
+
+				// Override mime type if needed
+				if ( options.mimeType && xhr.overrideMimeType ) {
+					xhr.overrideMimeType( options.mimeType );
+				}
+
+				// X-Requested-With header
+				// For cross-domain requests, seeing as conditions for a preflight are
+				// akin to a jigsaw puzzle, we simply never set it to be sure.
+				// (it can always be set on a per-request basis or even using ajaxSetup)
+				// For same-domain requests, won't change header if already provided.
+				if ( !options.crossDomain && !headers[ "X-Requested-With" ] ) {
+					headers[ "X-Requested-With" ] = "XMLHttpRequest";
+				}
+
+				// Set headers
+				for ( i in headers ) {
+					xhr.setRequestHeader( i, headers[ i ] );
+				}
+
+				// Callback
+				callback = function( type ) {
+					return function() {
+						if ( callback ) {
+							callback = errorCallback = xhr.onload =
+								xhr.onerror = xhr.onabort = xhr.ontimeout =
+									xhr.onreadystatechange = null;
+
+							if ( type === "abort" ) {
+								xhr.abort();
+							} else if ( type === "error" ) {
+
+								// Support: IE <=9 only
+								// On a manual native abort, IE9 throws
+								// errors on any property access that is not readyState
+								if ( typeof xhr.status !== "number" ) {
+									complete( 0, "error" );
+								} else {
+									complete(
+
+										// File: protocol always yields status 0; see #8605, #14207
+										xhr.status,
+										xhr.statusText
+									);
+								}
+							} else {
+								complete(
+									xhrSuccessStatus[ xhr.status ] || xhr.status,
+									xhr.statusText,
+
+									// Support: IE <=9 only
+									// IE9 has no XHR2 but throws on binary (trac-11426)
+									// For XHR2 non-text, let the caller handle it (gh-2498)
+									( xhr.responseType || "text" ) !== "text"  ||
+									typeof xhr.responseText !== "string" ?
+										{ binary: xhr.response } :
+										{ text: xhr.responseText },
+									xhr.getAllResponseHeaders()
+								);
+							}
+						}
+					};
+				};
+
+				// Listen to events
+				xhr.onload = callback();
+				errorCallback = xhr.onerror = xhr.ontimeout = callback( "error" );
+
+				// Support: IE 9 only
+				// Use onreadystatechange to replace onabort
+				// to handle uncaught aborts
+				if ( xhr.onabort !== undefined ) {
+					xhr.onabort = errorCallback;
+				} else {
+					xhr.onreadystatechange = function() {
+
+						// Check readyState before timeout as it changes
+						if ( xhr.readyState === 4 ) {
+
+							// Allow onerror to be called first,
+							// but that will not handle a native abort
+							// Also, save errorCallback to a variable
+							// as xhr.onerror cannot be accessed
+							window.setTimeout( function() {
+								if ( callback ) {
+									errorCallback();
+								}
+							} );
+						}
+					};
+				}
+
+				// Create the abort callback
+				callback = callback( "abort" );
+
+				try {
+
+					// Do send the request (this may raise an exception)
+					xhr.send( options.hasContent && options.data || null );
+				} catch ( e ) {
+
+					// #14683: Only rethrow if this hasn't been notified as an error yet
+					if ( callback ) {
+						throw e;
+					}
+				}
+			},
+
+			abort: function() {
+				if ( callback ) {
+					callback();
+				}
+			}
+		};
+	}
+} );
+
+
+
+
+// Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
+jQuery.ajaxPrefilter( function( s ) {
+	if ( s.crossDomain ) {
+		s.contents.script = false;
+	}
+} );
+
+// Install script dataType
+jQuery.ajaxSetup( {
+	accepts: {
+		script: "text/javascript, application/javascript, " +
+			"application/ecmascript, application/x-ecmascript"
+	},
+	contents: {
+		script: /\b(?:java|ecma)script\b/
+	},
+	converters: {
+		"text script": function( text ) {
+			jQuery.globalEval( text );
+			return text;
+		}
+	}
+} );
+
+// Handle cache's special case and crossDomain
+jQuery.ajaxPrefilter( "script", function( s ) {
+	if ( s.cache === undefined ) {
+		s.cache = false;
+	}
+	if ( s.crossDomain ) {
+		s.type = "GET";
+	}
+} );
+
+// Bind script tag hack transport
+jQuery.ajaxTransport( "script", function( s ) {
+
+	// This transport only deals with cross domain or forced-by-attrs requests
+	if ( s.crossDomain || s.scriptAttrs ) {
+		var script, callback;
+		return {
+			send: function( _, complete ) {
+				script = jQuery( "<script>" )
+					.attr( s.scriptAttrs || {} )
+					.prop( { charset: s.scriptCharset, src: s.url } )
+					.on( "load error", callback = function( evt ) {
+						script.remove();
+						callback = null;
+						if ( evt ) {
+							complete( evt.type === "error" ? 404 : 200, evt.type );
+						}
+					} );
+
+				// Use native DOM manipulation to avoid our domManip AJAX trickery
+				document.head.appendChild( script[ 0 ] );
+			},
+			abort: function() {
+				if ( callback ) {
+					callback();
+				}
+			}
+		};
+	}
+} );
+
+
+
+
+var oldCallbacks = [],
+	rjsonp = /(=)\?(?=&|$)|\?\?/;
+
+// Default jsonp settings
+jQuery.ajaxSetup( {
+	jsonp: "callback",
+	jsonpCallback: function() {
+		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce++ ) );
+		this[ callback ] = true;
+		return callback;
+	}
+} );
+
+// Detect, normalize options and install callbacks for jsonp requests
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
+
+	var callbackName, overwritten, responseContainer,
+		jsonProp = s.jsonp !== false && ( rjsonp.test( s.url ) ?
+			"url" :
+			typeof s.data === "string" &&
+				( s.contentType || "" )
+					.indexOf( "application/x-www-form-urlencoded" ) === 0 &&
+				rjsonp.test( s.data ) && "data"
+		);
+
+	// Handle iff the expected data type is "jsonp" or we have a parameter to set
+	if ( jsonProp || s.dataTypes[ 0 ] === "jsonp" ) {
+
+		// Get callback name, remembering preexisting value associated with it
+		callbackName = s.jsonpCallback = isFunction( s.jsonpCallback ) ?
+			s.jsonpCallback() :
+			s.jsonpCallback;
+
+		// Insert callback into url or form data
+		if ( jsonProp ) {
+			s[ jsonProp ] = s[ jsonProp ].replace( rjsonp, "$1" + callbackName );
+		} else if ( s.jsonp !== false ) {
+			s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.jsonp + "=" + callbackName;
+		}
+
+		// Use data converter to retrieve json after script execution
+		s.converters[ "script json" ] = function() {
+			if ( !responseContainer ) {
+				jQuery.error( callbackName + " was not called" );
+			}
+			return responseContainer[ 0 ];
+		};
+
+		// Force json dataType
+		s.dataTypes[ 0 ] = "json";
+
+		// Install callback
+		overwritten = window[ callbackName ];
+		window[ callbackName ] = function() {
+			responseContainer = arguments;
+		};
+
+		// Clean-up function (fires after converters)
+		jqXHR.always( function() {
+
+			// If previous value didn't exist - remove it
+			if ( overwritten === undefined ) {
+				jQuery( window ).removeProp( callbackName );
+
+			// Otherwise restore preexisting value
+			} else {
+				window[ callbackName ] = overwritten;
+			}
+
+			// Save back as free
+			if ( s[ callbackName ] ) {
+
+				// Make sure that re-using the options doesn't screw things around
+				s.jsonpCallback = originalSettings.jsonpCallback;
+
+				// Save the callback name for future use
+				oldCallbacks.push( callbackName );
+			}
+
+			// Call if it was a function and we have a response
+			if ( responseContainer && isFunction( overwritten ) ) {
+				overwritten( responseContainer[ 0 ] );
+			}
+
+			responseContainer = overwritten = undefined;
+		} );
+
+		// Delegate to script
+		return "script";
+	}
+} );
+
+
+
+
+// Support: Safari 8 only
+// In Safari 8 documents created via document.implementation.createHTMLDocument
+// collapse sibling forms: the second one becomes a child of the first one.
+// Because of that, this security measure has to be disabled in Safari 8.
+// https://bugs.webkit.org/show_bug.cgi?id=137337
+support.createHTMLDocument = ( function() {
+	var body = document.implementation.createHTMLDocument( "" ).body;
+	body.innerHTML = "<form></form><form></form>";
+	return body.childNodes.length === 2;
+} )();
+
+
+// Argument "data" should be string of html
+// context (optional): If specified, the fragment will be created in this context,
+// defaults to document
+// keepScripts (optional): If true, will include scripts passed in the html string
+jQuery.parseHTML = function( data, context, keepScripts ) {
+	if ( typeof data !== "string" ) {
+		return [];
+	}
+	if ( typeof context === "boolean" ) {
+		keepScripts = context;
+		context = false;
+	}
+
+	var base, parsed, scripts;
+
+	if ( !context ) {
+
+		// Stop scripts or inline event handlers from being executed immediately
+		// by using document.implementation
+		if ( support.createHTMLDocument ) {
+			context = document.implementation.createHTMLDocument( "" );
+
+			// Set the base href for the created document
+			// so any parsed elements with URLs
+			// are based on the document's URL (gh-2965)
+			base = context.createElement( "base" );
+			base.href = document.location.href;
+			context.head.appendChild( base );
+		} else {
+			context = document;
+		}
+	}
+
+	parsed = rsingleTag.exec( data );
+	scripts = !keepScripts && [];
+
+	// Single tag
+	if ( parsed ) {
+		return [ context.createElement( parsed[ 1 ] ) ];
+	}
+
+	parsed = buildFragment( [ data ], context, scripts );
+
+	if ( scripts && scripts.length ) {
+		jQuery( scripts ).remove();
+	}
+
+	return jQuery.merge( [], parsed.childNodes );
+};
+
+
+/**
+ * Load a url into a page
+ */
+jQuery.fn.load = function( url, params, callback ) {
+	var selector, type, response,
+		self = this,
+		off = url.indexOf( " " );
+
+	if ( off > -1 ) {
+		selector = stripAndCollapse( url.slice( off ) );
+		url = url.slice( 0, off );
+	}
+
+	// If it's a function
+	if ( isFunction( params ) ) {
+
+		// We assume that it's the callback
+		callback = params;
+		params = undefined;
+
+	// Otherwise, build a param string
+	} else if ( params && typeof params === "object" ) {
+		type = "POST";
+	}
+
+	// If we have elements to modify, make the request
+	if ( self.length > 0 ) {
+		jQuery.ajax( {
+			url: url,
+
+			// If "type" variable is undefined, then "GET" method will be used.
+			// Make value of this field explicit since
+			// user can override it through ajaxSetup method
+			type: type || "GET",
+			dataType: "html",
+			data: params
+		} ).done( function( responseText ) {
+
+			// Save response for use in complete callback
+			response = arguments;
+
+			self.html( selector ?
+
+				// If a selector was specified, locate the right elements in a dummy div
+				// Exclude scripts to avoid IE 'Permission Denied' errors
+				jQuery( "<div>" ).append( jQuery.parseHTML( responseText ) ).find( selector ) :
+
+				// Otherwise use the full result
+				responseText );
+
+		// If the request succeeds, this function gets "data", "status", "jqXHR"
+		// but they are ignored because response was set above.
+		// If it fails, this function gets "jqXHR", "status", "error"
+		} ).always( callback && function( jqXHR, status ) {
+			self.each( function() {
+				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
+			} );
+		} );
+	}
+
+	return this;
+};
+
+
+
+
+// Attach a bunch of functions for handling common AJAX events
+jQuery.each( [
+	"ajaxStart",
+	"ajaxStop",
+	"ajaxComplete",
+	"ajaxError",
+	"ajaxSuccess",
+	"ajaxSend"
+], function( i, type ) {
+	jQuery.fn[ type ] = function( fn ) {
+		return this.on( type, fn );
+	};
+} );
+
+
+
+
+jQuery.expr.pseudos.animated = function( elem ) {
+	return jQuery.grep( jQuery.timers, function( fn ) {
+		return elem === fn.elem;
+	} ).length;
+};
+
+
+
+
+jQuery.offset = {
+	setOffset: function( elem, options, i ) {
+		var curPosition, curLeft, curCSSTop, curTop, curOffset, curCSSLeft, calculatePosition,
+			position = jQuery.css( elem, "position" ),
+			curElem = jQuery( elem ),
+			props = {};
+
+		// Set position first, in-case top/left are set even on static elem
+		if ( position === "static" ) {
+			elem.style.position = "relative";
+		}
+
+		curOffset = curElem.offset();
+		curCSSTop = jQuery.css( elem, "top" );
+		curCSSLeft = jQuery.css( elem, "left" );
+		calculatePosition = ( position === "absolute" || position === "fixed" ) &&
+			( curCSSTop + curCSSLeft ).indexOf( "auto" ) > -1;
+
+		// Need to be able to calculate position if either
+		// top or left is auto and position is either absolute or fixed
+		if ( calculatePosition ) {
+			curPosition = curElem.position();
+			curTop = curPosition.top;
+			curLeft = curPosition.left;
+
+		} else {
+			curTop = parseFloat( curCSSTop ) || 0;
+			curLeft = parseFloat( curCSSLeft ) || 0;
+		}
+
+		if ( isFunction( options ) ) {
+
+			// Use jQuery.extend here to allow modification of coordinates argument (gh-1848)
+			options = options.call( elem, i, jQuery.extend( {}, curOffset ) );
+		}
+
+		if ( options.top != null ) {
+			props.top = ( options.top - curOffset.top ) + curTop;
+		}
+		if ( options.left != null ) {
+			props.left = ( options.left - curOffset.left ) + curLeft;
+		}
+
+		if ( "using" in options ) {
+			options.using.call( elem, props );
+
+		} else {
+			curElem.css( props );
+		}
+	}
+};
+
+jQuery.fn.extend( {
+
+	// offset() relates an element's border box to the document origin
+	offset: function( options ) {
+
+		// Preserve chaining for setter
+		if ( arguments.length ) {
+			return options === undefined ?
+				this :
+				this.each( function( i ) {
+					jQuery.offset.setOffset( this, options, i );
+				} );
+		}
+
+		var rect, win,
+			elem = this[ 0 ];
+
+		if ( !elem ) {
+			return;
+		}
+
+		// Return zeros for disconnected and hidden (display: none) elements (gh-2310)
+		// Support: IE <=11 only
+		// Running getBoundingClientRect on a
+		// disconnected node in IE throws an error
+		if ( !elem.getClientRects().length ) {
+			return { top: 0, left: 0 };
+		}
+
+		// Get document-relative position by adding viewport scroll to viewport-relative gBCR
+		rect = elem.getBoundingClientRect();
+		win = elem.ownerDocument.defaultView;
+		return {
+			top: rect.top + win.pageYOffset,
+			left: rect.left + win.pageXOffset
+		};
+	},
+
+	// position() relates an element's margin box to its offset parent's padding box
+	// This corresponds to the behavior of CSS absolute positioning
+	position: function() {
+		if ( !this[ 0 ] ) {
+			return;
+		}
+
+		var offsetParent, offset, doc,
+			elem = this[ 0 ],
+			parentOffset = { top: 0, left: 0 };
+
+		// position:fixed elements are offset from the viewport, which itself always has zero offset
+		if ( jQuery.css( elem, "position" ) === "fixed" ) {
+
+			// Assume position:fixed implies availability of getBoundingClientRect
+			offset = elem.getBoundingClientRect();
+
+		} else {
+			offset = this.offset();
+
+			// Account for the *real* offset parent, which can be the document or its root element
+			// when a statically positioned element is identified
+			doc = elem.ownerDocument;
+			offsetParent = elem.offsetParent || doc.documentElement;
+			while ( offsetParent &&
+				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				jQuery.css( offsetParent, "position" ) === "static" ) {
+
+				offsetParent = offsetParent.parentNode;
+			}
+			if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
+
+				// Incorporate borders into its offset, since they are outside its content origin
+				parentOffset = jQuery( offsetParent ).offset();
+				parentOffset.top += jQuery.css( offsetParent, "borderTopWidth", true );
+				parentOffset.left += jQuery.css( offsetParent, "borderLeftWidth", true );
+			}
+		}
+
+		// Subtract parent offsets and element margins
+		return {
+			top: offset.top - parentOffset.top - jQuery.css( elem, "marginTop", true ),
+			left: offset.left - parentOffset.left - jQuery.css( elem, "marginLeft", true )
+		};
+	},
+
+	// This method will return documentElement in the following cases:
+	// 1) For the element inside the iframe without offsetParent, this method will return
+	//    documentElement of the parent window
+	// 2) For the hidden or detached element
+	// 3) For body or html element, i.e. in case of the html node - it will return itself
+	//
+	// but those exceptions were never presented as a real life use-cases
+	// and might be considered as more preferable results.
+	//
+	// This logic, however, is not guaranteed and can change at any point in the future
+	offsetParent: function() {
+		return this.map( function() {
+			var offsetParent = this.offsetParent;
+
+			while ( offsetParent && jQuery.css( offsetParent, "position" ) === "static" ) {
+				offsetParent = offsetParent.offsetParent;
+			}
+
+			return offsetParent || documentElement;
+		} );
+	}
+} );
+
+// Create scrollLeft and scrollTop methods
+jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( method, prop ) {
+	var top = "pageYOffset" === prop;
+
+	jQuery.fn[ method ] = function( val ) {
+		return access( this, function( elem, method, val ) {
+
+			// Coalesce documents and windows
+			var win;
+			if ( isWindow( elem ) ) {
+				win = elem;
+			} else if ( elem.nodeType === 9 ) {
+				win = elem.defaultView;
+			}
+
+			if ( val === undefined ) {
+				return win ? win[ prop ] : elem[ method ];
+			}
+
+			if ( win ) {
+				win.scrollTo(
+					!top ? val : win.pageXOffset,
+					top ? val : win.pageYOffset
+				);
+
+			} else {
+				elem[ method ] = val;
+			}
+		}, method, val, arguments.length );
+	};
+} );
+
+// Support: Safari <=7 - 9.1, Chrome <=37 - 49
+// Add the top/left cssHooks using jQuery.fn.position
+// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
+// Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
+// getComputedStyle returns percent when specified for top/left/bottom/right;
+// rather than make the css module depend on the offset module, just check for it here
+jQuery.each( [ "top", "left" ], function( i, prop ) {
+	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
+		function( elem, computed ) {
+			if ( computed ) {
+				computed = curCSS( elem, prop );
+
+				// If curCSS returns percentage, fallback to offset
+				return rnumnonpx.test( computed ) ?
+					jQuery( elem ).position()[ prop ] + "px" :
+					computed;
+			}
+		}
+	);
+} );
+
+
+// Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
+jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
+	jQuery.each( { padding: "inner" + name, content: type, "": "outer" + name },
+		function( defaultExtra, funcName ) {
+
+		// Margin is only for outerHeight, outerWidth
+		jQuery.fn[ funcName ] = function( margin, value ) {
+			var chainable = arguments.length && ( defaultExtra || typeof margin !== "boolean" ),
+				extra = defaultExtra || ( margin === true || value === true ? "margin" : "border" );
+
+			return access( this, function( elem, type, value ) {
+				var doc;
+
+				if ( isWindow( elem ) ) {
+
+					// $( window ).outerWidth/Height return w/h including scrollbars (gh-1729)
+					return funcName.indexOf( "outer" ) === 0 ?
+						elem[ "inner" + name ] :
+						elem.document.documentElement[ "client" + name ];
+				}
+
+				// Get document width or height
+				if ( elem.nodeType === 9 ) {
+					doc = elem.documentElement;
+
+					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
+					// whichever is greatest
+					return Math.max(
+						elem.body[ "scroll" + name ], doc[ "scroll" + name ],
+						elem.body[ "offset" + name ], doc[ "offset" + name ],
+						doc[ "client" + name ]
+					);
+				}
+
+				return value === undefined ?
+
+					// Get width or height on the element, requesting but not forcing parseFloat
+					jQuery.css( elem, type, extra ) :
+
+					// Set width or height on the element
+					jQuery.style( elem, type, value, extra );
+			}, type, chainable ? margin : undefined, chainable );
+		};
+	} );
+} );
+
+
+jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
+	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
+	function( i, name ) {
+
+	// Handle event binding
+	jQuery.fn[ name ] = function( data, fn ) {
+		return arguments.length > 0 ?
+			this.on( name, null, data, fn ) :
+			this.trigger( name );
+	};
+} );
+
+jQuery.fn.extend( {
+	hover: function( fnOver, fnOut ) {
+		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
+	}
+} );
+
+
+
+
+jQuery.fn.extend( {
+
+	bind: function( types, data, fn ) {
+		return this.on( types, null, data, fn );
+	},
+	unbind: function( types, fn ) {
+		return this.off( types, null, fn );
+	},
+
+	delegate: function( selector, types, data, fn ) {
+		return this.on( types, selector, data, fn );
+	},
+	undelegate: function( selector, types, fn ) {
+
+		// ( namespace ) or ( selector, types [, fn] )
+		return arguments.length === 1 ?
+			this.off( selector, "**" ) :
+			this.off( types, selector || "**", fn );
+	}
+} );
+
+// Bind a function to a context, optionally partially applying any
+// arguments.
+// jQuery.proxy is deprecated to promote standards (specifically Function#bind)
+// However, it is not slated for removal any time soon
+jQuery.proxy = function( fn, context ) {
+	var tmp, args, proxy;
+
+	if ( typeof context === "string" ) {
+		tmp = fn[ context ];
+		context = fn;
+		fn = tmp;
+	}
+
+	// Quick check to determine if target is callable, in the spec
+	// this throws a TypeError, but we will just return undefined.
+	if ( !isFunction( fn ) ) {
+		return undefined;
+	}
+
+	// Simulated bind
+	args = slice.call( arguments, 2 );
+	proxy = function() {
+		return fn.apply( context || this, args.concat( slice.call( arguments ) ) );
+	};
+
+	// Set the guid of unique handler to the same of original handler, so it can be removed
+	proxy.guid = fn.guid = fn.guid || jQuery.guid++;
+
+	return proxy;
+};
+
+jQuery.holdReady = function( hold ) {
+	if ( hold ) {
+		jQuery.readyWait++;
+	} else {
+		jQuery.ready( true );
+	}
+};
+jQuery.isArray = Array.isArray;
+jQuery.parseJSON = JSON.parse;
+jQuery.nodeName = nodeName;
+jQuery.isFunction = isFunction;
+jQuery.isWindow = isWindow;
+jQuery.camelCase = camelCase;
+jQuery.type = toType;
+
+jQuery.now = Date.now;
+
+jQuery.isNumeric = function( obj ) {
+
+	// As of jQuery 3.0, isNumeric is limited to
+	// strings and numbers (primitives or objects)
+	// that can be coerced to finite numbers (gh-2662)
+	var type = jQuery.type( obj );
+	return ( type === "number" || type === "string" ) &&
+
+		// parseFloat NaNs numeric-cast false positives ("")
+		// ...but misinterprets leading-number strings, particularly hex literals ("0x...")
+		// subtraction forces infinities to NaN
+		!isNaN( obj - parseFloat( obj ) );
+};
+
+
+
+
+// Register as a named AMD module, since jQuery can be concatenated with other
+// files that may use define, but not via a proper concatenation script that
+// understands anonymous AMD modules. A named AMD is safest and most robust
+// way to register. Lowercase jquery is used because AMD module names are
+// derived from file names, and jQuery is normally delivered in a lowercase
+// file name. Do this after creating the global so that if an AMD module wants
+// to call noConflict to hide this version of jQuery, it will work.
+
+// Note that for maximum portability, libraries that are not jQuery should
+// declare themselves as anonymous modules, and avoid setting a global if an
+// AMD loader is present. jQuery is a special case. For more information, see
+// https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
+
+if ( typeof define === "function" && define.amd ) {
+	define( "jquery", [], function() {
+		return jQuery;
+	} );
+}
+
+
+
+
+var
+
+	// Map over jQuery in case of overwrite
+	_jQuery = window.jQuery,
+
+	// Map over the $ in case of overwrite
+	_$ = window.$;
+
+jQuery.noConflict = function( deep ) {
+	if ( window.$ === jQuery ) {
+		window.$ = _$;
+	}
+
+	if ( deep && window.jQuery === jQuery ) {
+		window.jQuery = _jQuery;
+	}
+
+	return jQuery;
+};
+
+// Expose jQuery and $ identifiers, even in AMD
+// (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
+// and CommonJS for browser emulators (#13566)
+if ( !noGlobal ) {
+	window.jQuery = window.$ = jQuery;
+}
+
+
+
+
+return jQuery;
+} );
+
 ;(function() {
 /*!
  * @overview  Ember - JavaScript Application Framework
@@ -66058,6 +76657,18 @@ define("rsvp", ["exports"], function (_exports) {
 require('ember');
 }());
 
+;(function () {
+  function vendorModule() {
+    'use strict';
+
+    return {
+      'default': self['jQuery'],
+      __esModule: true
+    };
+  }
+
+  define('jquery', [], vendorModule);
+})();
 ;if (typeof FastBoot === 'undefined') {
       var preferNative = false;
       (function (global) {
@@ -90283,6 +100894,445 @@ require('ember');
     }
   });
 });
+;define("@ember-decorators/component/index", ["exports", "@ember-decorators/utils/collapse-proto", "@ember-decorators/utils/decorator"], function (_exports, _collapseProto, _decorator) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.layout = _exports.tagName = _exports.attributeBindings = _exports.classNameBindings = _exports.classNames = _exports.className = _exports.attribute = void 0;
+
+  /**
+    Decorator which indicates that the field or computed should be bound
+    to an attribute value on the component. This replaces `attributeBindings`
+    by directly allowing you to specify which properties should be bound.
+    ```js
+    export default class AttributeDemoComponent extends Component {
+      @attribute role = 'button';
+      // With provided attribute name
+      @attribute('data-foo') foo = 'lol';
+      @attribute
+      @computed
+      get id() {
+        // return generated id
+      }
+    }
+    ```
+    @function
+    @param {string} name? - The name of the attribute to bind the value to if it is truthy
+  */
+  const attribute = (0, _decorator.decoratorWithParams)((target, key, desc, params = []) => {
+    (true && !(params.length <= 1) && Ember.assert(`The @attribute decorator may take up to one parameter, the bound attribute name. Received: ${params.length}`, params.length <= 1));
+    (true && !(params.every(s => typeof s === 'string')) && Ember.assert(`The @attribute decorator may only receive strings as parameters. Received: ${params}`, params.every(s => typeof s === 'string')));
+    (0, _collapseProto.default)(target);
+
+    if (!target.hasOwnProperty('attributeBindings')) {
+      let parentValue = target.attributeBindings;
+      target.attributeBindings = Array.isArray(parentValue) ? parentValue.slice() : [];
+    }
+
+    let binding = params[0] ? `${key}:${params[0]}` : key;
+    target.attributeBindings.push(binding);
+
+    if (desc) {
+      // Decorated fields are currently not configurable in Babel for some reason, so ensure
+      // that the field becomes configurable (else it messes with things)
+      desc.configurable = true;
+    }
+
+    return desc;
+  });
+  /**
+    Decorator which indicates that the field or computed should be bound to
+    the component class names. This replaces `classNameBindings` by directly
+    allowing you to specify which properties should be bound.
+    ```js
+    export default class ClassNameDemoComponent extends Component {
+      @className boundField = 'default-class';
+      // With provided true/false class names
+      @className('active', 'inactive') isActive = true;
+      @className
+      @computed
+      get boundComputed() {
+        // return generated class
+      }
+    }
+    ```
+    @function
+    @param {string} truthyName? - The class to be applied if the value the field
+                                  is truthy, defaults to the name of the field.
+    @param {string} falsyName? - The class to be applied if the value of the field
+                                 is falsy.
+  */
+
+  _exports.attribute = attribute;
+  const className = (0, _decorator.decoratorWithParams)((target, key, desc, params = []) => {
+    (true && !(params.length <= 2) && Ember.assert(`The @className decorator may take up to two parameters, the truthy class and falsy class for the class binding. Received: ${params.length}`, params.length <= 2));
+    (true && !(params.every(s => typeof s === 'string')) && Ember.assert(`The @className decorator may only receive strings as parameters. Received: ${params}`, params.every(s => typeof s === 'string')));
+    (0, _collapseProto.default)(target);
+
+    if (!target.hasOwnProperty('classNameBindings')) {
+      let parentValue = target.classNameBindings;
+      target.classNameBindings = Array.isArray(parentValue) ? parentValue.slice() : [];
+    }
+
+    let binding = params.length > 0 ? `${key}:${params.join(':')}` : key;
+    target.classNameBindings.push(binding);
+
+    if (desc) {
+      // Decorated fields are currently not configurable in Babel for some reason, so ensure
+      // that the field becomes configurable (else it messes with things)
+      desc.configurable = true;
+    }
+
+    return desc;
+  });
+  _exports.className = className;
+
+  function concattedPropDecorator(propName) {
+    return (0, _decorator.decoratorWithRequiredParams)((target, propValues) => {
+      (true && !(propValues.reduce((allStrings, name) => allStrings && typeof name === 'string', true)) && Ember.assert(`The @${propName} decorator must be provided strings, received: ${propValues}`, propValues.reduce((allStrings, name) => allStrings && typeof name === 'string', true)));
+      (0, _collapseProto.default)(target.prototype);
+
+      if (propName in target.prototype) {
+        let parentValues = target.prototype[propName];
+        propValues.unshift(...parentValues);
+      }
+
+      target.prototype[propName] = propValues;
+      return target;
+    }, propName);
+  }
+  /**
+    Class decorator which specifies the class names to be applied to a component.
+    This replaces the `classNames` property on components in the traditional Ember
+    object model.
+    ```js
+    @classNames('a-static-class', 'another-static-class')
+    export default class ClassNamesDemoComponent extends Component {}
+    ```
+    @function
+    @param {...string} classNames - The list of classes to be applied to the component
+  */
+
+
+  const classNames = concattedPropDecorator('classNames');
+  /**
+    Class decorator which specifies the class name bindings to be applied to a
+    component. This replaces the `classNameBindings` property on components in the
+    traditional Ember object model.
+    ```js
+    @classNameBindings('aDynamicProperty:truthy-class-name:falsy-class-name')
+    export default class ClassNamesDemoComponent extends Component {}
+    ```
+    @function
+    @param {...string} classNameBindings - The list of class name bindings to be applied to the component
+  */
+
+  _exports.classNames = classNames;
+  const classNameBindings = concattedPropDecorator('classNameBindings');
+  /**
+    Class decorator which specifies the attribute bindings to be applied to a
+    component. This replaces the `attributeBindings` property on components in the
+    traditional Ember object model.
+    ```js
+    @attributeBindings('role', 'aProperty:a-different-attribute')
+    export default class ClassNamesDemoComponent extends Component {}
+    ```
+    @function
+    @param {...string} attributeBindings - The list of attribute bindings to be applied to the component
+  */
+
+  _exports.classNameBindings = classNameBindings;
+  const attributeBindings = concattedPropDecorator('attributeBindings');
+  /**
+    Class decorator which specifies the tag name of the component. This replaces
+    the `tagName` property on components in the traditional Ember object model.
+    ```js
+    @tagName('button')
+    export default class TagNameDemoComponent extends Component {}
+    ```
+    @function
+    @param {string} tagName - The HTML tag to be used for the component
+  */
+
+  _exports.attributeBindings = attributeBindings;
+  const tagName = (0, _decorator.decoratorWithRequiredParams)((target, params) => {
+    let [tagName] = params;
+    (true && !(params.length === 1) && Ember.assert(`The @tagName decorator must be provided exactly one argument, received: ${tagName}`, params.length === 1));
+    (true && !(typeof tagName === 'string') && Ember.assert(`The @tagName decorator must be provided a string, received: ${tagName}`, typeof tagName === 'string'));
+    target.prototype.tagName = tagName;
+    return target;
+  }, 'tagName');
+  /**
+    Class decorator which specifies the layout for the component. This replaces
+    the `layout` property on components in the traditional Ember object model.
+    ```js
+    import template from '../templates/components/x-foo';
+    @layout(template)
+    export default class TagNameDemoComponent extends Component {}
+    ```
+    ```js
+    import hbs from 'htmlbars-inline-precompile';
+    @layout(hbs`<h1>Hello {{ name }}</h1>`)
+    export default class TagNameDemoComponent extends Component {
+      constructor() {
+        super(...arguments);
+        this.set('name', 'Tomster');
+      }
+    }
+    ```
+    @function
+    @param {TemplateFactory} template - The compiled template to be used for the component
+  */
+
+  _exports.tagName = tagName;
+
+  const layout = (...params) => target => {
+    let [template] = params;
+    (true && !(params.length === 1) && Ember.assert(`The @layout decorator must be provided exactly one argument, received: ${params.length}`, params.length === 1));
+    (true && !(typeof template !== 'string') && Ember.assert(`The @layout decorator must be provided a template, received: ${template}. If you want to compile strings to templates, be sure to use 'htmlbars-inline-precompile'`, typeof template !== 'string'));
+    (true && !(typeof template === 'function' || typeof template === 'object' && typeof template.indexOf === 'undefined') && Ember.assert(`The @layout decorator must be provided a template, received: ${template}`, typeof template === 'function' || typeof template === 'object' && typeof template.indexOf === 'undefined'));
+    target.prototype.layout = template;
+    return target;
+  };
+
+  _exports.layout = layout;
+});
+;define("@ember-decorators/object/index", ["exports", "@ember-decorators/utils/decorator"], function (_exports, _decorator) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.off = _exports.on = _exports.unobserves = _exports.observes = void 0;
+
+  /**
+    Triggers the target function when the dependent properties have changed. Note,
+    `@observes` _must_ be used on EmberObject based classes only, otherwise there
+    may be subtle issues and breakage.
+  
+    ```javascript
+    import { observes } from '@ember-decorators/object';
+  
+    class Foo {
+      @observes('foo')
+      bar() {
+        //...
+      }
+    }
+    ```
+  
+    @function
+    @param {...String} propertyNames - Names of the properties that trigger the function
+   */
+  const observes = (0, _decorator.decoratorWithRequiredParams)((target, key, desc, params) => {
+    (true && !(desc && typeof desc.value === 'function') && Ember.assert('The @observes decorator must be applied to functions', desc && typeof desc.value === 'function'));
+    (true && !(target instanceof Ember.Object) && Ember.assert(`You attempted to use @observes on ${target.constructor.name}#${key}, which does not extend from EmberObject. Unfortunately this does not work with stage 1 decorator transforms, and will break in subtle ways. You must rewrite your class to extend from EmberObject.`, target instanceof Ember.Object));
+
+    for (let path of params) {
+      Ember.expandProperties(path, expandedPath => {
+        Ember.addObserver(target, expandedPath, null, key);
+      });
+    }
+
+    return desc;
+  }, 'observes');
+  /**
+    Removes observers from the target function.
+  
+    ```javascript
+    import { observes, unobserves } from '@ember-decorators/object';
+  
+    class Foo {
+      @observes('foo')
+      bar() {
+        //...
+      }
+    }
+  
+    class Bar extends Foo {
+      @unobserves('foo') bar;
+    }
+    ```
+  
+    @function
+    @param {...String} propertyNames - Names of the properties that no longer trigger the function
+   */
+
+  _exports.observes = observes;
+  const unobserves = (0, _decorator.decoratorWithRequiredParams)((target, key, desc, params) => {
+    for (let path of params) {
+      Ember.expandProperties(path, expandedPath => {
+        Ember.removeObserver(target, expandedPath, null, key);
+      });
+    }
+
+    return desc;
+  }, 'unobserves');
+  /**
+    Adds an event listener to the target function.
+  
+    ```javascript
+    import { on } from '@ember-decorators/object';
+  
+    class Foo {
+      @on('fooEvent', 'barEvent')
+      bar() {
+        //...
+      }
+    }
+    ```
+  
+    @function
+    @param {...String} eventNames - Names of the events that trigger the function
+   */
+
+  _exports.unobserves = unobserves;
+  const on = (0, _decorator.decoratorWithRequiredParams)((target, key, desc, params) => {
+    (true && !(desc && typeof desc.value === 'function') && Ember.assert('The @on decorator must be applied to functions', desc && typeof desc.value === 'function'));
+
+    for (let eventName of params) {
+      Ember.addListener(target, eventName, null, key);
+    }
+
+    return desc;
+  }, 'on');
+  /**
+    Removes an event listener from the target function.
+  
+    ```javascript
+    import { on, off } from '@ember-decorators/object';
+  
+    class Foo {
+      @on('fooEvent', 'barEvent')
+      bar() {
+        //...
+      }
+    }
+  
+    class Bar extends Foo {
+      @off('fooEvent', 'barEvent') bar;
+    }
+    ```
+  
+    @function
+    @param {...String} eventNames - Names of the events that no longer trigger the function
+   */
+
+  _exports.on = on;
+  const off = (0, _decorator.decoratorWithRequiredParams)((target, key, desc, params) => {
+    for (let eventName of params) {
+      Ember.removeListener(target, eventName, null, key);
+    }
+
+    return desc;
+  }, 'off');
+  _exports.off = off;
+});
+;define("@ember-decorators/utils/-private/class-field-descriptor", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.isFieldDescriptor = isFieldDescriptor;
+  _exports.isDescriptor = isDescriptor;
+
+  function isClassDescriptor(possibleDesc) {
+    let [target] = possibleDesc;
+    return possibleDesc.length === 1 && typeof target === 'function' && 'prototype' in target && !target.__isComputedDecorator;
+  }
+
+  function isFieldDescriptor(possibleDesc) {
+    let [target, key, desc] = possibleDesc;
+    return possibleDesc.length === 3 && typeof target === 'object' && target !== null && typeof key === 'string' && (typeof desc === 'object' && desc !== null && 'enumerable' in desc && 'configurable' in desc || desc === undefined) // TS compatibility
+    ;
+  }
+
+  function isDescriptor(possibleDesc) {
+    return isFieldDescriptor(possibleDesc) || isClassDescriptor(possibleDesc);
+  }
+});
+;define("@ember-decorators/utils/collapse-proto", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = collapseProto;
+
+  function collapseProto(target) {
+    // We must collapse the superclass prototype to make sure that the `actions`
+    // object will exist. Since collapsing doesn't generally happen until a class is
+    // instantiated, we have to do it manually.
+    if (typeof target.constructor.proto === 'function') {
+      target.constructor.proto();
+    }
+  }
+});
+;define("@ember-decorators/utils/decorator", ["exports", "@ember-decorators/utils/-private/class-field-descriptor"], function (_exports, _classFieldDescriptor) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.decoratorWithParams = decoratorWithParams;
+  _exports.decoratorWithRequiredParams = decoratorWithRequiredParams;
+
+  /**
+   * A macro that takes a decorator function and allows it to optionally
+   * receive parameters
+   *
+   * ```js
+   * let foo = decoratorWithParams((target, desc, key, params) => {
+   *   console.log(params);
+   * });
+   *
+   * class {
+   *   @foo bar; // undefined
+   *   @foo('bar') baz; // ['bar']
+   * }
+   * ```
+   *
+   * @param {Function} fn - decorator function
+   */
+  function decoratorWithParams(fn) {
+    return function (...params) {
+      // determine if user called as @computed('blah', 'blah') or @computed
+      if ((0, _classFieldDescriptor.isDescriptor)(params)) {
+        return fn(...params);
+      } else {
+        return (...desc) => fn(...desc, params);
+      }
+    };
+  }
+  /**
+   * A macro that takes a decorator function and requires it to receive
+   * parameters:
+   *
+   * ```js
+   * let foo = decoratorWithRequiredParams((target, desc, key, params) => {
+   *   console.log(params);
+   * });
+   *
+   * class {
+   *   @foo('bar') baz; // ['bar']
+   *   @foo bar; // Error
+   * }
+   * ```
+   *
+   * @param {Function} fn - decorator function
+   */
+
+
+  function decoratorWithRequiredParams(fn, name) {
+    return function (...params) {
+      (true && !(!(0, _classFieldDescriptor.isDescriptor)(params) && params.length > 0) && Ember.assert(`The @${name || fn.name} decorator requires parameters`, !(0, _classFieldDescriptor.isDescriptor)(params) && params.length > 0));
+      return (...desc) => fn(...desc, params);
+    };
+  }
+});
 ;define('@ember/ordered-set/index', ['exports'], function (exports) {
   'use strict';
 
@@ -92196,14 +103246,14 @@ require('ember');
 
   _exports.AjaxServiceClass = AjaxServiceClass;
 });
-;define("ember-ajax/utils/ajax", ["exports"], function (_exports) {
+;define("ember-ajax/utils/ajax", ["exports", "jquery"], function (_exports, _jquery) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
     value: true
   });
   _exports.default = void 0;
-  const ajax = typeof FastBoot === 'undefined' ? Ember.$.ajax : FastBoot.require('najax');
+  const ajax = typeof FastBoot === 'undefined' ? _jquery.default.ajax : FastBoot.require('najax');
   var _default = ajax;
   _exports.default = _default;
 });
@@ -93691,6 +104741,1644 @@ require('ember');
     return Ember.Handlebars.makeBoundHelper(helperFunction);
   }
 });
+;define("ember-lifeline/debounce-task", ["exports", "ember-lifeline/utils/disposable"], function (_exports, _disposable) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.debounceTask = debounceTask;
+  _exports.cancelDebounce = cancelDebounce;
+
+  /**
+   * A map of instances/debounce functions that allows us to
+   * store pending debounces per instance.
+   *
+   * @private
+   */
+  const registeredDebounces = new WeakMap();
+  /**
+   * Runs the function with the provided name after the timeout has expired on the last
+   * invocation. The timer is properly canceled if the object is destroyed before it is
+   * invoked.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { debounceTask, runDisposables } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   logMe() {
+   *     console.log('This will only run once every 300ms.');
+   *   },
+   *
+   *   click() {
+   *     debounceTask(this, 'logMe', 300);
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @function debounceTask
+   * @param { IDestroyable } destroyable the instance to register the task for
+   * @param { String } name the name of the task to debounce
+   * @param { ...* } debounceArgs arguments to pass to the debounced method
+   * @param { Number } spacing the amount of time to wait before calling the method (in milliseconds)
+   * @param { Boolean } [immediate] Trigger the function on the leading instead of the trailing edge of the wait interval. Defaults to false.
+   * @public
+   */
+
+  function debounceTask(destroyable, name, ...debounceArgs) {
+    (true && !(typeof name === 'string') && Ember.assert(`Called \`debounceTask\` without a string as the first argument on ${destroyable}.`, typeof name === 'string'));
+    (true && !(typeof destroyable[name] === 'function') && Ember.assert(`Called \`destroyable.debounceTask('${name}', ...)\` where 'destroyable.${name}' is not a function.`, typeof destroyable[name] === 'function'));
+
+    if (destroyable.isDestroying) {
+      return;
+    }
+
+    const lastArgument = debounceArgs[debounceArgs.length - 1];
+    const spacing = typeof lastArgument === 'boolean' ? debounceArgs[debounceArgs.length - 2] : lastArgument;
+    (true && !(typeof spacing === 'number') && Ember.assert(`Called \`debounceTask\` with incorrect \`spacing\` argument. Expected Number and received \`${spacing}\``, typeof spacing === 'number'));
+    let pendingDebounces = registeredDebounces.get(destroyable);
+
+    if (!pendingDebounces) {
+      pendingDebounces = new Map();
+      registeredDebounces.set(destroyable, pendingDebounces);
+      (0, _disposable.registerDisposable)(destroyable, getDebouncesDisposable(pendingDebounces));
+    }
+
+    let debouncedTask;
+
+    if (!pendingDebounces.has(name)) {
+      debouncedTask = (...args) => {
+        pendingDebounces.delete(name);
+        destroyable[name](...args);
+      };
+    } else {
+      debouncedTask = pendingDebounces.get(name).debouncedTask;
+    } // cancelId is new, even if the debounced function was already present
+
+
+    let cancelId = Ember.run.debounce(destroyable, debouncedTask, ...debounceArgs);
+    pendingDebounces.set(name, {
+      debouncedTask,
+      cancelId
+    });
+  }
+  /**
+   * Cancel a previously debounced task.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { debounceTask, cancelDebounce } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   logMe() {
+   *     console.log('This will only run once every 300ms.');
+   *   },
+   *
+   *   click() {
+   *     debounceTask(this, 'logMe', 300);
+   *   },
+   *
+   *   disable() {
+   *      cancelDebounce(this, 'logMe');
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @function cancelDebounce
+   * @param { IDestroyable } destroyable the instance to register the task for
+   * @param { String } methodName the name of the debounced method to cancel
+   * @public
+   */
+
+
+  function cancelDebounce(destroyable, name) {
+    if (!registeredDebounces.has(destroyable)) {
+      return;
+    }
+
+    const pendingDebounces = registeredDebounces.get(destroyable);
+
+    if (!pendingDebounces.has(name)) {
+      return;
+    }
+
+    const {
+      cancelId
+    } = pendingDebounces.get(name);
+    pendingDebounces.delete(name);
+    Ember.run.cancel(cancelId);
+  }
+
+  function getDebouncesDisposable(debounces) {
+    return function () {
+      if (debounces.size === 0) {
+        return;
+      }
+
+      debounces.forEach(p => Ember.run.cancel(p.cancelId));
+    };
+  }
+});
+;define("ember-lifeline/dom-event-listeners", ["exports", "ember-lifeline/utils/disposable"], function (_exports, _disposable) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.addEventListener = addEventListener;
+  _exports.removeEventListener = removeEventListener;
+  _exports.PASSIVE_SUPPORTED = void 0;
+
+  /**
+   * A map of instances/listeners that allows us to
+   * store listener references per instance.
+   *
+   * @private
+   */
+  const eventListeners = new WeakMap();
+
+  const PASSIVE_SUPPORTED = (() => {
+    let ret = false;
+
+    try {
+      let options = Object.defineProperty({}, 'passive', {
+        get() {
+          ret = true;
+        }
+
+      });
+      window.addEventListener('test', null, options);
+    } catch (err) {// intentionally empty
+    }
+
+    return ret;
+  })();
+
+  _exports.PASSIVE_SUPPORTED = PASSIVE_SUPPORTED;
+  const LISTENER_ITEM_LENGTH = 5;
+  var ListenerItemPosition;
+  /**
+   * Attaches an event listener that will automatically be removed when the host
+   * object is dropped from DOM.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { addEventListener } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   didInsertElement() {
+   *     addEventListener(this, '.some-item', 'click', (e) => {
+   *       console.log('.some-item was clicked');
+   *     });
+   *   }
+   * });
+   * ```
+   *
+   * This can also be used in other ember types like services and controllers. In
+   * order to use it there an html element reference must be used instead of a
+   * css selector. This way we can be sure the element actually exists when the
+   * listener is attached:
+   *
+   * ```js
+   * import Service from 'ember-service';
+   * import { addEventListener } from 'ember-lifeline';
+   *
+   * export default Service.extend({
+   *   init() {
+   *     this._super(...arguments);
+   *     const el = document.querySelector('.foo');
+   *     addEventListener(this, el, 'click');
+   *   }
+   * });
+   * ```
+   *
+   * @public
+   * @function addEventListener
+   * @param { IDestroyable } destroyable the instance to attach the listener for
+   * @param { EventTarget } target the EventTarget, e.g. DOM element or `window`
+   * @param { String } eventName the event name to listen for
+   * @param { Function } callback the callback to run for that event
+   * @param { any } options additional options provided to the browser's `addEventListener`
+   */
+
+  (function (ListenerItemPosition) {
+    ListenerItemPosition[ListenerItemPosition["Target"] = 0] = "Target";
+    ListenerItemPosition[ListenerItemPosition["eventName"] = 1] = "eventName";
+    ListenerItemPosition[ListenerItemPosition["callback"] = 2] = "callback";
+    ListenerItemPosition[ListenerItemPosition["originalCallback"] = 3] = "originalCallback";
+    ListenerItemPosition[ListenerItemPosition["options"] = 4] = "options";
+  })(ListenerItemPosition || (ListenerItemPosition = {}));
+
+  function addEventListener(destroyable, target, eventName, callback, options) {
+    assertArguments(target, eventName, callback);
+
+    let _callback = Ember.run.bind(destroyable, callback);
+
+    let listeners = eventListeners.get(destroyable);
+
+    if (listeners === undefined) {
+      listeners = [];
+      eventListeners.set(destroyable, listeners);
+    } // Register a disposable every time we go from zero to one.
+
+
+    if (listeners.length === 0) {
+      (0, _disposable.registerDisposable)(destroyable, getEventListenersDisposable(listeners));
+    }
+
+    if (!PASSIVE_SUPPORTED) {
+      options = undefined;
+    }
+
+    target.addEventListener(eventName, _callback, options);
+    listeners.push(target, eventName, _callback, callback, options);
+  }
+  /**
+   * Removes an event listener explicitly from the target, also removing it from
+   * lifeline's DOM entanglement tracking.
+   *
+   * @public
+   * @function removeEventListener
+   * @param { IDestroyable } destroyable the instance to remove the listener for
+   * @param { EventTarget } target the EventTarget, e.g. DOM element or `window`
+   * @param { String } eventName the event name to listen for
+   * @param { Function } callback the callback to run for that event
+   * @param { any } options additional options provided to the browser's `removeEventListener`
+   */
+
+
+  function removeEventListener(destroyable, target, eventName, callback, options) {
+    assertArguments(target, eventName, callback);
+    let listeners = eventListeners.get(destroyable);
+
+    if (listeners === undefined || listeners.length === 0) {
+      return;
+    }
+
+    if (!PASSIVE_SUPPORTED) {
+      options = undefined;
+    } // We cannot use Array.findIndex as we cannot rely on babel/polyfill being present
+
+
+    for (let i = 0; i < listeners.length; i += LISTENER_ITEM_LENGTH) {
+      if (listeners[i + ListenerItemPosition.Target] === target && listeners[i + ListenerItemPosition.eventName] === eventName && listeners[i + ListenerItemPosition.originalCallback] === callback) {
+        /*
+         * Drop the event listener and remove the listener object
+         */
+        let ownCallback = listeners[i + ListenerItemPosition.callback];
+        target.removeEventListener(eventName, ownCallback, options);
+        listeners.splice(i, LISTENER_ITEM_LENGTH);
+        break;
+      }
+    }
+  }
+
+  function assertArguments(element, eventName, callback) {
+    (true && !(!!element) && Ember.assert('Must provide a DOM element', !!element));
+    (true && !(typeof element !== 'string' && typeof element !== 'function' && element !== null && element !== undefined) && Ember.assert('Must provide an element (not a DOM selector)', typeof element !== 'string' && typeof element !== 'function' && element !== null && element !== undefined));
+    (true && !(!!eventName) && Ember.assert('Must provide an eventName that specifies the event type', !!eventName));
+    (true && !(!!callback) && Ember.assert('Must provide a callback to run for the given event name', !!callback));
+  }
+
+  function getEventListenersDisposable(listeners) {
+    return function () {
+      if (listeners !== undefined) {
+        /* Drop non-passive event listeners */
+        for (let i = 0; i < listeners.length; i += LISTENER_ITEM_LENGTH) {
+          let element = listeners[i + ListenerItemPosition.Target];
+          let eventName = listeners[i + ListenerItemPosition.eventName];
+          let callback = listeners[i + ListenerItemPosition.callback];
+          let options = listeners[i + ListenerItemPosition.options];
+          element.removeEventListener(eventName, callback, options);
+        }
+
+        listeners.length = 0;
+      }
+    };
+  }
+});
+;define("ember-lifeline/index", ["exports", "ember-lifeline/run-task", "ember-lifeline/poll-task", "ember-lifeline/debounce-task", "ember-lifeline/dom-event-listeners", "ember-lifeline/utils/disposable", "ember-lifeline/mixins/run", "ember-lifeline/mixins/dom", "ember-lifeline/mixins/disposable"], function (_exports, _runTask, _pollTask, _debounceTask, _domEventListeners, _disposable, _run, _dom, _disposable2) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "runTask", {
+    enumerable: true,
+    get: function () {
+      return _runTask.runTask;
+    }
+  });
+  Object.defineProperty(_exports, "scheduleTask", {
+    enumerable: true,
+    get: function () {
+      return _runTask.scheduleTask;
+    }
+  });
+  Object.defineProperty(_exports, "throttleTask", {
+    enumerable: true,
+    get: function () {
+      return _runTask.throttleTask;
+    }
+  });
+  Object.defineProperty(_exports, "cancelTask", {
+    enumerable: true,
+    get: function () {
+      return _runTask.cancelTask;
+    }
+  });
+  Object.defineProperty(_exports, "_setRegisteredTimers", {
+    enumerable: true,
+    get: function () {
+      return _runTask._setRegisteredTimers;
+    }
+  });
+  Object.defineProperty(_exports, "pollTask", {
+    enumerable: true,
+    get: function () {
+      return _pollTask.pollTask;
+    }
+  });
+  Object.defineProperty(_exports, "setShouldPoll", {
+    enumerable: true,
+    get: function () {
+      return _pollTask.setShouldPoll;
+    }
+  });
+  Object.defineProperty(_exports, "cancelPoll", {
+    enumerable: true,
+    get: function () {
+      return _pollTask.cancelPoll;
+    }
+  });
+  Object.defineProperty(_exports, "_setRegisteredPollers", {
+    enumerable: true,
+    get: function () {
+      return _pollTask._setRegisteredPollers;
+    }
+  });
+  Object.defineProperty(_exports, "Token", {
+    enumerable: true,
+    get: function () {
+      return _pollTask.Token;
+    }
+  });
+  Object.defineProperty(_exports, "queuedPollTasks", {
+    enumerable: true,
+    get: function () {
+      return _pollTask.queuedPollTasks;
+    }
+  });
+  Object.defineProperty(_exports, "debounceTask", {
+    enumerable: true,
+    get: function () {
+      return _debounceTask.debounceTask;
+    }
+  });
+  Object.defineProperty(_exports, "cancelDebounce", {
+    enumerable: true,
+    get: function () {
+      return _debounceTask.cancelDebounce;
+    }
+  });
+  Object.defineProperty(_exports, "addEventListener", {
+    enumerable: true,
+    get: function () {
+      return _domEventListeners.addEventListener;
+    }
+  });
+  Object.defineProperty(_exports, "removeEventListener", {
+    enumerable: true,
+    get: function () {
+      return _domEventListeners.removeEventListener;
+    }
+  });
+  Object.defineProperty(_exports, "registerDisposable", {
+    enumerable: true,
+    get: function () {
+      return _disposable.registerDisposable;
+    }
+  });
+  Object.defineProperty(_exports, "runDisposables", {
+    enumerable: true,
+    get: function () {
+      return _disposable.runDisposables;
+    }
+  });
+  Object.defineProperty(_exports, "_setRegisteredDisposables", {
+    enumerable: true,
+    get: function () {
+      return _disposable._setRegisteredDisposables;
+    }
+  });
+  Object.defineProperty(_exports, "ContextBoundTasksMixin", {
+    enumerable: true,
+    get: function () {
+      return _run.default;
+    }
+  });
+  Object.defineProperty(_exports, "ContextBoundEventListenersMixin", {
+    enumerable: true,
+    get: function () {
+      return _dom.default;
+    }
+  });
+  Object.defineProperty(_exports, "DisposableMixin", {
+    enumerable: true,
+    get: function () {
+      return _disposable2.default;
+    }
+  });
+});
+;define("ember-lifeline/mixins/disposable", ["exports", "ember-lifeline/utils/disposable"], function (_exports, _disposable) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  /**
+   * DisposableMixin provides a mechanism register disposables with automatic disposing when the
+   * host object is destroyed.
+   *
+   * @class DisposableMixin
+   * @public
+   */
+  var _default = Ember.Mixin.create({
+    /**
+     * Adds a new disposable to the Ember object. A disposable is a function that
+     * disposes of resources that are outside of Ember's lifecyle. This essentially
+     * means you can register a function that you want to run to automatically tear
+     * down any resources when the Ember object is destroyed.
+     *
+     * Example:
+     *
+     * ```js
+     * // app/components/foo-bar.js
+     * import Ember from 'ember';
+     * import DisposableMixin from 'ember-lifeline';
+     * import DOMish from 'some-external-library';
+     *
+     * const { run } = Ember;
+     *
+     * export default Component.extend(DisposableMixin, {
+     *   init() {
+     *     this.DOMish = new DOMish();
+     *
+     *     this.bindEvents();
+     *   },
+     *
+     *   bindEvents() {
+     *     let onFoo = run.bind(this.respondToDomEvent);
+     *     this.DOMish.on('foo', onFoo);
+     *
+     *     this.domFooDisposable = this.registerDisposable(() => this.DOMish.off('foo', onFoo));
+     *   },
+     *
+     *   respondToDOMEvent() {
+     *     // do something
+     *   }
+     * });
+     * ```
+     *
+     * @method registerDisposable
+     * @param { Function } dispose
+     * @public
+     */
+    registerDisposable(dispose) {
+      (0, _disposable.registerDisposable)(this, dispose);
+    },
+
+    destroy() {
+      (0, _disposable.runDisposables)(this);
+
+      this._super(...arguments);
+    }
+
+  });
+
+  _exports.default = _default;
+});
+;define("ember-lifeline/mixins/dom", ["exports", "ember-lifeline/dom-event-listeners", "ember-lifeline/utils/disposable"], function (_exports, _domEventListeners, _disposable) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  /**
+   * ContextBoundEventListenersMixin provides a mechanism to attach event listeners
+   * with runloops and automatic removal when the host object is removed from DOM.
+   *
+   * @class ContextBoundEventListenersMixin
+   * @public
+   */
+  var _default = Ember.Mixin.create({
+    /**
+     * Attaches an event listener that will automatically be removed when the host
+     * object is dropped from DOM.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundEventListenersMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundEventListenersMixin, {
+     *   didInsertElement() {
+     *     this.addEventListener('.some-item', 'click', (e) => {
+     *       console.log('.some-item was clicked');
+     *     });
+     *   }
+     * });
+     * ```
+     *
+     * This can also be used in other ember types like services and controllers. In
+     * order to use it there an html element reference must be used instead of a
+     * css selector. This way we can be sure the element actually exists when the
+     * listener is attached:
+     *
+     * ```js
+     * import Service from 'ember-service';
+     * import ContextBoundEventListenersMixin from 'ember-lifeline';
+     *
+     * export default Service.extend(ContextBoundEventListenersMixin, {
+     *   init() {
+     *     this._super(...arguments);
+     *     const el = document.querySelector('.foo');
+     *     this.addEventListener(el, 'click')
+     *   }
+     * });
+     * ```
+     *
+     * @method addEventListener
+     * @param { String | EventTarget } target the DOM selector or element
+     * @param { String } _eventName the event name to listen for
+     * @param { Function } _callback the callback to run for that event
+     * @public
+     */
+    addEventListener(target, eventName, callback, options) {
+      (true && !(!this.isComponent || this.tagName !== '' || typeof target !== 'string') && Ember.assert('Must provide an element (not a DOM selector) when using addEventListener in a tagless component.', !this.isComponent || this.tagName !== '' || typeof target !== 'string'));
+      (true && !(!this.isComponent || typeof target !== 'string' || this._currentState === this._states.inDOM) && Ember.assert('Called addEventListener with a css selector before the component was rendered', !this.isComponent || typeof target !== 'string' || this._currentState === this._states.inDOM));
+      (true && !(this.isComponent || typeof target !== 'string') && Ember.assert('Must provide an element (not a DOM selector) when calling addEventListener outside of component instance.', this.isComponent || typeof target !== 'string'));
+      let element; // If no element is provided, we assume we're adding the event listener to the component's element. This
+      // addresses use cases where we want to bind events like `scroll` to the component's root element.
+
+      if (this.isComponent && typeof eventName === 'function') {
+        options = callback;
+        callback = eventName;
+        eventName = target;
+        element = this.element;
+      } else {
+        element = findElement(this.element, target);
+      }
+
+      (0, _domEventListeners.addEventListener)(this, element, eventName, callback, options);
+    },
+
+    /**
+     * @method removeEventListener
+     * @param { String | EventTarget } target the DOM selector or element
+     * @param { String } _eventName the event name to listen for
+     * @param { Function } callback the callback to run for that event
+     * @public
+     */
+    removeEventListener(target, eventName, callback, options) {
+      let element; // If no element is provided, we assume we're adding the event listener to the component's element. This
+      // addresses use cases where we want to bind events like `scroll` to the component's root element.
+
+      if (this.isComponent && typeof eventName === 'function') {
+        callback = eventName;
+        eventName = target;
+        element = this.element;
+      } else {
+        element = findElement(this.element, target);
+      }
+
+      (0, _domEventListeners.removeEventListener)(this, element, eventName, callback, options);
+    },
+
+    destroy() {
+      (0, _disposable.runDisposables)(this);
+
+      this._super(...arguments);
+    }
+
+  });
+
+  _exports.default = _default;
+
+  function findElement(contextElement, selector) {
+    let selectorType = typeof selector;
+    let element;
+
+    if (selectorType === 'string') {
+      let maybeElement = contextElement.querySelector(selector);
+
+      if (maybeElement === null) {
+        throw new Error(`Called addEventListener with selector not found in DOM: ${selector}`);
+      }
+
+      element = maybeElement;
+    } else if (selector instanceof Element && selector.nodeType || selector instanceof Window) {
+      element = selector;
+    }
+
+    return element;
+  }
+});
+;define("ember-lifeline/mixins/run", ["exports", "ember-lifeline/run-task", "ember-lifeline/poll-task", "ember-lifeline/debounce-task", "ember-lifeline/utils/disposable"], function (_exports, _runTask, _pollTask, _debounceTask, _disposable) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  /**
+   * ContextBoundTasksMixin provides a mechanism to run tasks (ala `setTimeout` or
+   * `Ember.run.later`) with automatic cancellation when the host object is
+   * destroyed.
+   *
+   * These capabilities are very commonly needed, so this mixin is by default
+   * included into all `Ember.View`, `Ember.Component`, and `Ember.Service` instances.
+   *
+   * @class ContextBoundTasksMixin
+   * @public
+   */
+  var _default = Ember.Mixin.create({
+    /**
+     * Runs the provided task function at the specified timeout (defaulting to 0).
+     * The timer is properly canceled if the object is destroyed before it is invoked.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   didInsertElement() {
+     *     this.runTask(() => {
+     *       console.log('This runs after 5 seconds if this component is still displayed');
+     *     }, 5000)
+     *   }
+     * });
+     * ```
+     *
+     * @method runTask
+     * @param { Function | String } taskOrName a function representing the task, or string
+     *                                         specifying a property representing the task,
+     *                                         which is run at the provided time specified
+     *                                         by timeout
+     * @param { Number } [timeout=0] the time in the future to run the task
+     * @public
+     */
+    runTask(taskOrName, timeout = 0) {
+      return (0, _runTask.runTask)(this, taskOrName, timeout);
+    },
+
+    /**
+     * Cancel a previously scheduled task.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   didInsertElement() {
+     *     this._cancelId = this.runTask(() => {
+     *       console.log('This runs after 5 seconds if this component is still displayed');
+     *     }, 5000)
+     *   },
+     *
+     *   disable() {
+     *      this.cancelTask(this._cancelId);
+     *   }
+     * });
+     * ```
+     *
+     * @method cancelTask
+     * @param { Number } cancelId the id returned from the runTask or scheduleTask call
+     * @public
+     */
+    cancelTask(cancelId) {
+      (0, _runTask.cancelTask)(cancelId);
+    },
+
+    /**
+     * Adds the provided function to the named queue. The timer is properly canceled if the
+     * object is destroyed before it is invoked.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'web-client/mixins/context-bound-tasks';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   init() {
+     *     this._super(...arguments);
+     *     this.scheduleTask('actions', () => {
+     *       console.log('This runs at the end of the run loop (via the actions queue) if this component is still displayed');
+     *     });
+     *   }
+     * });
+     * ```
+     *
+     * @method scheduleTask
+     * @param { String } queueName the queue to schedule the task into
+     * @param { Function | String } taskOrName a function representing the task, or string
+     *                                         specifying a property representing the task,
+     *                                         which is run at the provided time specified
+     *                                         by timeout
+     * @param { ...* } args arguments to pass to the task
+     * @public
+     */
+    scheduleTask(queueName, taskOrName, ...args) {
+      return (0, _runTask.scheduleTask)(this, queueName, taskOrName, ...args);
+    },
+
+    /**
+     * Runs the function with the provided name after the timeout has expired on the last
+     * invocation. The timer is properly canceled if the object is destroyed before it is
+     * invoked.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   logMe() {
+     *     console.log('This will only run once every 300ms.');
+     *   },
+     *
+     *   click() {
+     *     this.debounceTask('logMe', 300);
+     *   }
+     * });
+     * ```
+     *
+     * @method debounceTask
+     * @param { String } name the name of the task to debounce
+     * @param { ...* } debounceArgs arguments to pass to the debounced method
+     * @param { Number } wait the amount of time to wait before calling the method (in milliseconds)
+     * @public
+     */
+    debounceTask(name, ...debounceArgs) {
+      (0, _debounceTask.debounceTask)(this, name, ...debounceArgs);
+    },
+
+    /**
+     * Cancel a previously debounced task.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   logMe() {
+     *     console.log('This will only run once every 300ms.');
+     *   },
+     *
+     *   click() {
+     *     this.debounceTask('logMe', 300);
+     *   },
+     *
+     *   disable() {
+     *      this.cancelDebounce('logMe');
+     *   }
+     * });
+     * ```
+     *
+     * @method cancelDebounce
+     * @param { String } name the name of the debounced method to cancel
+     * @public
+     */
+    cancelDebounce(name) {
+      (0, _debounceTask.cancelDebounce)(this, name);
+    },
+
+    /**
+     * Runs the function with the provided name immediately, and only once in the time window
+     * specified by the timeout argument.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   logMe() {
+     *     console.log('This will run once immediately, then only once every 300ms.');
+     *   },
+     *
+     *   click() {
+     *     this.throttleTask('logMe', 300);
+     *   }
+     * });
+     * ```
+     *
+     * @method throttleTask
+     * @param { String } name the name of the task to throttle
+     * @param { Number } [timeout] the time in the future to run the task
+     * @public
+     */
+    throttleTask(name, timeout) {
+      return (0, _runTask.throttleTask)(this, name, timeout);
+    },
+
+    /**
+     * Cancel a previously throttled task.
+     *
+     * Example:
+     *
+     * ```js
+     * import Component from 'ember-component';
+     * import ContextBoundTasksMixin from 'ember-lifeline';
+     *
+     * export default Component.extend(ContextBoundTasksMixin, {
+     *   logMe() {
+     *     console.log('This will only run once every 300ms.');
+     *   },
+     *
+     *   click() {
+     *     this.throttleTask('logMe', 300);
+     *   },
+     *
+     *   disable() {
+     *      this.cancelThrottle('logMe');
+     *   }
+     * });
+     * ```
+     *
+     * @method cancelThrottle
+     * @param { Number } cancelId the id returned from the throttleTask call
+     * @public
+     */
+    cancelThrottle(cancelId) {
+      (0, _runTask.cancelTask)(cancelId);
+    },
+
+    /**
+     * Sets up a function that can perform polling logic in a testing safe way.
+     * The task is invoked synchronously with an argument (generally called `next`).
+     * In normal development/production when `next` is invoked, it will trigger the
+     * task again (recursively). However, when in test mode the recursive polling
+     * functionality is disabled, and usage of the `pollTaskFor` helper is required.
+     *
+     * Example:
+     *
+     * ```js
+     * // app/components/foo-bar.js
+     * export default Component.extend({
+     *   api: injectService(),
+     *
+     *   init() {
+     *     this._super(...arguments);
+     *
+     *     let token = this.pollTask((next) => {
+     *       this.get('api').request('get', 'some/path')
+     *         .then(() => {
+     *           this.runTask(next, 1800);
+     *         })
+     *     });
+     *
+     *     this._pollToken = token;
+     *   }
+     * });
+     * ```
+     *
+     * Test Example:
+     *
+     * ```js
+     * import wait from 'ember-test-helpers/wait';
+     * import { pollTaskFor } from 'ember-lifeline';
+     *
+     * //...snip...
+     *
+     * test('foo-bar watches things', function(assert) {
+     *   this.render(hbs`{{foo-bar}}`);
+     *
+     *   return wait()
+     *     .then(() => {
+     *       assert.equal(serverRequests, 1, 'called initially');
+     *
+     *       pollTaskFor(this._pollToken);
+     *       return wait();
+     *     })
+     *     .then(() => {
+     *       assert.equal(serverRequests, 2, 'called again');
+     *     });
+     * });
+     * ```
+     *
+     * @method pollTask
+     * @param { Function | String } taskOrName a function representing the task, or string
+     *                                         specifying a property representing the task,
+     *                                         which is run at the provided time specified
+     *                                         by timeout
+     * @param { Token } token the token used to uniquely identify the pollTask
+     * @public
+     */
+    pollTask(taskOrName, token) {
+      return (0, _pollTask.pollTask)(this, taskOrName, token);
+    },
+
+    /**
+     * Clears a previously setup polling task.
+     *
+     * NOTE: This does not cancel any nested `runTask` calls. You're required to cancel any
+     * cancelable behaviors, including any calls to `runTask` using `cancelTask`.
+     *
+     * Example:
+     *
+     * ```js
+     * // app/components/foo-bar.js
+     * export default Component.extend({
+     *   api: injectService(),
+     *
+     *   enableAutoRefresh() {
+     *     this.pollTask((next) => {
+     *       this.get('api').request('get', 'some/path')
+     *         .then(() => {
+     *           this.runTask(next, 1800);
+     *         })
+     *     });
+     *   },
+     *
+     *   disableAutoRefresh() {
+     *      this.cancelPoll('foo-bar#watch-some-path');
+     *   }
+     * });
+     * ```
+     *
+     * @method cancelPoll
+     * @param { String } token the token for the pollTask to be cleared
+     * @public
+     */
+    cancelPoll(token) {
+      (0, _pollTask.cancelPoll)(token);
+    },
+
+    destroy() {
+      (0, _disposable.runDisposables)(this);
+
+      this._super(...arguments);
+    }
+
+  });
+
+  _exports.default = _default;
+});
+;define("ember-lifeline/poll-task", ["exports", "ember-lifeline/utils/get-task", "ember-lifeline/utils/disposable"], function (_exports, _getTask, _disposable) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports._setRegisteredPollers = _setRegisteredPollers;
+  _exports.setShouldPoll = setShouldPoll;
+  _exports.pollTask = pollTask;
+  _exports.cancelPoll = cancelPoll;
+  _exports.queuedPollTasks = void 0;
+
+  /**
+   * A map of instances/poller functions that allows us to
+   * store poller tokens per instance.
+   *
+   * @private
+   *
+   */
+  let registeredPollers = new WeakMap();
+  /**
+   * Test use only. Allows for swapping out the WeakMap to a Map, giving
+   * us the ability to detect whether the pollers set is empty.
+   *
+   * @private
+   * @param {*} mapForTesting A map used to ensure correctness when testing.
+   */
+
+  function _setRegisteredPollers(mapForTesting) {
+    registeredPollers = mapForTesting;
+  }
+
+  let token = 0;
+
+  let _shouldPollOverride;
+
+  function shouldPoll() {
+    if (_shouldPollOverride) {
+      return _shouldPollOverride();
+    } // eslint-disable-next-line ember-suave/no-direct-property-access
+
+
+    return !Ember.testing;
+  }
+  /**
+   * Allows for overriding of the polling behavior to explicitly control
+   * whether polling should occur or not.
+   *
+   * @param { Function } callback
+   * @public
+   */
+
+
+  function setShouldPoll(callback) {
+    _shouldPollOverride = callback;
+  }
+
+  let queuedPollTasks = Object.create(null);
+  /**
+   * Sets up a function that can perform polling logic in a testing safe way.
+   * The task is invoked synchronously with an argument (generally called `next`).
+   * In normal development/production when `next` is invoked, it will trigger the
+   * task again (recursively). However, when in test mode the recursive polling
+   * functionality is disabled, and usage of the `pollTaskFor` helper is required.
+   *
+   * Example:
+   *
+   * ```js
+   * import { pollTask, runTask, runDisposables } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   api: injectService(),
+   *
+   *   init() {
+   *     this._super(...arguments);
+   *
+   *     let token = pollTask(this, (next) => {
+   *       this.get('api').request('get', 'some/path')
+   *         .then(() => {
+   *           runTask(this, next, 1800);
+   *         })
+   *     });
+   *
+   *     this._pollToken = token;
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * Test Example:
+   *
+   * ```js
+   * import wait from 'ember-test-helpers/wait';
+   * import { pollTaskFor } from 'ember-lifeline';
+   *
+   * //...snip...
+   *
+   * test('foo-bar watches things', async function(assert) {
+   *   await render(hbs`{{foo-bar}}`);
+   *
+   *   return wait()
+   *     .then(() => {
+   *       assert.equal(serverRequests, 1, 'called initially');
+   *
+   *       pollTaskFor(this._pollToken);
+   *       return wait();
+   *     })
+   *     .then(() => {
+   *       assert.equal(serverRequests, 2, 'called again');
+   *     });
+   * });
+   * ```
+   *
+   * @method pollTask
+   * @param { IDestroyable } destroyable the entangled object that was provided with the original *Task call
+   * @param { TaskOrName } taskOrName a function representing the task, or string
+   *                                  specifying a property representing the task,
+   *                                  which is run at the provided time specified
+   *                                  by timeout
+   * @param { Token } token the Token for the pollTask, either a string or number
+   * @public
+   */
+
+  _exports.queuedPollTasks = queuedPollTasks;
+
+  function pollTask(destroyable, taskOrName, token = getNextToken()) {
+    let next;
+    let task = (0, _getTask.default)(destroyable, taskOrName, 'pollTask');
+
+    let tick = () => task.call(destroyable, next);
+
+    let pollers = registeredPollers.get(destroyable);
+
+    if (!pollers) {
+      pollers = new Set();
+      registeredPollers.set(destroyable, pollers);
+      (0, _disposable.registerDisposable)(destroyable, getPollersDisposable(destroyable, pollers));
+    }
+
+    pollers.add(token);
+
+    if (shouldPoll()) {
+      next = tick;
+    } else {
+      next = () => {
+        queuedPollTasks[token] = tick;
+      };
+    }
+
+    task.call(destroyable, next);
+    return token;
+  }
+  /**
+   * Clears a previously setup polling task.
+   *
+   * NOTE: This does not cancel any nested `runTask` calls. You're required to cancel any
+   * cancelable behaviors, including any calls to `runTask` using `cancelTask`.
+   *
+   * Example:
+   *
+   * ```js
+   * import { pollTask, runTask, runDisposables } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   api: injectService(),
+   *
+   *   enableAutoRefresh() {
+   *     this._pollToken = pollTask(this, (next) => {
+   *       this.get('api').request('get', 'some/path')
+   *         .then(() => {
+   *           runTask(this, next, 1800);
+   *         })
+   *     });
+   *   },
+   *
+   *   disableAutoRefresh() {
+   *     cancelPoll(this, this._pollToken);
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @method cancelPoll
+   * @param { IDestroyable } destroyable the entangled object that was provided with the original *Task call
+   * @param { Token } token the Token for the pollTask to be cleared, either a string or number
+   * @public
+   */
+
+
+  function cancelPoll(destroyable, token) {
+    let pollToken;
+
+    if (typeof destroyable === 'number' || typeof destroyable === 'string') {
+      (true && !(true) && Ember.deprecate('ember-lifeline cancelPoll called without an object. New syntax is cancelPoll(destroyable, cancelId) and avoids a memory leak.', true, {
+        id: 'ember-lifeline-cancel-poll-without-object',
+        until: '4.0.0'
+      }));
+      pollToken = destroyable;
+    } else {
+      let pollers = registeredPollers.get(destroyable);
+      pollToken = token;
+
+      if (pollers !== undefined) {
+        pollers.delete(pollToken);
+      }
+    }
+
+    delete queuedPollTasks[pollToken];
+  }
+
+  function getPollersDisposable(destroyable, pollers) {
+    return function () {
+      pollers.forEach(token => {
+        cancelPoll(destroyable, token);
+      });
+    };
+  }
+
+  function getNextToken() {
+    return token++;
+  }
+});
+;define("ember-lifeline/run-task", ["exports", "ember-lifeline/utils/disposable", "ember-lifeline/utils/get-task"], function (_exports, _disposable, _getTask) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports._setRegisteredTimers = _setRegisteredTimers;
+  _exports.runTask = runTask;
+  _exports.scheduleTask = scheduleTask;
+  _exports.throttleTask = throttleTask;
+  _exports.cancelTask = cancelTask;
+  const NULL_TIMER_ID = -1;
+  /**
+   * A map of instances/timers that allows us to
+   * store cancelIds for scheduled timers per instance.
+   *
+   * @private
+   */
+
+  let registeredTimers = new WeakMap();
+  /**
+   * Test use only. Allows for swapping out the WeakMap to a Map, giving
+   * us the ability to detect whether the timers set is empty.
+   *
+   * @private
+   * @param {*} mapForTesting A map used to ensure correctness when testing.
+   */
+
+  function _setRegisteredTimers(mapForTesting) {
+    registeredTimers = mapForTesting;
+  }
+  /**
+   * Registers and runs the provided task function for the provided object at the specified
+   * timeout (defaulting to 0). The timer is properly canceled if the object is destroyed
+   * before it is invoked.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { runTask, runDisposables } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   didInsertElement() {
+   *     runTask(this, () => {
+   *       console.log('This runs after 5 seconds if this component is still displayed');
+   *     }, 5000)
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @function runTask
+   * @param { IDestroyable } destroyable the instance to register the task for
+   * @param { Function | String } taskOrName a function representing the task, or string
+   *                                         specifying a property representing the task,
+   *                                         which is run at the provided time specified
+   *                                         by timeout
+   * @param { Number } [timeout=0] the time in the future to run the task
+   * @public
+   */
+
+
+  function runTask(destroyable, taskOrName, timeout = 0) {
+    if (destroyable.isDestroying) {
+      return NULL_TIMER_ID;
+    }
+
+    let task = (0, _getTask.default)(destroyable, taskOrName, 'runTask');
+    let timers = getTimers(destroyable);
+    let cancelId = Ember.run.later(() => {
+      timers.delete(cancelId);
+      task.call(destroyable);
+    }, timeout);
+    timers.add(cancelId);
+    return cancelId;
+  }
+  /**
+   * Adds the provided function to the named queue for the provided object. The timer is
+   * properly canceled if the object is destroyed before it is invoked.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { scheduleTask, runDisposables } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   init() {
+   *     this._super(...arguments);
+   *
+   *     scheduleTask(this, 'actions', () => {
+   *       console.log('This runs at the end of the run loop (via the actions queue) if this component is still displayed');
+   *     })
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @function scheduleTask
+   * @param { IDestroyable } destroyable the instance to register the task for
+   * @param { String } queueName the queue to schedule the task into
+   * @param { Function | String } taskOrName a function representing the task, or string
+   *                                         specifying a property representing the task,
+   *                                         which is run at the provided time specified
+   *                                         by timeout
+   * @param { ...* } args arguments to pass to the task
+   * @public
+   */
+
+
+  function scheduleTask(destroyable, queueName, taskOrName, ...args) {
+    (true && !(typeof queueName === 'string') && Ember.assert(`Called \`scheduleTask\` without a string as the first argument on ${destroyable}.`, typeof queueName === 'string'));
+    (true && !(queueName !== 'afterRender') && Ember.assert(`Called \`scheduleTask\` while trying to schedule to the \`afterRender\` queue on ${destroyable}.`, queueName !== 'afterRender'));
+
+    if (destroyable.isDestroying) {
+      return NULL_TIMER_ID;
+    }
+
+    let task = (0, _getTask.default)(destroyable, taskOrName, 'scheduleTask');
+    let timers = getTimers(destroyable);
+    let cancelId;
+
+    let taskWrapper = (...taskArgs) => {
+      timers.delete(cancelId);
+      task.call(destroyable, ...taskArgs);
+    };
+
+    cancelId = Ember.run.schedule(queueName, destroyable, taskWrapper, ...args);
+    timers.add(cancelId);
+    return cancelId;
+  }
+  /**
+   * Runs the function with the provided name immediately, and only once in the time window
+   * specified by the spacing argument.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { throttleTask, runDisposables } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   logMe() {
+   *     console.log('This will run once immediately, then only once every 300ms.');
+   *   },
+   *
+   *   click() {
+   *     throttleTask(this, 'logMe', 300);
+   *   },
+   *
+   *   destroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @function throttleTask
+   * @param { IDestroyable } destroyable the instance to register the task for
+   * @param { String } taskName the name of the task to throttle
+   * @param { ...* } [throttleArgs] arguments to pass to the throttled method
+   * @param { Number } spacing the time in the future to run the task
+   * @param { Boolean } [immediate] Trigger the function on the leading instead of the trailing edge of the wait interval. Defaults to true.
+   * @public
+   */
+
+
+  function throttleTask(destroyable, taskName, ...throttleArgs) {
+    (true && !(typeof taskName === 'string') && Ember.assert(`Called \`throttleTask\` without a string as the first argument on ${destroyable}.`, typeof taskName === 'string'));
+    (true && !(typeof destroyable[taskName] === 'function') && Ember.assert(`Called \`throttleTask('${taskName}')\` where '${taskName}' is not a function.`, typeof destroyable[taskName] === 'function'));
+
+    if (destroyable.isDestroying) {
+      return NULL_TIMER_ID;
+    }
+
+    const lastArgument = throttleArgs[throttleArgs.length - 1];
+    const spacing = typeof lastArgument === 'boolean' ? throttleArgs[throttleArgs.length - 2] : lastArgument;
+    (true && !(typeof spacing === 'number') && Ember.assert(`Called \`throttleTask\` with incorrect \`spacing\` argument. Expected Number and received \`${spacing}\``, typeof spacing === 'number'));
+    let timers = getTimers(destroyable);
+    let cancelId = Ember.run.throttle(destroyable, taskName, ...throttleArgs);
+    timers.add(cancelId);
+    return cancelId;
+  }
+  /**
+   * Cancel a previously scheduled task.
+   *
+   * Example:
+   *
+   * ```js
+   * import Component from 'ember-component';
+   * import { runTask, cancelTask } from 'ember-lifeline';
+   *
+   * export default Component.extend({
+   *   didInsertElement() {
+   *     this._cancelId = runTask(this, () => {
+   *       console.log('This runs after 5 seconds if this component is still displayed');
+   *     }, 5000)
+   *   },
+   *
+   *   disable() {
+   *     cancelTask(this, this._cancelId);
+   *   },
+   *
+   *   willDestroy() {
+   *     this._super(...arguments);
+   *
+   *     runDisposables(this);
+   *   }
+   * });
+   * ```
+   *
+   * @function cancelTask
+   * @param { IDestroyable } destroyable the entangled object that was provided with the original *Task call
+   * @param { Number } cancelId the id returned from the *Task call
+   * @public
+   */
+
+
+  function cancelTask(destroyable, cancelId) {
+    if (cancelId === NULL_TIMER_ID) {
+      return;
+    }
+
+    if (typeof cancelId === 'undefined') {
+      (true && !(true) && Ember.deprecate('ember-lifeline cancelTask called without an object. New syntax is cancelTask(destroyable, cancelId) and avoids a memory leak.', true, {
+        id: 'ember-lifeline-cancel-task-without-object',
+        until: '4.0.0'
+      }));
+      cancelId = destroyable;
+    } else {
+      let timers = getTimers(destroyable);
+      timers.delete(cancelId);
+    }
+
+    Ember.run.cancel(cancelId);
+  }
+
+  function getTimersDisposable(destroyable, timers) {
+    return function () {
+      timers.forEach(cancelId => {
+        cancelTask(destroyable, cancelId);
+      });
+      timers.clear();
+    };
+  }
+
+  function getTimers(destroyable) {
+    let timers = registeredTimers.get(destroyable);
+
+    if (!timers) {
+      timers = new Set();
+      registeredTimers.set(destroyable, timers);
+      (0, _disposable.registerDisposable)(destroyable, getTimersDisposable(destroyable, timers));
+    }
+
+    return timers;
+  }
+});
+;define("ember-lifeline/types/index", [], function () {
+  "use strict";
+});
+;define("ember-lifeline/utils/disposable", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports._setRegisteredDisposables = _setRegisteredDisposables;
+  _exports.registerDisposable = registerDisposable;
+  _exports.runDisposables = runDisposables;
+
+  /**
+   * A map of instances/array of disposables. Only exported for
+   * testing purposes.
+   *
+   * @public
+   */
+  let registeredDisposables = new WeakMap();
+  /**
+   * Test use only. Allows for swapping out the WeakMap to a Map, giving
+   * us the ability to detect whether disposables have all been called.
+   *
+   * @private
+   * @param {IMap} mapForTesting A map used to ensure correctness when testing.
+   */
+
+  function _setRegisteredDisposables(mapForTesting) {
+    registeredDisposables = mapForTesting;
+  }
+  /**
+   * Registers a new disposable function to run for an instance. Will
+   * handle lazily creating a new array to store the disposables per
+   * instance if one does not exist. Will additionally patch an object's
+   * `destroy` hook to ensure the destroyables are run/destroyed when
+   * the object is destroyed.
+   *
+   * @function registerDisposable
+   * @public
+   * @param {IDestroyable} obj the instance to store the disposable for
+   * @param {Function} dispose a function that disposes of instance resources
+   */
+
+
+  function registerDisposable(obj, dispose) {
+    (true && !(typeof obj === 'object') && Ember.assert('Called `registerDisposable` where `obj` is not an object', typeof obj === 'object'));
+    (true && !(typeof dispose === 'function') && Ember.assert('Called `registerDisposable` where `dispose` is not a function', typeof dispose === 'function'));
+    (true && !(!obj.isDestroying) && Ember.assert('Called `registerDisposable` on a destroyed object', !obj.isDestroying));
+    let disposables = getRegisteredDisposables(obj);
+    disposables.push(dispose);
+  }
+  /**
+   * Runs all disposables for a given instance.
+   *
+   * @function runDisposables
+   * @public
+   * @param {IDestroyable} obj the instance to run the disposables for
+   */
+
+
+  function runDisposables(obj) {
+    let disposables = registeredDisposables.get(obj);
+
+    if (disposables === undefined) {
+      return;
+    }
+
+    registeredDisposables.delete(obj);
+
+    for (let i = 0; i < disposables.length; i++) {
+      disposables[i]();
+    }
+  }
+
+  function getRegisteredDisposables(obj) {
+    let disposables = registeredDisposables.get(obj);
+
+    if (disposables === undefined) {
+      registeredDisposables.set(obj, disposables = []);
+    }
+
+    return disposables;
+  }
+});
+;define("ember-lifeline/utils/get-task", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = getTask;
+
+  /**
+   * @function getTask
+   * @param obj
+   * @param taskOrName
+   * @param taskName
+   */
+  function getTask(obj, taskOrName, taskName) {
+    let type = typeof taskOrName;
+    let task;
+
+    if (type === 'function') {
+      task = taskOrName;
+    } else if (type === 'string') {
+      task = obj[taskOrName];
+
+      if (typeof task !== 'function') {
+        throw new TypeError(`The method name '${taskOrName}' passed to ${taskName} does not resolve to a valid function.`);
+      }
+    } else {
+      throw new TypeError(`You must pass a task function or method name to '${taskName}'.`);
+    }
+
+    return task;
+  }
+});
 ;define("ember-load-initializers/index", ["exports", "require"], function (_exports, _require) {
   "use strict";
 
@@ -93761,6 +106449,237 @@ require('ember');
     registerInitializers(app, initializers);
     registerInstanceInitializers(app, instanceInitializers);
   }
+});
+;define("ember-resizable/components/re-sizable/component", ["exports", "@ember-decorators/component", "ember-lifeline", "ember-resizable/components/re-sizable/template"], function (_exports, _component, _emberLifeline, _template) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = _exports.getSize = void 0;
+
+  var _dec, _dec2, _dec3, _dec4, _dec5, _class, _class2, _descriptor, _temp;
+
+  function _initializerDefineProperty(target, property, descriptor, context) { if (!descriptor) return; Object.defineProperty(target, property, { enumerable: descriptor.enumerable, configurable: descriptor.configurable, writable: descriptor.writable, value: descriptor.initializer ? descriptor.initializer.call(context) : void 0 }); }
+
+  function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+  function _applyDecoratedDescriptor(target, property, decorators, descriptor, context) { var desc = {}; Object.keys(descriptor).forEach(function (key) { desc[key] = descriptor[key]; }); desc.enumerable = !!desc.enumerable; desc.configurable = !!desc.configurable; if ('value' in desc || desc.initializer) { desc.writable = true; } desc = decorators.slice().reverse().reduce(function (desc, decorator) { return decorator(target, property, desc) || desc; }, desc); if (context && desc.initializer !== void 0) { desc.value = desc.initializer ? desc.initializer.call(context) : void 0; desc.initializer = undefined; } if (desc.initializer === void 0) { Object.defineProperty(target, property, desc); desc = null; } return desc; }
+
+  function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
+
+  /*global window*/
+  const getSize = n => !isNaN(parseFloat(n)) && isFinite(n) ? `${n}px` : n;
+
+  _exports.getSize = getSize;
+  let ReSizable = (_dec = (0, _component.layout)(_template.default), _dec2 = (0, _component.classNames)('re-sizable'), _dec3 = Ember.computed('width', 'height', 'elementWidth', 'elementHeight'), _dec4 = Ember.computed('_width'), _dec5 = Ember.computed('_height'), _dec(_class = _dec2(_class = (_class2 = (_temp = class ReSizable extends Ember.Component {
+    constructor(...args) {
+      super(...args);
+
+      _defineProperty(this, "minWidth", 10);
+
+      _defineProperty(this, "minHeight", 10);
+
+      _defineProperty(this, "maxWidth", null);
+
+      _defineProperty(this, "maxHeight", null);
+
+      _defineProperty(this, "grid", [1, 1]);
+
+      _defineProperty(this, "lockAspectRatio", false);
+
+      _defineProperty(this, "directions", ['top', 'right', 'bottom', 'left', 'topRight', 'bottomRight', 'bottomLeft', 'topLeft']);
+
+      _defineProperty(this, "onResizeStart", null);
+
+      _defineProperty(this, "onResizeStop", null);
+
+      _defineProperty(this, "onResize", null);
+
+      _initializerDefineProperty(this, "isActive", _descriptor, this);
+    }
+
+    get style() {
+      let s = '';
+
+      if (!Ember.isNone(this.width)) {
+        s = `width: ${getSize(this.elementWidth || this.width)};`;
+      }
+
+      if (!Ember.isNone(this.height)) {
+        s = `${s}height: ${getSize(this.elementHeight || this.height)};`;
+      } // can we be sure this actually is safe?
+
+
+      return s.length ? Ember.String.htmlSafe(s) : null;
+    }
+
+    get width() {
+      return this._width;
+    }
+
+    set width(value) {
+      this.set('_width', value);
+      this.set('elementWidth', value);
+    }
+
+    get height() {
+      return this._height;
+    }
+
+    set height(value) {
+      this.set('_height', value);
+      this.set('elementHeight', value);
+    }
+
+    willDestroyElement() {
+      super.willDestroyElement(...arguments);
+      (0, _emberLifeline.runDisposables)(this);
+    }
+
+    getBoxSize() {
+      const style = window.getComputedStyle(this.element);
+      const width = ~~style.getPropertyValue('width').replace('px', '');
+      const height = ~~style.getPropertyValue('height').replace('px', '');
+      return {
+        width,
+        height
+      };
+    }
+
+    _onResizeStart(direction, event) {
+      if (event.touches) {
+        event = event.touches[0];
+      } else {
+        if (event.button === 2) {
+          // Upon click with right mouse button we can become stuck in resizing mode
+          return;
+        }
+      }
+
+      if (this.onResizeStart) {
+        this.onResizeStart(direction, event, this.element);
+      }
+
+      const size = this.getBoxSize();
+      this.set('isActive', true);
+      this.set('_original', {
+        x: event.clientX,
+        y: event.clientY,
+        width: size.width,
+        height: size.height
+      });
+      this.set('_direction', direction);
+      (0, _emberLifeline.addEventListener)(this, window, 'mouseup', this._onMouseUp);
+      (0, _emberLifeline.addEventListener)(this, window, 'mousemove', this._onMouseMove);
+      (0, _emberLifeline.addEventListener)(this, window, 'touchmove', this._onTouchMove);
+      (0, _emberLifeline.addEventListener)(this, window, 'touchend', this._onMouseUp);
+    }
+
+    _onTouchMove(event) {
+      this._onMouseMove(event.touches[0]);
+    }
+
+    _calculateResized(originalPos, currentPos, dimension, snapSize) {
+      let newSize = this.get(`_original.${dimension}`) + currentPos - originalPos;
+      newSize = Math.max(Math.min(newSize, this.get(`max${Ember.String.capitalize(dimension)}`) || newSize), this.get(`min${Ember.String.capitalize(dimension)}`) || 0);
+      newSize = Math.round(newSize / snapSize) * snapSize;
+      return newSize;
+    }
+
+    _onMouseMove({
+      clientX,
+      clientY
+    }) {
+      const direction = Ember.String.dasherize(this._direction);
+      const original = this._original;
+      const ratio = original.height / original.width;
+      let newWidth = original.width;
+      let newHeight = original.height;
+
+      if (direction.includes('right') || direction.includes('left')) {
+        let factor = direction.includes('left') ? -1 : 1;
+        newWidth = this._calculateResized(original.x * factor, clientX * factor, 'width', this.grid[0]);
+      }
+
+      if (direction.includes('bottom') || direction.includes('top')) {
+        let factor = direction.includes('top') ? -1 : 1;
+        newHeight = this._calculateResized(original.y * factor, clientY * factor, 'height', this.grid[1]);
+      }
+
+      if (this.lockAspectRatio) {
+        const deltaWidth = Math.abs(newWidth - original.width);
+        const deltaHeight = Math.abs(newHeight - original.height);
+
+        if (deltaWidth < deltaHeight) {
+          newWidth = newHeight / ratio;
+        } else {
+          newHeight = newWidth * ratio;
+        }
+      }
+
+      this.set('elementWidth', newWidth);
+      this.set('elementHeight', newHeight);
+
+      if (this.onResize) {
+        this.onResize(this._direction, {
+          width: newWidth,
+          height: newHeight
+        }, {
+          width: newWidth - original.width,
+          height: newHeight - original.height
+        }, this.element);
+      }
+    }
+
+    _onMouseUp() {
+      if (!this.isActive) {
+        return;
+      }
+
+      if (this.onResizeStop) {
+        const styleSize = this.getBoxSize();
+        this.onResizeStop(this._direction, {
+          width: styleSize.width - this._original.width,
+          height: styleSize.height - this._original.height
+        }, this.element);
+      }
+
+      this.set('isActive', false);
+      (0, _emberLifeline.removeEventListener)(this, window, 'mouseup', this._onMouseUp);
+      (0, _emberLifeline.removeEventListener)(this, window, 'mousemove', this._onMouseMove);
+      (0, _emberLifeline.removeEventListener)(this, window, 'touchmove', this._onTouchMove);
+      (0, _emberLifeline.removeEventListener)(this, window, 'touchend', this._onMouseUp);
+    }
+
+  }, _temp), (_descriptor = _applyDecoratedDescriptor(_class2.prototype, "isActive", [_component.className], {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    initializer: function () {
+      return false;
+    }
+  }), _applyDecoratedDescriptor(_class2.prototype, "style", [_component.attribute, _dec3], Object.getOwnPropertyDescriptor(_class2.prototype, "style"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "width", [_dec4], Object.getOwnPropertyDescriptor(_class2.prototype, "width"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "height", [_dec5], Object.getOwnPropertyDescriptor(_class2.prototype, "height"), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, "_onResizeStart", [Ember._action], Object.getOwnPropertyDescriptor(_class2.prototype, "_onResizeStart"), _class2.prototype)), _class2)) || _class) || _class);
+  var _default = ReSizable;
+  _exports.default = _default;
+});
+;define("ember-resizable/components/re-sizable/template", ["exports"], function (_exports) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = void 0;
+
+  var _default = Ember.HTMLBars.template({
+    "id": "4j/WkFTF",
+    "block": "{\"symbols\":[\"dir\",\"&default\"],\"statements\":[[5,[27,[26,4,\"BlockHead\"],[]],[[31,0,0,[27,[26,3,\"CallHead\"],[]],[[31,0,0,[27,[26,3,\"CallHead\"],[]],[[27,[24,0],[\"directions\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"  \"],[9,\"div\",false],[14,\"class\",[31,54,6,[27,[26,0,\"CallHead\"],[]],[\"resizer \",[27,[24,1],[]]],null],null],[23,\"role\",\"button\",null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[\"mousedown\",[31,100,2,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"_onResizeStart\"]],[27,[24,1],[]]],null]],null],[3,0,0,[27,[26,2,\"ModifierHead\"],[]],[\"touchstart\",[31,153,2,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"_onResizeStart\"]],[27,[24,1],[]]],null]],null],[10],[1,1,0,0,\"\\n  \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[16,2,null],[1,1,0,0,\"\\n\"]],\"hasEval\":false,\"upvars\":[\"concat\",\"fn\",\"on\",\"-track-array\",\"each\"]}",
+    "meta": {
+      "moduleName": "ember-resizable/components/re-sizable/template.hbs"
+    }
+  });
+
+  _exports.default = _default;
 });
 ;/*
  * This is a stub file, it must be on disk b/c babel-plugin-debug-macros
@@ -94871,104 +107790,6 @@ define("ember-resolver/features", [], function () {
 });
 ;
 ;
-(window["webpackJsonp_ember_auto_import_"] = window["webpackJsonp_ember_auto_import_"] || []).push([["vendors~app"],{
-
-/***/ "./node_modules/@glimmer/env/dist/modules/es2017/index.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@glimmer/env/dist/modules/es2017/index.js ***!
-  \****************************************************************/
-/*! exports provided: DEBUG, CI */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"DEBUG\", function() { return DEBUG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CI\", function() { return CI; });\nconst DEBUG = false;\nconst CI = false;\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/env/dist/modules/es2017/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/index.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js ***!
-  \*********************************************************************/
-/*! exports provided: tracked, setPropertyDidChange */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _src_tracked__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/tracked */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"tracked\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"setPropertyDidChange\"]; });\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js":
-/*!***************************************************************************!*\
-  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js ***!
-  \***************************************************************************/
-/*! exports provided: tracked, setPropertyDidChange */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return tracked; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return setPropertyDidChange; });\n/* harmony import */ var _glimmer_env__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @glimmer/env */ \"./node_modules/@glimmer/env/dist/modules/es2017/index.js\");\n/* harmony import */ var _glimmer_validator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @glimmer/validator */ \"./node_modules/@glimmer/validator/dist/modules/es2017/index.js\");\n\n\n/**\n * @decorator\n *\n * Marks a property as tracked.\n *\n * By default, a component's properties are expected to be static,\n * meaning you are not able to update them and have the template update accordingly.\n * Marking a property as tracked means that when that property changes,\n * a rerender of the component is scheduled so the template is kept up to date.\n *\n * @example\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    remainingApples = 10\n * }\n * ```\n *\n * When something changes the component's `remainingApples` property, the rerender\n * will be scheduled.\n *\n * @example Computed Properties\n *\n * In the case that you have a getter that depends on other properties, tracked\n * properties accessed within the getter will automatically be tracked for you.\n * That means when any of those dependent tracked properties is changed, a\n * rerender of the component will be scheduled.\n *\n * In the following example we have two properties,\n * `eatenApples`, and `remainingApples`.\n *\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * const totalApples = 100;\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    eatenApples = 0\n *\n *    get remainingApples() {\n *      return totalApples - this.eatenApples;\n *    }\n *\n *    increment() {\n *      this.eatenApples = this.eatenApples + 1;\n *    }\n *  }\n * ```\n */\n\nlet tracked = (...args) => {\n  let [target, key, descriptor] = args; // Error on `@tracked()`, `@tracked(...args)`, and `@tracked get propName()`\n\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && typeof target === 'string') throwTrackedWithArgumentsError(args);\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && target === undefined) throwTrackedWithEmptyArgumentsError();\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && descriptor && descriptor.get) throwTrackedComputedPropertyError();\n\n  if (descriptor) {\n    return descriptorForField(target, key, descriptor);\n  } else {\n    // In TypeScript's implementation, decorators on simple class fields do not\n    // receive a descriptor, so we define the property on the target directly.\n    Object.defineProperty(target, key, descriptorForField(target, key));\n  }\n};\n\nfunction throwTrackedComputedPropertyError() {\n  throw new Error(`The @tracked decorator does not need to be applied to getters. Properties implemented using a getter will recompute automatically when any tracked properties they access change.`);\n}\n\nfunction throwTrackedWithArgumentsError(args) {\n  throw new Error(`You attempted to use @tracked with ${args.length > 1 ? 'arguments' : 'an argument'} ( @tracked(${args.map(d => `'${d}'`).join(', ')}) ), which is no longer necessary nor supported. Dependencies are now automatically tracked, so you can just use ${'`@tracked`'}.`);\n}\n\nfunction throwTrackedWithEmptyArgumentsError() {\n  throw new Error('You attempted to use @tracked(), which is no longer necessary nor supported. Remove the parentheses and you will be good to go!');\n}\n\nfunction descriptorForField(_target, key, desc) {\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && desc && (desc.value || desc.get || desc.set)) {\n    throw new Error(`You attempted to use @tracked on ${key}, but that element is not a class field. @tracked is only usable on class fields. Native getters and setters will autotrack add any tracked fields they encounter, so there is no need mark getters and setters with @tracked.`);\n  }\n\n  let {\n    getter,\n    setter\n  } = Object(_glimmer_validator__WEBPACK_IMPORTED_MODULE_1__[\"trackedData\"])(key, desc && desc.initializer);\n  return {\n    enumerable: true,\n    configurable: true,\n\n    get() {\n      return getter(this);\n    },\n\n    set(newValue) {\n      setter(this, newValue);\n      propertyDidChange();\n    }\n\n  };\n}\n\nlet propertyDidChange = function () {};\n\nfunction setPropertyDidChange(cb) {\n  propertyDidChange = cb;\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/index.js":
-/*!**********************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/index.js ***!
-  \**********************************************************************/
-/*! exports provided: ALLOW_CYCLES, bump, combine, COMPUTE, CONSTANT_TAG, CONSTANT, createCombinatorTag, createTag, createUpdatableTag, CURRENT_TAG, dirty, INITIAL, isConst, isConstTag, update, validate, value, VOLATILE_TAG, VOLATILE, dirtyTag, tagFor, updateTag, track, consume, EPOCH, trackedData */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"ALLOW_CYCLES\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"bump\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"COMPUTE\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createCombinatorTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CURRENT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"INITIAL\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConst\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"validate\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"value\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE\"]; });\n\n/* harmony import */ var _lib_meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib/meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"updateTag\"]; });\n\n/* harmony import */ var _lib_tracking__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib/tracking */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"track\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"consume\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"EPOCH\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"trackedData\"]; });\n\n\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/index.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js":
-/*!*************************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js ***!
-  \*************************************************************************/
-/*! exports provided: dirtyTag, tagFor, updateTag */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return dirtyTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return tagFor; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return updateTag; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n\nconst TRACKED_TAGS = new WeakMap();\n\nfunction isObject(u) {\n  return typeof u === 'object' && u !== null;\n}\n\nfunction dirtyTag(obj, key) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (tag === undefined) {\n      updateTag(obj, key, Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])());\n    } else if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(tag);\n    }\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\nfunction tagFor(obj, key) {\n  if (isObject(obj)) {\n    let tags = TRACKED_TAGS.get(obj);\n\n    if (tags === undefined) {\n      tags = new Map();\n      TRACKED_TAGS.set(obj, tags);\n    } else if (tags.has(key)) {\n      return tags.get(key);\n    }\n\n    let tag = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])();\n    tags.set(key, tag);\n    return tag;\n  } else {\n    return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n  }\n}\nfunction updateTag(obj, key, newTag) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"])(tag, newTag);\n    }\n\n    return tag;\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js ***!
-  \*****************************************************************************/
-/*! exports provided: track, consume, EPOCH, trackedData */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return track; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return consume; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return EPOCH; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return trackedData; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony import */ var _meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n\n\n\n/**\n * Whenever a tracked computed property is entered, the current tracker is\n * saved off and a new tracker is replaced.\n *\n * Any tracked properties consumed are added to the current tracker.\n *\n * When a tracked computed property is exited, the tracker's tags are\n * combined and added to the parent tracker.\n *\n * The consequence is that each tracked computed property has a tag\n * that corresponds to the tracked properties consumed inside of\n * itself, including child tracked computed properties.\n */\n\nlet CURRENT_TRACKER = null;\n/**\n * An object that that tracks @tracked properties that were consumed.\n */\n\nclass Tracker {\n  constructor() {\n    this.tags = new Set();\n    this.last = null;\n  }\n\n  add(tag) {\n    this.tags.add(tag);\n    this.last = tag;\n  }\n\n  combine() {\n    let {\n      tags\n    } = this;\n\n    if (tags.size === 0) {\n      return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n    } else if (tags.size === 1) {\n      return this.last;\n    } else {\n      let tagsArr = [];\n      tags.forEach(tag => tagsArr.push(tag));\n      return Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"])(tagsArr);\n    }\n  }\n\n}\n\nfunction track(callback) {\n  let parent = CURRENT_TRACKER;\n  let current = new Tracker();\n  CURRENT_TRACKER = current;\n\n  try {\n    callback();\n  } finally {\n    CURRENT_TRACKER = parent;\n  }\n\n  return current.combine();\n}\nfunction consume(tag) {\n  if (CURRENT_TRACKER !== null) {\n    CURRENT_TRACKER.add(tag);\n  }\n} //////////\n\nconst EPOCH = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"])();\nfunction trackedData(key, initializer) {\n  let values = new WeakMap();\n  let hasInitializer = typeof initializer === 'function';\n\n  function getter(self) {\n    consume(Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"])(self, key));\n    let value; // If the field has never been initialized, we should initialize it\n\n    if (hasInitializer && !values.has(self)) {\n      value = initializer();\n      values.set(self, value);\n    } else {\n      value = values.get(self);\n    }\n\n    return value;\n  }\n\n  function setter(self, value) {\n    Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(EPOCH);\n    Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"])(self, key);\n    values.set(self, value);\n  }\n\n  return {\n    getter,\n    setter\n  };\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js?");
-
-/***/ }),
-
-/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js":
-/*!*******************************************************************************!*\
-  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js ***!
-  \*******************************************************************************/
-/*! exports provided: CONSTANT, INITIAL, VOLATILE, bump, COMPUTE, value, validate, ALLOW_CYCLES, dirty, update, createTag, createUpdatableTag, CONSTANT_TAG, isConst, isConstTag, VOLATILE_TAG, CURRENT_TAG, combine, createCombinatorTag */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return CONSTANT; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return INITIAL; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return VOLATILE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return bump; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return COMPUTE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return value; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return validate; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return ALLOW_CYCLES; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return dirty; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return update; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return createTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return createUpdatableTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return CONSTANT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return isConst; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return isConstTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return VOLATILE_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return CURRENT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return combine; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return createCombinatorTag; });\nconst symbol = typeof Symbol !== 'undefined' ? Symbol : key => `__${key}${Math.floor(Math.random() * Date.now())}__`;\nconst CONSTANT = 0;\nconst INITIAL = 1;\nconst VOLATILE = 9007199254740991; // MAX_INT\n\nlet $REVISION = INITIAL;\nfunction bump() {\n  $REVISION++;\n} //////////\n\nconst COMPUTE = symbol('TAG_COMPUTE'); //////////\n\n/**\n * `value` receives a tag and returns an opaque Revision based on that tag. This\n * snapshot can then later be passed to `validate` with the same tag to\n * determine if the tag has changed at all since the time that `value` was\n * called.\n *\n * The current implementation returns the global revision count directly for\n * performance reasons. This is an implementation detail, and should not be\n * relied on directly by users of these APIs. Instead, Revisions should be\n * treated as if they are opaque/unknown, and should only be interacted with via\n * the `value`/`validate` API.\n *\n * @param tag\n */\n\nfunction value(_tag) {\n  return $REVISION;\n}\n/**\n * `validate` receives a tag and a snapshot from a previous call to `value` with\n * the same tag, and determines if the tag is still valid compared to the\n * snapshot. If the tag's state has changed at all since then, `validate` will\n * return false, otherwise it will return true. This is used to determine if a\n * calculation related to the tags should be rerun.\n *\n * @param tag\n * @param snapshot\n */\n\nfunction validate(tag, snapshot) {\n  return snapshot >= tag[COMPUTE]();\n}\nconst TYPE = symbol('TAG_TYPE');\nlet ALLOW_CYCLES;\n\nif (false) {}\n\nclass MonomorphicTagImpl {\n  constructor(type) {\n    this.revision = INITIAL;\n    this.lastChecked = INITIAL;\n    this.lastValue = INITIAL;\n    this.isUpdating = false;\n    this.subtag = null;\n    this.subtags = null;\n    this[TYPE] = type;\n  }\n\n  [COMPUTE]() {\n    let {\n      lastChecked\n    } = this;\n\n    if (lastChecked !== $REVISION) {\n      this.isUpdating = true;\n      this.lastChecked = $REVISION;\n\n      try {\n        let {\n          subtags,\n          subtag,\n          revision\n        } = this;\n\n        if (subtag !== null) {\n          revision = Math.max(revision, subtag[COMPUTE]());\n        }\n\n        if (subtags !== null) {\n          for (let i = 0; i < subtags.length; i++) {\n            let value = subtags[i][COMPUTE]();\n            revision = Math.max(value, revision);\n          }\n        }\n\n        this.lastValue = revision;\n      } finally {\n        this.isUpdating = false;\n      }\n    }\n\n    if (this.isUpdating === true) {\n      if (false) {}\n\n      this.lastChecked = ++$REVISION;\n    }\n\n    return this.lastValue;\n  }\n\n  static update(_tag, subtag) {\n    if (false\n    /* Updatable */\n    ) {} // TODO: TS 3.7 should allow us to do this via assertion\n\n\n    let tag = _tag;\n\n    if (subtag === CONSTANT_TAG) {\n      tag.subtag = null;\n    } else {\n      tag.subtag = subtag; // subtag could be another type of tag, e.g. CURRENT_TAG or VOLATILE_TAG.\n      // If so, lastChecked/lastValue will be undefined, result in these being\n      // NaN. This is fine, it will force the system to recompute.\n\n      tag.lastChecked = Math.min(tag.lastChecked, subtag.lastChecked);\n      tag.lastValue = Math.max(tag.lastValue, subtag.lastValue);\n    }\n  }\n\n  static dirty(tag) {\n    if (false) {}\n\n    tag.revision = ++$REVISION;\n  }\n\n}\n\nconst dirty = MonomorphicTagImpl.dirty;\nconst update = MonomorphicTagImpl.update; //////////\n\nfunction createTag() {\n  return new MonomorphicTagImpl(0\n  /* Dirtyable */\n  );\n}\nfunction createUpdatableTag() {\n  return new MonomorphicTagImpl(1\n  /* Updatable */\n  );\n} //////////\n\nconst CONSTANT_TAG = new MonomorphicTagImpl(3\n/* Constant */\n);\nfunction isConst({\n  tag\n}) {\n  return tag === CONSTANT_TAG;\n}\nfunction isConstTag(tag) {\n  return tag === CONSTANT_TAG;\n} //////////\n\nclass VolatileTag {\n  [COMPUTE]() {\n    return VOLATILE;\n  }\n\n}\n\nconst VOLATILE_TAG = new VolatileTag(); //////////\n\nclass CurrentTag {\n  [COMPUTE]() {\n    return $REVISION;\n  }\n\n}\n\nconst CURRENT_TAG = new CurrentTag(); //////////\n\nfunction combine(tags) {\n  let optimized = [];\n\n  for (let i = 0, l = tags.length; i < l; i++) {\n    let tag = tags[i];\n    if (tag === CONSTANT_TAG) continue;\n    optimized.push(tag);\n  }\n\n  return createCombinatorTag(optimized);\n}\nfunction createCombinatorTag(tags) {\n  switch (tags.length) {\n    case 0:\n      return CONSTANT_TAG;\n\n    case 1:\n      return tags[0];\n\n    default:\n      let tag = new MonomorphicTagImpl(2\n      /* Combinator */\n      );\n      tag.subtags = tags;\n      return tag;\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js?");
-
-/***/ }),
-
-/***/ "./node_modules/interactjs/dist/interact.min.js":
-/*!******************************************************!*\
-  !*** ./node_modules/interactjs/dist/interact.min.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-eval("/* interact.js 1.9.9 | https://raw.github.com/taye/interact.js/master/LICENSE */\n!function (t) {\n  if (true) module.exports = t();else {}\n}(function () {\n  function t(e) {\n    var n;\n    return function (t) {\n      return n || e(n = {\n        exports: {},\n        parent: t\n      }, n.exports), n.exports;\n    };\n  }\n\n  var k = t(function (t, e) {\n    \"use strict\";\n\n    function a(t) {\n      return (a = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n        return typeof t;\n      } : function (t) {\n        return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n      })(t);\n    }\n\n    Object.defineProperty(e, \"__esModule\", {\n      value: !0\n    }), e.default = e.Interactable = void 0;\n    var u = r(S),\n        l = n(C),\n        s = n(V),\n        c = n(ct),\n        f = r(w),\n        p = n(ft),\n        i = n(bt),\n        d = m({});\n\n    function n(t) {\n      return t && t.__esModule ? t : {\n        default: t\n      };\n    }\n\n    function v() {\n      if (\"function\" != typeof WeakMap) return null;\n      var t = new WeakMap();\n      return v = function () {\n        return t;\n      }, t;\n    }\n\n    function r(t) {\n      if (t && t.__esModule) return t;\n      if (null === t || \"object\" !== a(t) && \"function\" != typeof t) return {\n        default: t\n      };\n      var e = v();\n      if (e && e.has(t)) return e.get(t);\n      var n = {},\n          r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n      for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n        var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n        i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n      }\n\n      return n.default = t, e && e.set(t, n), n;\n    }\n\n    function o(t, e) {\n      for (var n = 0; n < e.length; n++) {\n        var r = e[n];\n        r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n      }\n    }\n\n    function y(t, e, n) {\n      return e && o(t.prototype, e), n && o(t, n), t;\n    }\n\n    function h(t, e, n) {\n      return e in t ? Object.defineProperty(t, e, {\n        value: n,\n        enumerable: !0,\n        configurable: !0,\n        writable: !0\n      }) : t[e] = n, t;\n    }\n\n    var g = function () {\n      function o(t, e, n, r) {\n        !function (t, e) {\n          if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n        }(this, o), this._scopeEvents = r, h(this, \"options\", void 0), h(this, \"_actions\", void 0), h(this, \"target\", void 0), h(this, \"events\", new i.default()), h(this, \"_context\", void 0), h(this, \"_win\", void 0), h(this, \"_doc\", void 0), this._actions = e.actions, this.target = t, this._context = e.context || n, this._win = (0, O.getWindow)((0, $.trySelector)(t) ? this._context : t), this._doc = this._win.document, this.set(e);\n      }\n\n      return y(o, [{\n        key: \"_defaults\",\n        get: function () {\n          return {\n            base: {},\n            perAction: {},\n            actions: {}\n          };\n        }\n      }]), y(o, [{\n        key: \"setOnEvents\",\n        value: function (t, e) {\n          return f.func(e.onstart) && this.on(\"\".concat(t, \"start\"), e.onstart), f.func(e.onmove) && this.on(\"\".concat(t, \"move\"), e.onmove), f.func(e.onend) && this.on(\"\".concat(t, \"end\"), e.onend), f.func(e.oninertiastart) && this.on(\"\".concat(t, \"inertiastart\"), e.oninertiastart), this;\n        }\n      }, {\n        key: \"updatePerActionListeners\",\n        value: function (t, e, n) {\n          (f.array(e) || f.object(e)) && this.off(t, e), (f.array(n) || f.object(n)) && this.on(t, n);\n        }\n      }, {\n        key: \"setPerAction\",\n        value: function (t, e) {\n          var n = this._defaults;\n\n          for (var r in e) {\n            var o = r,\n                i = this.options[t],\n                a = e[o];\n            \"listeners\" === o && this.updatePerActionListeners(t, i.listeners, a), f.array(a) ? i[o] = u.from(a) : f.plainObject(a) ? (i[o] = (0, c.default)(i[o] || {}, (0, s.default)(a)), f.object(n.perAction[o]) && \"enabled\" in n.perAction[o] && (i[o].enabled = !1 !== a.enabled)) : f.bool(a) && f.object(n.perAction[o]) ? i[o].enabled = a : i[o] = a;\n          }\n        }\n      }, {\n        key: \"getRect\",\n        value: function (t) {\n          return t = t || (f.element(this.target) ? this.target : null), f.string(this.target) && (t = t || this._context.querySelector(this.target)), (0, $.getElementRect)(t);\n        }\n      }, {\n        key: \"rectChecker\",\n        value: function (t) {\n          return f.func(t) ? (this.getRect = t, this) : null === t ? (delete this.getRect, this) : this.getRect;\n        }\n      }, {\n        key: \"_backCompatOption\",\n        value: function (t, e) {\n          if ((0, $.trySelector)(e) || f.object(e)) {\n            for (var n in this.options[t] = e, this._actions.map) this.options[n][t] = e;\n\n            return this;\n          }\n\n          return this.options[t];\n        }\n      }, {\n        key: \"origin\",\n        value: function (t) {\n          return this._backCompatOption(\"origin\", t);\n        }\n      }, {\n        key: \"deltaSource\",\n        value: function (t) {\n          return \"page\" === t || \"client\" === t ? (this.options.deltaSource = t, this) : this.options.deltaSource;\n        }\n      }, {\n        key: \"context\",\n        value: function () {\n          return this._context;\n        }\n      }, {\n        key: \"inContext\",\n        value: function (t) {\n          return this._context === t.ownerDocument || (0, $.nodeContains)(this._context, t);\n        }\n      }, {\n        key: \"testIgnoreAllow\",\n        value: function (t, e, n) {\n          return !this.testIgnore(t.ignoreFrom, e, n) && this.testAllow(t.allowFrom, e, n);\n        }\n      }, {\n        key: \"testAllow\",\n        value: function (t, e, n) {\n          return !t || !!f.element(n) && (f.string(t) ? (0, $.matchesUpTo)(n, t, e) : !!f.element(t) && (0, $.nodeContains)(t, n));\n        }\n      }, {\n        key: \"testIgnore\",\n        value: function (t, e, n) {\n          return !(!t || !f.element(n)) && (f.string(t) ? (0, $.matchesUpTo)(n, t, e) : !!f.element(t) && (0, $.nodeContains)(t, n));\n        }\n      }, {\n        key: \"fire\",\n        value: function (t) {\n          return this.events.fire(t), this;\n        }\n      }, {\n        key: \"_onOff\",\n        value: function (t, e, n, r) {\n          f.object(e) && !f.array(e) && (r = n, n = null);\n          var o = \"on\" === t ? \"add\" : \"remove\",\n              i = (0, p.default)(e, n);\n\n          for (var a in i) {\n            \"wheel\" === a && (a = l.default.wheelEvent);\n\n            for (var u = 0; u < i[a].length; u++) {\n              var s = i[a][u];\n              (0, d.isNonNativeEvent)(a, this._actions) ? this.events[t](a, s) : f.string(this.target) ? this._scopeEvents[\"\".concat(o, \"Delegate\")](this.target, this._context, a, s, r) : this._scopeEvents[o](this.target, a, s, r);\n            }\n          }\n\n          return this;\n        }\n      }, {\n        key: \"on\",\n        value: function (t, e, n) {\n          return this._onOff(\"on\", t, e, n);\n        }\n      }, {\n        key: \"off\",\n        value: function (t, e, n) {\n          return this._onOff(\"off\", t, e, n);\n        }\n      }, {\n        key: \"set\",\n        value: function (t) {\n          var e = this._defaults;\n\n          for (var n in f.object(t) || (t = {}), this.options = (0, s.default)(e.base), this._actions.methodDict) {\n            var r = n,\n                o = this._actions.methodDict[r];\n            this.options[r] = {}, this.setPerAction(r, (0, c.default)((0, c.default)({}, e.perAction), e.actions[r])), this[o](t[r]);\n          }\n\n          for (var i in t) f.func(this[i]) && this[i](t[i]);\n\n          return this;\n        }\n      }, {\n        key: \"unset\",\n        value: function () {\n          if (f.string(this.target)) for (var t in this._scopeEvents.delegatedEvents) for (var e = this._scopeEvents.delegatedEvents[t], n = e.length - 1; 0 <= n; n--) {\n            var r = e[n],\n                o = r.selector,\n                i = r.context,\n                a = r.listeners;\n            o === this.target && i === this._context && e.splice(n, 1);\n\n            for (var u = a.length - 1; 0 <= u; u--) this._scopeEvents.removeDelegate(this.target, this._context, t, a[u][0], a[u][1]);\n          } else this._scopeEvents.remove(this.target, \"all\");\n        }\n      }]), o;\n    }(),\n        b = e.Interactable = g;\n\n    e.default = b;\n  }),\n      m = t(function (t, e) {\n    \"use strict\";\n\n    Object.defineProperty(e, \"__esModule\", {\n      value: !0\n    }), e.isNonNativeEvent = function (t, e) {\n      if (e.phaselessTypes[t]) return !0;\n\n      for (var n in e.map) if (0 === t.indexOf(n) && t.substr(n.length) in e.phases) return !0;\n\n      return !1;\n    }, e.initScope = M, e.Scope = e.default = void 0;\n\n    var n = d(D),\n        r = function (t) {\n      if (t && t.__esModule) return t;\n      if (null === t || \"object\" !== v(t) && \"function\" != typeof t) return {\n        default: t\n      };\n      var e = p();\n      if (e && e.has(t)) return e.get(t);\n      var n = {},\n          r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n      for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n        var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n        i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n      }\n\n      n.default = t, e && e.set(t, n);\n      return n;\n    }(le),\n        o = d(bt),\n        i = d(We),\n        a = d(T({})),\n        u = d(k({})),\n        s = d(Ze),\n        l = d(ze),\n        c = d(cn),\n        f = d(E({}));\n\n    function p() {\n      if (\"function\" != typeof WeakMap) return null;\n      var t = new WeakMap();\n      return p = function () {\n        return t;\n      }, t;\n    }\n\n    function d(t) {\n      return t && t.__esModule ? t : {\n        default: t\n      };\n    }\n\n    function v(t) {\n      return (v = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n        return typeof t;\n      } : function (t) {\n        return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n      })(t);\n    }\n\n    function y(t, e) {\n      return !e || \"object\" !== v(e) && \"function\" != typeof e ? function (t) {\n        if (void 0 !== t) return t;\n        throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n      }(t) : e;\n    }\n\n    function h(t, e, n) {\n      return (h = \"undefined\" != typeof Reflect && Reflect.get ? Reflect.get : function (t, e, n) {\n        var r = function (t, e) {\n          for (; !Object.prototype.hasOwnProperty.call(t, e) && null !== (t = g(t)););\n\n          return t;\n        }(t, e);\n\n        if (r) {\n          var o = Object.getOwnPropertyDescriptor(r, e);\n          return o.get ? o.get.call(n) : o.value;\n        }\n      })(t, e, n || t);\n    }\n\n    function g(t) {\n      return (g = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) {\n        return t.__proto__ || Object.getPrototypeOf(t);\n      })(t);\n    }\n\n    function b(t, e) {\n      return (b = Object.setPrototypeOf || function (t, e) {\n        return t.__proto__ = e, t;\n      })(t, e);\n    }\n\n    function m(t, e) {\n      if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n    }\n\n    function O(t, e) {\n      for (var n = 0; n < e.length; n++) {\n        var r = e[n];\n        r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n      }\n    }\n\n    function w(t, e, n) {\n      return e && O(t.prototype, e), n && O(t, n), t;\n    }\n\n    function _(t, e, n) {\n      return e in t ? Object.defineProperty(t, e, {\n        value: n,\n        enumerable: !0,\n        configurable: !0,\n        writable: !0\n      }) : t[e] = n, t;\n    }\n\n    var P = r.win,\n        x = r.browser,\n        S = r.raf,\n        j = function () {\n      function t() {\n        var e = this;\n        m(this, t), _(this, \"id\", \"__interact_scope_\".concat(Math.floor(100 * Math.random()))), _(this, \"isInitialized\", !1), _(this, \"listenerMaps\", []), _(this, \"browser\", x), _(this, \"utils\", r), _(this, \"defaults\", r.clone(l.default)), _(this, \"Eventable\", o.default), _(this, \"actions\", {\n          map: {},\n          phases: {\n            start: !0,\n            move: !0,\n            end: !0\n          },\n          methodDict: {},\n          phaselessTypes: {}\n        }), _(this, \"interactStatic\", new a.default(this)), _(this, \"InteractEvent\", i.default), _(this, \"Interactable\", void 0), _(this, \"interactables\", new s.default(this)), _(this, \"_win\", void 0), _(this, \"document\", void 0), _(this, \"window\", void 0), _(this, \"documents\", []), _(this, \"_plugins\", {\n          list: [],\n          map: {}\n        }), _(this, \"onWindowUnload\", function (t) {\n          return e.removeDocument(t.target);\n        });\n        var n = this;\n\n        this.Interactable = function () {\n          function e() {\n            return m(this, e), y(this, g(e).apply(this, arguments));\n          }\n\n          return function (t, e) {\n            if (\"function\" != typeof e && null !== e) throw new TypeError(\"Super expression must either be null or a function\");\n            t.prototype = Object.create(e && e.prototype, {\n              constructor: {\n                value: t,\n                writable: !0,\n                configurable: !0\n              }\n            }), e && b(t, e);\n          }(e, u[\"default\"]), w(e, [{\n            key: \"set\",\n            value: function (t) {\n              return h(g(e.prototype), \"set\", this).call(this, t), n.fire(\"interactable:set\", {\n                options: t,\n                interactable: this\n              }), this;\n            }\n          }, {\n            key: \"unset\",\n            value: function () {\n              h(g(e.prototype), \"unset\", this).call(this), n.interactables.list.splice(n.interactables.list.indexOf(this), 1), n.fire(\"interactable:unset\", {\n                interactable: this\n              });\n            }\n          }, {\n            key: \"_defaults\",\n            get: function () {\n              return n.defaults;\n            }\n          }]), e;\n        }();\n      }\n\n      return w(t, [{\n        key: \"addListeners\",\n        value: function (t, e) {\n          this.listenerMaps.push({\n            id: e,\n            map: t\n          });\n        }\n      }, {\n        key: \"fire\",\n        value: function (t, e) {\n          for (var n = 0; n < this.listenerMaps.length; n++) {\n            var r = this.listenerMaps[n].map[t];\n            if (r && !1 === r(e, this, t)) return !1;\n          }\n        }\n      }, {\n        key: \"init\",\n        value: function (t) {\n          return this.isInitialized ? this : M(this, t);\n        }\n      }, {\n        key: \"pluginIsInstalled\",\n        value: function (t) {\n          return this._plugins.map[t.id] || -1 !== this._plugins.list.indexOf(t);\n        }\n      }, {\n        key: \"usePlugin\",\n        value: function (t, e) {\n          if (this.pluginIsInstalled(t)) return this;\n\n          if (t.id && (this._plugins.map[t.id] = t), this._plugins.list.push(t), t.install && t.install(this, e), t.listeners && t.before) {\n            for (var n = 0, r = this.listenerMaps.length, o = t.before.reduce(function (t, e) {\n              return t[e] = !0, t;\n            }, {}); n < r; n++) {\n              if (o[this.listenerMaps[n].id]) break;\n            }\n\n            this.listenerMaps.splice(n, 0, {\n              id: t.id,\n              map: t.listeners\n            });\n          } else t.listeners && this.listenerMaps.push({\n            id: t.id,\n            map: t.listeners\n          });\n\n          return this;\n        }\n      }, {\n        key: \"addDocument\",\n        value: function (t, e) {\n          if (-1 !== this.getDocIndex(t)) return !1;\n          var n = P.getWindow(t);\n          e = e ? r.extend({}, e) : {}, this.documents.push({\n            doc: t,\n            options: e\n          }), this.events.documents.push(t), t !== this.document && this.events.add(n, \"unload\", this.onWindowUnload), this.fire(\"scope:add-document\", {\n            doc: t,\n            window: n,\n            scope: this,\n            options: e\n          });\n        }\n      }, {\n        key: \"removeDocument\",\n        value: function (t) {\n          var e = this.getDocIndex(t),\n              n = P.getWindow(t),\n              r = this.documents[e].options;\n          this.events.remove(n, \"unload\", this.onWindowUnload), this.documents.splice(e, 1), this.events.documents.splice(e, 1), this.fire(\"scope:remove-document\", {\n            doc: t,\n            window: n,\n            scope: this,\n            options: r\n          });\n        }\n      }, {\n        key: \"getDocIndex\",\n        value: function (t) {\n          for (var e = 0; e < this.documents.length; e++) if (this.documents[e].doc === t) return e;\n\n          return -1;\n        }\n      }, {\n        key: \"getDocOptions\",\n        value: function (t) {\n          var e = this.getDocIndex(t);\n          return -1 === e ? null : this.documents[e].options;\n        }\n      }, {\n        key: \"now\",\n        value: function () {\n          return (this.window.Date || Date).now();\n        }\n      }]), t;\n    }();\n\n    function M(t, e) {\n      return t.isInitialized = !0, P.init(e), n.default.init(e), x.init(e), S.init(e), t.window = e, t.document = e.document, t.usePlugin(f.default), t.usePlugin(c.default), t;\n    }\n\n    e.Scope = e.default = j;\n  }),\n      E = t(function (t, e) {\n    \"use strict\";\n\n    Object.defineProperty(e, \"__esModule\", {\n      value: !0\n    }), e.default = void 0;\n\n    var _ = n(C),\n        u = n(D),\n        P = function (t) {\n      if (t && t.__esModule) return t;\n      if (null === t || \"object\" !== c(t) && \"function\" != typeof t) return {\n        default: t\n      };\n      var e = a();\n      if (e && e.has(t)) return e.get(t);\n      var n = {},\n          r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n      for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n        var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n        i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n      }\n\n      n.default = t, e && e.set(t, n);\n      return n;\n    }(zt),\n        s = n(En),\n        l = n(Un),\n        o = n(tr);\n\n    n(m({}));\n\n    function a() {\n      if (\"function\" != typeof WeakMap) return null;\n      var t = new WeakMap();\n      return a = function () {\n        return t;\n      }, t;\n    }\n\n    function n(t) {\n      return t && t.__esModule ? t : {\n        default: t\n      };\n    }\n\n    function c(t) {\n      return (c = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n        return typeof t;\n      } : function (t) {\n        return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n      })(t);\n    }\n\n    function x(t, e) {\n      return function (t) {\n        if (Array.isArray(t)) return t;\n      }(t) || function (t, e) {\n        if (!(Symbol.iterator in Object(t) || \"[object Arguments]\" === Object.prototype.toString.call(t))) return;\n        var n = [],\n            r = !0,\n            o = !1,\n            i = void 0;\n\n        try {\n          for (var a, u = t[Symbol.iterator](); !(r = (a = u.next()).done) && (n.push(a.value), !e || n.length !== e); r = !0);\n        } catch (t) {\n          o = !0, i = t;\n        } finally {\n          try {\n            r || null == u.return || u.return();\n          } finally {\n            if (o) throw i;\n          }\n        }\n\n        return n;\n      }(t, e) || function () {\n        throw new TypeError(\"Invalid attempt to destructure non-iterable instance\");\n      }();\n    }\n\n    function f(t, e) {\n      for (var n = 0; n < e.length; n++) {\n        var r = e[n];\n        r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n      }\n    }\n\n    function p(t, e) {\n      return !e || \"object\" !== c(e) && \"function\" != typeof e ? function (t) {\n        if (void 0 !== t) return t;\n        throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n      }(t) : e;\n    }\n\n    function d(t) {\n      return (d = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) {\n        return t.__proto__ || Object.getPrototypeOf(t);\n      })(t);\n    }\n\n    function v(t, e) {\n      return (v = Object.setPrototypeOf || function (t, e) {\n        return t.__proto__ = e, t;\n      })(t, e);\n    }\n\n    var y = [\"pointerDown\", \"pointerMove\", \"pointerUp\", \"updatePointer\", \"removePointer\", \"windowBlur\"];\n\n    function h(O, w) {\n      return function (t) {\n        var e = w.interactions.list,\n            n = P.getPointerType(t),\n            r = x(P.getEventTargets(t), 2),\n            o = r[0],\n            i = r[1],\n            a = [];\n\n        if (/^touch/.test(t.type)) {\n          w.prevTouchTime = w.now();\n\n          for (var u = 0; u < t.changedTouches.length; u++) {\n            s = t.changedTouches[u];\n            var s,\n                l = {\n              pointer: s,\n              pointerId: P.getPointerId(s),\n              pointerType: n,\n              eventType: t.type,\n              eventTarget: o,\n              curEventTarget: i,\n              scope: w\n            },\n                c = S(l);\n            a.push([l.pointer, l.eventTarget, l.curEventTarget, c]);\n          }\n        } else {\n          var f = !1;\n\n          if (!_.default.supportsPointerEvent && /mouse/.test(t.type)) {\n            for (var p = 0; p < e.length && !f; p++) f = \"mouse\" !== e[p].pointerType && e[p].pointerIsDown;\n\n            f = f || w.now() - w.prevTouchTime < 500 || 0 === t.timeStamp;\n          }\n\n          if (!f) {\n            var d = {\n              pointer: t,\n              pointerId: P.getPointerId(t),\n              pointerType: n,\n              eventType: t.type,\n              curEventTarget: i,\n              eventTarget: o,\n              scope: w\n            },\n                v = S(d);\n            a.push([d.pointer, d.eventTarget, d.curEventTarget, v]);\n          }\n        }\n\n        for (var y = 0; y < a.length; y++) {\n          var h = x(a[y], 4),\n              g = h[0],\n              b = h[1],\n              m = h[2];\n          h[3][O](g, t, b, m);\n        }\n      };\n    }\n\n    function S(t) {\n      var e = t.pointerType,\n          n = t.scope,\n          r = {\n        interaction: o.default.search(t),\n        searchDetails: t\n      };\n      return n.fire(\"interactions:find\", r), r.interaction || n.interactions.new({\n        pointerType: e\n      });\n    }\n\n    function r(t, e) {\n      var n = t.doc,\n          r = t.scope,\n          o = t.options,\n          i = r.interactions.docEvents,\n          a = r.events,\n          u = a[e];\n\n      for (var s in r.browser.isIOS && !o.events && (o.events = {\n        passive: !1\n      }), a.delegatedEvents) u(n, s, a.delegateListener), u(n, s, a.delegateUseCapture, !0);\n\n      for (var l = o && o.events, c = 0; c < i.length; c++) {\n        var f;\n        f = i[c];\n        u(n, f.type, f.listener, l);\n      }\n    }\n\n    var i = {\n      id: \"core/interactions\",\n      install: function (o) {\n        for (var t = {}, e = 0; e < y.length; e++) {\n          var n;\n          n = y[e];\n          t[n] = h(n, o);\n        }\n\n        var r,\n            i = _.default.pEventTypes;\n\n        function a() {\n          for (var t = 0; t < o.interactions.list.length; t++) {\n            var e = o.interactions.list[t];\n            if (e.pointerIsDown && \"touch\" === e.pointerType && !e._interacting) for (var n = function () {\n              var n = e.pointers[r];\n              o.documents.some(function (t) {\n                var e = t.doc;\n                return (0, $.nodeContains)(e, n.downTarget);\n              }) || e.removePointer(n.pointer, n.event);\n            }, r = 0; r < e.pointers.length; r++) {\n              n();\n            }\n          }\n        }\n\n        (r = u.default.PointerEvent ? [{\n          type: i.down,\n          listener: a\n        }, {\n          type: i.down,\n          listener: t.pointerDown\n        }, {\n          type: i.move,\n          listener: t.pointerMove\n        }, {\n          type: i.up,\n          listener: t.pointerUp\n        }, {\n          type: i.cancel,\n          listener: t.pointerUp\n        }] : [{\n          type: \"mousedown\",\n          listener: t.pointerDown\n        }, {\n          type: \"mousemove\",\n          listener: t.pointerMove\n        }, {\n          type: \"mouseup\",\n          listener: t.pointerUp\n        }, {\n          type: \"touchstart\",\n          listener: a\n        }, {\n          type: \"touchstart\",\n          listener: t.pointerDown\n        }, {\n          type: \"touchmove\",\n          listener: t.pointerMove\n        }, {\n          type: \"touchend\",\n          listener: t.pointerUp\n        }, {\n          type: \"touchcancel\",\n          listener: t.pointerUp\n        }]).push({\n          type: \"blur\",\n          listener: function (t) {\n            for (var e = 0; e < o.interactions.list.length; e++) {\n              o.interactions.list[e].documentBlur(t);\n            }\n          }\n        }), o.prevTouchTime = 0, o.Interaction = function () {\n          function t() {\n            return function (t, e) {\n              if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n            }(this, t), p(this, d(t).apply(this, arguments));\n          }\n\n          var e, n, r;\n          return function (t, e) {\n            if (\"function\" != typeof e && null !== e) throw new TypeError(\"Super expression must either be null or a function\");\n            t.prototype = Object.create(e && e.prototype, {\n              constructor: {\n                value: t,\n                writable: !0,\n                configurable: !0\n              }\n            }), e && v(t, e);\n          }(t, s[\"default\"]), e = t, (n = [{\n            key: \"_now\",\n            value: function () {\n              return o.now();\n            }\n          }, {\n            key: \"pointerMoveTolerance\",\n            get: function () {\n              return o.interactions.pointerMoveTolerance;\n            },\n            set: function (t) {\n              o.interactions.pointerMoveTolerance = t;\n            }\n          }]) && f(e.prototype, n), r && f(e, r), t;\n        }(), o.interactions = {\n          list: [],\n          new: function (t) {\n            t.scopeFire = function (t, e) {\n              return o.fire(t, e);\n            };\n\n            var e = new o.Interaction(t);\n            return o.interactions.list.push(e), e;\n          },\n          listeners: t,\n          docEvents: r,\n          pointerMoveTolerance: 1\n        }, o.usePlugin(l.default);\n      },\n      listeners: {\n        \"scope:add-document\": function (t) {\n          return r(t, \"add\");\n        },\n        \"scope:remove-document\": function (t) {\n          return r(t, \"remove\");\n        },\n        \"interactable:unset\": function (t, e) {\n          for (var n = t.interactable, r = e.interactions.list.length - 1; 0 <= r; r--) {\n            var o = e.interactions.list[r];\n            o.interactable === n && (o.stop(), e.fire(\"interactions:destroy\", {\n              interaction: o\n            }), o.destroy(), 2 < e.interactions.list.length && e.interactions.list.splice(r, 1));\n          }\n        }\n      },\n      onDocSignal: r,\n      doOnInteractions: h,\n      methodNames: y\n    };\n    e.default = i;\n  }),\n      T = t(function (t, e) {\n    \"use strict\";\n\n    function a(t) {\n      return (a = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n        return typeof t;\n      } : function (t) {\n        return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n      })(t);\n    }\n\n    Object.defineProperty(e, \"__esModule\", {\n      value: !0\n    }), e.default = e.InteractStatic = void 0;\n\n    var n,\n        r = (n = C) && n.__esModule ? n : {\n      default: n\n    },\n        u = function (t) {\n      if (t && t.__esModule) return t;\n      if (null === t || \"object\" !== a(t) && \"function\" != typeof t) return {\n        default: t\n      };\n      var e = l();\n      if (e && e.has(t)) return e.get(t);\n      var n = {},\n          r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n      for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n        var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n        i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n      }\n\n      n.default = t, e && e.set(t, n);\n      return n;\n    }(le),\n        s = m({});\n\n    function l() {\n      if (\"function\" != typeof WeakMap) return null;\n      var t = new WeakMap();\n      return l = function () {\n        return t;\n      }, t;\n    }\n\n    function o(t, e) {\n      for (var n = 0; n < e.length; n++) {\n        var r = e[n];\n        r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n      }\n    }\n\n    function c(t, e, n) {\n      return e in t ? Object.defineProperty(t, e, {\n        value: n,\n        enumerable: !0,\n        configurable: !0,\n        writable: !0\n      }) : t[e] = n, t;\n    }\n\n    var i = function () {\n      function a(r) {\n        var o = this;\n        !function (t, e) {\n          if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n        }(this, a), this.scope = r, c(this, \"getPointerAverage\", u.pointer.pointerAverage), c(this, \"getTouchBBox\", u.pointer.touchBBox), c(this, \"getTouchDistance\", u.pointer.touchDistance), c(this, \"getTouchAngle\", u.pointer.touchAngle), c(this, \"getElementRect\", u.dom.getElementRect), c(this, \"getElementClientRect\", u.dom.getElementClientRect), c(this, \"matchesSelector\", u.dom.matchesSelector), c(this, \"closest\", u.dom.closest), c(this, \"globalEvents\", {}), c(this, \"dynamicDrop\", void 0), c(this, \"version\", \"1.9.9\"), c(this, \"interact\", void 0);\n\n        for (var t = this.constructor.prototype, e = function (t, e) {\n          var n = r.interactables.get(t, e);\n          return n || ((n = r.interactables.new(t, e)).events.global = o.globalEvents), n;\n        }, n = 0; n < Object.getOwnPropertyNames(this.constructor.prototype).length; n++) {\n          var i;\n          i = Object.getOwnPropertyNames(this.constructor.prototype)[n];\n          e[i] = t[i];\n        }\n\n        return u.extend(e, this), e.constructor = this.constructor, this.interact = e;\n      }\n\n      var t, e, n;\n      return t = a, (e = [{\n        key: \"use\",\n        value: function (t, e) {\n          return this.scope.usePlugin(t, e), this;\n        }\n      }, {\n        key: \"isSet\",\n        value: function (t, e) {\n          return !!this.scope.interactables.get(t, e && e.context);\n        }\n      }, {\n        key: \"on\",\n        value: function (t, e, n) {\n          if (u.is.string(t) && -1 !== t.search(\" \") && (t = t.trim().split(/ +/)), u.is.array(t)) {\n            for (var r = 0; r < t.length; r++) {\n              var o = t[r];\n              this.on(o, e, n);\n            }\n\n            return this;\n          }\n\n          if (u.is.object(t)) {\n            for (var i in t) this.on(i, t[i], e);\n\n            return this;\n          }\n\n          return (0, s.isNonNativeEvent)(t, this.scope.actions) ? this.globalEvents[t] ? this.globalEvents[t].push(e) : this.globalEvents[t] = [e] : this.scope.events.add(this.scope.document, t, e, {\n            options: n\n          }), this;\n        }\n      }, {\n        key: \"off\",\n        value: function (t, e, n) {\n          if (u.is.string(t) && -1 !== t.search(\" \") && (t = t.trim().split(/ +/)), u.is.array(t)) {\n            for (var r = 0; r < t.length; r++) {\n              var o = t[r];\n              this.off(o, e, n);\n            }\n\n            return this;\n          }\n\n          if (u.is.object(t)) {\n            for (var i in t) this.off(i, t[i], e);\n\n            return this;\n          }\n\n          var a;\n          (0, s.isNonNativeEvent)(t, this.scope.actions) ? t in this.globalEvents && -1 !== (a = this.globalEvents[t].indexOf(e)) && this.globalEvents[t].splice(a, 1) : this.scope.events.remove(this.scope.document, t, e, n);\n          return this;\n        }\n      }, {\n        key: \"debug\",\n        value: function () {\n          return this.scope;\n        }\n      }, {\n        key: \"supportsTouch\",\n        value: function () {\n          return r.default.supportsTouch;\n        }\n      }, {\n        key: \"supportsPointerEvent\",\n        value: function () {\n          return r.default.supportsPointerEvent;\n        }\n      }, {\n        key: \"stop\",\n        value: function () {\n          for (var t = 0; t < this.scope.interactions.list.length; t++) {\n            this.scope.interactions.list[t].stop();\n          }\n\n          return this;\n        }\n      }, {\n        key: \"pointerMoveTolerance\",\n        value: function (t) {\n          return u.is.number(t) ? (this.scope.interactions.pointerMoveTolerance = t, this) : this.scope.interactions.pointerMoveTolerance;\n        }\n      }, {\n        key: \"addDocument\",\n        value: function (t, e) {\n          this.scope.addDocument(t, e);\n        }\n      }, {\n        key: \"removeDocument\",\n        value: function (t) {\n          this.scope.removeDocument(t);\n        }\n      }]) && o(t.prototype, e), n && o(t, n), a;\n    }(),\n        f = e.InteractStatic = i;\n\n    e.default = f;\n  }),\n      e = {};\n  Object.defineProperty(e, \"__esModule\", {\n    value: !0\n  }), e.default = void 0;\n\n  e.default = function (t) {\n    return !(!t || !t.Window) && t instanceof t.Window;\n  };\n\n  var O = {};\n  Object.defineProperty(O, \"__esModule\", {\n    value: !0\n  }), O.init = i, O.getWindow = a, O.default = void 0;\n  var n,\n      r = (n = e) && n.__esModule ? n : {\n    default: n\n  };\n  var o = {\n    realWindow: void 0,\n    window: void 0,\n    getWindow: a,\n    init: i\n  };\n\n  function i(t) {\n    var e = (o.realWindow = t).document.createTextNode(\"\");\n    e.ownerDocument !== t.document && \"function\" == typeof t.wrap && t.wrap(e) === e && (t = t.wrap(t)), o.window = t;\n  }\n\n  function a(t) {\n    return (0, r.default)(t) ? t : (t.ownerDocument || t).defaultView || o.window;\n  }\n\n  \"undefined\" == typeof window ? (o.window = void 0, o.realWindow = void 0) : i(window), o.init = i;\n  var u = o;\n  O.default = u;\n  var w = {};\n  Object.defineProperty(w, \"__esModule\", {\n    value: !0\n  }), w.array = w.plainObject = w.element = w.string = w.bool = w.number = w.func = w.object = w.docFrag = w.window = void 0;\n  var s = c(e),\n      l = c(O);\n\n  function c(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function f(t) {\n    return (f = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  w.window = function (t) {\n    return t === l.default.window || (0, s.default)(t);\n  };\n\n  w.docFrag = function (t) {\n    return p(t) && 11 === t.nodeType;\n  };\n\n  var p = function (t) {\n    return !!t && \"object\" === f(t);\n  };\n\n  w.object = p;\n\n  function d(t) {\n    return \"function\" == typeof t;\n  }\n\n  w.func = d;\n\n  w.number = function (t) {\n    return \"number\" == typeof t;\n  };\n\n  w.bool = function (t) {\n    return \"boolean\" == typeof t;\n  };\n\n  w.string = function (t) {\n    return \"string\" == typeof t;\n  };\n\n  w.element = function (t) {\n    if (!t || \"object\" !== f(t)) return !1;\n    var e = l.default.getWindow(t) || l.default.window;\n    return /object|function/.test(f(e.Element)) ? t instanceof e.Element : 1 === t.nodeType && \"string\" == typeof t.nodeName;\n  };\n\n  w.plainObject = function (t) {\n    return p(t) && !!t.constructor && /function Object\\b/.test(t.constructor.toString());\n  };\n\n  w.array = function (t) {\n    return p(t) && void 0 !== t.length && d(t.splice);\n  };\n\n  var v = {};\n\n  function y(t) {\n    return (y = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(v, \"__esModule\", {\n    value: !0\n  }), v.default = void 0;\n\n  var h = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== y(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = g();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w);\n\n  function g() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return g = function () {\n      return t;\n    }, t;\n  }\n\n  function b(t) {\n    var e = t.interaction;\n\n    if (\"drag\" === e.prepared.name) {\n      var n = e.prepared.axis;\n      \"x\" === n ? (e.coords.cur.page.y = e.coords.start.page.y, e.coords.cur.client.y = e.coords.start.client.y, e.coords.velocity.client.y = 0, e.coords.velocity.page.y = 0) : \"y\" === n && (e.coords.cur.page.x = e.coords.start.page.x, e.coords.cur.client.x = e.coords.start.client.x, e.coords.velocity.client.x = 0, e.coords.velocity.page.x = 0);\n    }\n  }\n\n  function _(t) {\n    var e = t.iEvent,\n        n = t.interaction;\n\n    if (\"drag\" === n.prepared.name) {\n      var r = n.prepared.axis;\n\n      if (\"x\" === r || \"y\" === r) {\n        var o = \"x\" === r ? \"y\" : \"x\";\n        e.page[o] = n.coords.start.page[o], e.client[o] = n.coords.start.client[o], e.delta[o] = 0;\n      }\n    }\n  }\n\n  var P = {\n    id: \"actions/drag\",\n    install: function (t) {\n      var e = t.actions,\n          n = t.Interactable,\n          r = t.defaults;\n      n.prototype.draggable = P.draggable, e.map.drag = P, e.methodDict.drag = \"draggable\", r.actions.drag = P.defaults;\n    },\n    listeners: {\n      \"interactions:before-action-move\": b,\n      \"interactions:action-resume\": b,\n      \"interactions:action-move\": _,\n      \"auto-start:check\": function (t) {\n        var e = t.interaction,\n            n = t.interactable,\n            r = t.buttons,\n            o = n.options.drag;\n        if (o && o.enabled && (!e.pointerIsDown || !/mouse|pointer/.test(e.pointerType) || 0 != (r & n.options.drag.mouseButtons))) return !(t.action = {\n          name: \"drag\",\n          axis: \"start\" === o.lockAxis ? o.startAxis : o.lockAxis\n        });\n      }\n    },\n    draggable: function (t) {\n      return h.object(t) ? (this.options.drag.enabled = !1 !== t.enabled, this.setPerAction(\"drag\", t), this.setOnEvents(\"drag\", t), /^(xy|x|y|start)$/.test(t.lockAxis) && (this.options.drag.lockAxis = t.lockAxis), /^(xy|x|y)$/.test(t.startAxis) && (this.options.drag.startAxis = t.startAxis), this) : h.bool(t) ? (this.options.drag.enabled = t, this) : this.options.drag;\n    },\n    beforeMove: b,\n    move: _,\n    defaults: {\n      startAxis: \"xy\",\n      lockAxis: \"xy\"\n    },\n    getCursor: function () {\n      return \"move\";\n    }\n  },\n      x = P;\n  v.default = x;\n  var S = {};\n  Object.defineProperty(S, \"__esModule\", {\n    value: !0\n  }), S.find = S.findIndex = S.from = S.merge = S.remove = S.contains = void 0;\n\n  S.contains = function (t, e) {\n    return -1 !== t.indexOf(e);\n  };\n\n  S.remove = function (t, e) {\n    return t.splice(t.indexOf(e), 1);\n  };\n\n  function j(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      t.push(r);\n    }\n\n    return t;\n  }\n\n  S.merge = j;\n\n  S.from = function (t) {\n    return j([], t);\n  };\n\n  function M(t, e) {\n    for (var n = 0; n < t.length; n++) if (e(t[n], n, t)) return n;\n\n    return -1;\n  }\n\n  S.findIndex = M;\n\n  S.find = function (t, e) {\n    return t[M(t, e)];\n  };\n\n  var D = {};\n  Object.defineProperty(D, \"__esModule\", {\n    value: !0\n  }), D.default = void 0;\n  var I = {\n    init: function (t) {\n      var e = t;\n      I.document = e.document, I.DocumentFragment = e.DocumentFragment || z, I.SVGElement = e.SVGElement || z, I.SVGSVGElement = e.SVGSVGElement || z, I.SVGElementInstance = e.SVGElementInstance || z, I.Element = e.Element || z, I.HTMLElement = e.HTMLElement || I.Element, I.Event = e.Event, I.Touch = e.Touch || z, I.PointerEvent = e.PointerEvent || e.MSPointerEvent;\n    },\n    document: null,\n    DocumentFragment: null,\n    SVGElement: null,\n    SVGSVGElement: null,\n    SVGElementInstance: null,\n    Element: null,\n    HTMLElement: null,\n    Event: null,\n    Touch: null,\n    PointerEvent: null\n  };\n\n  function z() {}\n\n  var A = I;\n  D.default = A;\n  var C = {};\n\n  function W(t) {\n    return (W = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(C, \"__esModule\", {\n    value: !0\n  }), C.default = void 0;\n\n  var R = N(D),\n      F = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== W(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Y();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w),\n      X = N(O);\n\n  function Y() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Y = function () {\n      return t;\n    }, t;\n  }\n\n  function N(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var L = {\n    init: function (t) {\n      var e = R.default.Element,\n          n = X.default.window.navigator;\n      L.supportsTouch = \"ontouchstart\" in t || F.func(t.DocumentTouch) && R.default.document instanceof t.DocumentTouch, L.supportsPointerEvent = !1 !== n.pointerEnabled && !!R.default.PointerEvent, L.isIOS = /iP(hone|od|ad)/.test(n.platform), L.isIOS7 = /iP(hone|od|ad)/.test(n.platform) && /OS 7[^\\d]/.test(n.appVersion), L.isIe9 = /MSIE 9/.test(n.userAgent), L.isOperaMobile = \"Opera\" === n.appName && L.supportsTouch && /Presto/.test(n.userAgent), L.prefixedMatchesSelector = \"matches\" in e.prototype ? \"matches\" : \"webkitMatchesSelector\" in e.prototype ? \"webkitMatchesSelector\" : \"mozMatchesSelector\" in e.prototype ? \"mozMatchesSelector\" : \"oMatchesSelector\" in e.prototype ? \"oMatchesSelector\" : \"msMatchesSelector\", L.pEventTypes = L.supportsPointerEvent ? R.default.PointerEvent === t.MSPointerEvent ? {\n        up: \"MSPointerUp\",\n        down: \"MSPointerDown\",\n        over: \"mouseover\",\n        out: \"mouseout\",\n        move: \"MSPointerMove\",\n        cancel: \"MSPointerCancel\"\n      } : {\n        up: \"pointerup\",\n        down: \"pointerdown\",\n        over: \"pointerover\",\n        out: \"pointerout\",\n        move: \"pointermove\",\n        cancel: \"pointercancel\"\n      } : null, L.wheelEvent = \"onmousewheel\" in R.default.document ? \"mousewheel\" : \"wheel\";\n    },\n    supportsTouch: null,\n    supportsPointerEvent: null,\n    isIOS7: null,\n    isIOS: null,\n    isIe9: null,\n    isOperaMobile: null,\n    prefixedMatchesSelector: null,\n    pEventTypes: null,\n    wheelEvent: null\n  };\n  var B = L;\n  C.default = B;\n  var V = {};\n\n  function q(t) {\n    return (q = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(V, \"__esModule\", {\n    value: !0\n  }), V.default = function t(e) {\n    var n = {};\n\n    for (var r in e) {\n      var o = e[r];\n      G.plainObject(o) ? n[r] = t(o) : G.array(o) ? n[r] = U.from(o) : n[r] = o;\n    }\n\n    return n;\n  };\n  var U = K(S),\n      G = K(w);\n\n  function H() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return H = function () {\n      return t;\n    }, t;\n  }\n\n  function K(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== q(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = H();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  var $ = {};\n\n  function Z(t) {\n    return (Z = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty($, \"__esModule\", {\n    value: !0\n  }), $.nodeContains = function (t, e) {\n    for (; e;) {\n      if (e === t) return !0;\n      e = e.parentNode;\n    }\n\n    return !1;\n  }, $.closest = function (t, e) {\n    for (; tt.element(t);) {\n      if (at(t, e)) return t;\n      t = it(t);\n    }\n\n    return null;\n  }, $.parentNode = it, $.matchesSelector = at, $.indexOfDeepestElement = function (t) {\n    var e,\n        n,\n        r = [],\n        o = t[0],\n        i = o ? 0 : -1;\n\n    for (e = 1; e < t.length; e++) {\n      var a = t[e];\n      if (a && a !== o) if (o) {\n        if (a.parentNode !== a.ownerDocument) if (o.parentNode !== a.ownerDocument) {\n          if (a.parentNode !== o.parentNode) {\n            if (!r.length) for (var u = o, s = void 0; (s = ut(u)) && s !== u.ownerDocument;) r.unshift(u), u = s;\n            var l = void 0;\n\n            if (o instanceof Q.default.HTMLElement && a instanceof Q.default.SVGElement && !(a instanceof Q.default.SVGSVGElement)) {\n              if (a === o.parentNode) continue;\n              l = a.ownerSVGElement;\n            } else l = a;\n\n            for (var c = []; l.parentNode !== l.ownerDocument;) c.unshift(l), l = ut(l);\n\n            for (n = 0; c[n] && c[n] === r[n];) n++;\n\n            for (var f = [c[n - 1], c[n], r[n]], p = f[0].lastChild; p;) {\n              if (p === f[1]) {\n                o = a, i = e, r = c;\n                break;\n              }\n\n              if (p === f[2]) break;\n              p = p.previousSibling;\n            }\n          } else {\n            var d = parseInt((0, et.getWindow)(o).getComputedStyle(o).zIndex, 10) || 0,\n                v = parseInt((0, et.getWindow)(a).getComputedStyle(a).zIndex, 10) || 0;\n            d <= v && (o = a, i = e);\n          }\n        } else o = a, i = e;\n      } else o = a, i = e;\n    }\n\n    return i;\n  }, $.matchesUpTo = function (t, e, n) {\n    for (; tt.element(t);) {\n      if (at(t, e)) return !0;\n      if ((t = it(t)) === n) return at(t, e);\n    }\n\n    return !1;\n  }, $.getActualElement = function (t) {\n    return t instanceof Q.default.SVGElementInstance ? t.correspondingUseElement : t;\n  }, $.getScrollXY = st, $.getElementClientRect = lt, $.getElementRect = function (t) {\n    var e = lt(t);\n\n    if (!J.default.isIOS7 && e) {\n      var n = st(et.default.getWindow(t));\n      e.left += n.x, e.right += n.x, e.top += n.y, e.bottom += n.y;\n    }\n\n    return e;\n  }, $.getPath = function (t) {\n    var e = [];\n\n    for (; t;) e.push(t), t = it(t);\n\n    return e;\n  }, $.trySelector = function (t) {\n    return !!tt.string(t) && (Q.default.document.querySelector(t), !0);\n  };\n  var J = ot(C),\n      Q = ot(D),\n      tt = rt(w),\n      et = rt(O);\n\n  function nt() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return nt = function () {\n      return t;\n    }, t;\n  }\n\n  function rt(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Z(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = nt();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function ot(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function it(t) {\n    var e = t.parentNode;\n\n    if (tt.docFrag(e)) {\n      for (; (e = e.host) && tt.docFrag(e););\n\n      return e;\n    }\n\n    return e;\n  }\n\n  function at(t, e) {\n    return et.default.window !== et.default.realWindow && (e = e.replace(/\\/deep\\//g, \" \")), t[J.default.prefixedMatchesSelector](e);\n  }\n\n  var ut = function (t) {\n    return t.parentNode ? t.parentNode : t.host;\n  };\n\n  function st(t) {\n    return {\n      x: (t = t || et.default.window).scrollX || t.document.documentElement.scrollLeft,\n      y: t.scrollY || t.document.documentElement.scrollTop\n    };\n  }\n\n  function lt(t) {\n    var e = t instanceof Q.default.SVGElement ? t.getBoundingClientRect() : t.getClientRects()[0];\n    return e && {\n      left: e.left,\n      right: e.right,\n      top: e.top,\n      bottom: e.bottom,\n      width: e.width || e.right - e.left,\n      height: e.height || e.bottom - e.top\n    };\n  }\n\n  var ct = {};\n  Object.defineProperty(ct, \"__esModule\", {\n    value: !0\n  }), ct.default = function (t, e) {\n    for (var n in e) t[n] = e[n];\n\n    return t;\n  };\n  var ft = {};\n\n  function pt(t) {\n    return (pt = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(ft, \"__esModule\", {\n    value: !0\n  }), ft.default = function n(e, r, o) {\n    o = o || {};\n    yt.string(e) && -1 !== e.search(\" \") && (e = gt(e));\n    if (yt.array(e)) return e.reduce(function (t, e) {\n      return (0, vt.default)(t, n(e, r, o));\n    }, o);\n    yt.object(e) && (r = e, e = \"\");\n    if (yt.func(r)) o[e] = o[e] || [], o[e].push(r);else if (yt.array(r)) for (var t = 0; t < r.length; t++) {\n      var i = r[t];\n      n(e, i, o);\n    } else if (yt.object(r)) for (var a in r) {\n      var u = gt(a).map(function (t) {\n        return \"\".concat(e).concat(t);\n      });\n      n(u, r[a], o);\n    }\n    return o;\n  };\n\n  var dt,\n      vt = (dt = ct) && dt.__esModule ? dt : {\n    default: dt\n  },\n      yt = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== pt(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = ht();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w);\n\n  function ht() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return ht = function () {\n      return t;\n    }, t;\n  }\n\n  function gt(t) {\n    return t.trim().split(/ +/);\n  }\n\n  var bt = {};\n\n  function mt(t) {\n    return (mt = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(bt, \"__esModule\", {\n    value: !0\n  }), bt.default = void 0;\n\n  var Ot = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== mt(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = xt();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(S),\n      wt = Pt(ct),\n      _t = Pt(ft);\n\n  function Pt(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function xt() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return xt = function () {\n      return t;\n    }, t;\n  }\n\n  function St(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function jt(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  function Mt(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      if (t.immediatePropagationStopped) break;\n      r(t);\n    }\n  }\n\n  var kt = function () {\n    function e(t) {\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, e), jt(this, \"options\", void 0), jt(this, \"types\", {}), jt(this, \"propagationStopped\", !1), jt(this, \"immediatePropagationStopped\", !1), jt(this, \"global\", void 0), this.options = (0, wt.default)({}, t || {});\n    }\n\n    var t, n, r;\n    return t = e, (n = [{\n      key: \"fire\",\n      value: function (t) {\n        var e,\n            n = this.global;\n        (e = this.types[t.type]) && Mt(t, e), !t.propagationStopped && n && (e = n[t.type]) && Mt(t, e);\n      }\n    }, {\n      key: \"on\",\n      value: function (t, e) {\n        var n = (0, _t.default)(t, e);\n\n        for (t in n) this.types[t] = Ot.merge(this.types[t] || [], n[t]);\n      }\n    }, {\n      key: \"off\",\n      value: function (t, e) {\n        var n = (0, _t.default)(t, e);\n\n        for (t in n) {\n          var r = this.types[t];\n          if (r && r.length) for (var o = 0; o < n[t].length; o++) {\n            var i = n[t][o],\n                a = r.indexOf(i);\n            -1 !== a && r.splice(a, 1);\n          }\n        }\n      }\n    }, {\n      key: \"getRect\",\n      value: function () {\n        return null;\n      }\n    }]) && St(t.prototype, n), r && St(t, r), e;\n  }();\n\n  bt.default = kt;\n  var Et = {};\n  Object.defineProperty(Et, \"__esModule\", {\n    value: !0\n  }), Et.default = void 0;\n\n  Et.default = function (t, e) {\n    return Math.sqrt(t * t + e * e);\n  };\n\n  var Tt = {};\n\n  function Dt(t, e) {\n    for (var n in e) {\n      var r = Dt.prefixedPropREs,\n          o = !1;\n\n      for (var i in r) if (0 === n.indexOf(i) && r[i].test(n)) {\n        o = !0;\n        break;\n      }\n\n      o || \"function\" == typeof e[n] || (t[n] = e[n]);\n    }\n\n    return t;\n  }\n\n  Object.defineProperty(Tt, \"__esModule\", {\n    value: !0\n  }), Tt.default = void 0, Dt.prefixedPropREs = {\n    webkit: /(Movement[XY]|Radius[XY]|RotationAngle|Force)$/,\n    moz: /(Pressure)$/\n  };\n  var It = Dt;\n  Tt.default = It;\n  var zt = {};\n\n  function At(t) {\n    return (At = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(zt, \"__esModule\", {\n    value: !0\n  }), zt.copyCoords = function (t, e) {\n    t.page = t.page || {}, t.page.x = e.page.x, t.page.y = e.page.y, t.client = t.client || {}, t.client.x = e.client.x, t.client.y = e.client.y, t.timeStamp = e.timeStamp;\n  }, zt.setCoordDeltas = function (t, e, n) {\n    t.page.x = n.page.x - e.page.x, t.page.y = n.page.y - e.page.y, t.client.x = n.client.x - e.client.x, t.client.y = n.client.y - e.client.y, t.timeStamp = n.timeStamp - e.timeStamp;\n  }, zt.setCoordVelocity = function (t, e) {\n    var n = Math.max(e.timeStamp / 1e3, .001);\n    t.page.x = e.page.x / n, t.page.y = e.page.y / n, t.client.x = e.client.x / n, t.client.y = e.client.y / n, t.timeStamp = n;\n  }, zt.setZeroCoords = function (t) {\n    t.page.x = 0, t.page.y = 0, t.client.x = 0, t.client.y = 0;\n  }, zt.isNativePointer = Vt, zt.getXY = qt, zt.getPageXY = Ut, zt.getClientXY = Gt, zt.getPointerId = function (t) {\n    return Xt.number(t.pointerId) ? t.pointerId : t.identifier;\n  }, zt.setCoords = function (t, e, n) {\n    var r = 1 < e.length ? Kt(e) : e[0],\n        o = {};\n    Ut(r, o), t.page.x = o.x, t.page.y = o.y, Gt(r, o), t.client.x = o.x, t.client.y = o.y, t.timeStamp = n;\n  }, zt.getTouchPair = Ht, zt.pointerAverage = Kt, zt.touchBBox = function (t) {\n    if (!(t.length || t.touches && 1 < t.touches.length)) return null;\n    var e = Ht(t),\n        n = Math.min(e[0].pageX, e[1].pageX),\n        r = Math.min(e[0].pageY, e[1].pageY),\n        o = Math.max(e[0].pageX, e[1].pageX),\n        i = Math.max(e[0].pageY, e[1].pageY);\n    return {\n      x: n,\n      y: r,\n      left: n,\n      top: r,\n      right: o,\n      bottom: i,\n      width: o - n,\n      height: i - r\n    };\n  }, zt.touchDistance = function (t, e) {\n    var n = e + \"X\",\n        r = e + \"Y\",\n        o = Ht(t),\n        i = o[0][n] - o[1][n],\n        a = o[0][r] - o[1][r];\n    return (0, Ft.default)(i, a);\n  }, zt.touchAngle = function (t, e) {\n    var n = e + \"X\",\n        r = e + \"Y\",\n        o = Ht(t),\n        i = o[1][n] - o[0][n],\n        a = o[1][r] - o[0][r];\n    return 180 * Math.atan2(a, i) / Math.PI;\n  }, zt.getPointerType = function (t) {\n    return Xt.string(t.pointerType) ? t.pointerType : Xt.number(t.pointerType) ? [void 0, void 0, \"touch\", \"pen\", \"mouse\"][t.pointerType] : /touch/.test(t.type) || t instanceof Wt.default.Touch ? \"touch\" : \"mouse\";\n  }, zt.getEventTargets = function (t) {\n    var e = Xt.func(t.composedPath) ? t.composedPath() : t.path;\n    return [Rt.getActualElement(e ? e[0] : t.target), Rt.getActualElement(t.currentTarget)];\n  }, zt.newCoords = function () {\n    return {\n      page: {\n        x: 0,\n        y: 0\n      },\n      client: {\n        x: 0,\n        y: 0\n      },\n      timeStamp: 0\n    };\n  }, zt.coordsToEvent = function (t) {\n    return {\n      coords: t,\n\n      get page() {\n        return this.coords.page;\n      },\n\n      get client() {\n        return this.coords.client;\n      },\n\n      get timeStamp() {\n        return this.coords.timeStamp;\n      },\n\n      get pageX() {\n        return this.coords.page.x;\n      },\n\n      get pageY() {\n        return this.coords.page.y;\n      },\n\n      get clientX() {\n        return this.coords.client.x;\n      },\n\n      get clientY() {\n        return this.coords.client.y;\n      },\n\n      get pointerId() {\n        return this.coords.pointerId;\n      },\n\n      get target() {\n        return this.coords.target;\n      },\n\n      get type() {\n        return this.coords.type;\n      },\n\n      get pointerType() {\n        return this.coords.pointerType;\n      },\n\n      get buttons() {\n        return this.coords.buttons;\n      },\n\n      preventDefault: function () {}\n    };\n  }, Object.defineProperty(zt, \"pointerExtend\", {\n    enumerable: !0,\n    get: function () {\n      return Yt.default;\n    }\n  });\n  var Ct = Bt(C),\n      Wt = Bt(D),\n      Rt = Lt($),\n      Ft = Bt(Et),\n      Xt = Lt(w),\n      Yt = Bt(Tt);\n\n  function Nt() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Nt = function () {\n      return t;\n    }, t;\n  }\n\n  function Lt(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== At(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Nt();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function Bt(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function Vt(t) {\n    return t instanceof Wt.default.Event || t instanceof Wt.default.Touch;\n  }\n\n  function qt(t, e, n) {\n    return (n = n || {}).x = e[(t = t || \"page\") + \"X\"], n.y = e[t + \"Y\"], n;\n  }\n\n  function Ut(t, e) {\n    return e = e || {\n      x: 0,\n      y: 0\n    }, Ct.default.isOperaMobile && Vt(t) ? (qt(\"screen\", t, e), e.x += window.scrollX, e.y += window.scrollY) : qt(\"page\", t, e), e;\n  }\n\n  function Gt(t, e) {\n    return e = e || {}, Ct.default.isOperaMobile && Vt(t) ? qt(\"screen\", t, e) : qt(\"client\", t, e), e;\n  }\n\n  function Ht(t) {\n    var e = [];\n    return Xt.array(t) ? (e[0] = t[0], e[1] = t[1]) : \"touchend\" === t.type ? 1 === t.touches.length ? (e[0] = t.touches[0], e[1] = t.changedTouches[0]) : 0 === t.touches.length && (e[0] = t.changedTouches[0], e[1] = t.changedTouches[1]) : (e[0] = t.touches[0], e[1] = t.touches[1]), e;\n  }\n\n  function Kt(t) {\n    for (var e = {\n      pageX: 0,\n      pageY: 0,\n      clientX: 0,\n      clientY: 0,\n      screenX: 0,\n      screenY: 0\n    }, n = 0; n < t.length; n++) {\n      var r = t[n];\n\n      for (var o in e) e[o] += r[o];\n    }\n\n    for (var i in e) e[i] /= t.length;\n\n    return e;\n  }\n\n  var $t = {};\n\n  function Zt(t) {\n    return (Zt = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty($t, \"__esModule\", {\n    value: !0\n  }), $t.getStringOptionResult = ne, $t.resolveRectLike = function (t, e, n, r) {\n    var o = t;\n    te.string(o) ? o = ne(o, e, n) : te.func(o) && (o = o.apply(void 0, function (t) {\n      return function (t) {\n        if (Array.isArray(t)) {\n          for (var e = 0, n = new Array(t.length); e < t.length; e++) n[e] = t[e];\n\n          return n;\n        }\n      }(t) || function (t) {\n        if (Symbol.iterator in Object(t) || \"[object Arguments]\" === Object.prototype.toString.call(t)) return Array.from(t);\n      }(t) || function () {\n        throw new TypeError(\"Invalid attempt to spread non-iterable instance\");\n      }();\n    }(r)));\n    te.element(o) && (o = (0, $.getElementRect)(o));\n    return o;\n  }, $t.rectToXY = function (t) {\n    return t && {\n      x: \"x\" in t ? t.x : t.left,\n      y: \"y\" in t ? t.y : t.top\n    };\n  }, $t.xywhToTlbr = function (t) {\n    !t || \"left\" in t && \"top\" in t || ((t = (0, Qt.default)({}, t)).left = t.x || 0, t.top = t.y || 0, t.right = t.right || t.left + t.width, t.bottom = t.bottom || t.top + t.height);\n    return t;\n  }, $t.tlbrToXywh = function (t) {\n    !t || \"x\" in t && \"y\" in t || ((t = (0, Qt.default)({}, t)).x = t.left || 0, t.y = t.top || 0, t.width = t.width || t.right || 0 - t.x, t.height = t.height || t.bottom || 0 - t.y);\n    return t;\n  }, $t.addEdges = function (t, e, n) {\n    t.left && (e.left += n.x);\n    t.right && (e.right += n.x);\n    t.top && (e.top += n.y);\n    t.bottom && (e.bottom += n.y);\n    e.width = e.right - e.left, e.height = e.bottom - e.top;\n  };\n\n  var Jt,\n      Qt = (Jt = ct) && Jt.__esModule ? Jt : {\n    default: Jt\n  },\n      te = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Zt(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = ee();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w);\n\n  function ee() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return ee = function () {\n      return t;\n    }, t;\n  }\n\n  function ne(t, e, n) {\n    return \"parent\" === t ? (0, $.parentNode)(n) : \"self\" === t ? e.getRect(n) : (0, $.closest)(n, t);\n  }\n\n  var re = {};\n  Object.defineProperty(re, \"__esModule\", {\n    value: !0\n  }), re.default = function (t, e, n) {\n    var r = t.options[n],\n        o = r && r.origin || t.options.origin,\n        i = (0, $t.resolveRectLike)(o, t, e, [t && e]);\n    return (0, $t.rectToXY)(i) || {\n      x: 0,\n      y: 0\n    };\n  };\n  var oe = {};\n  Object.defineProperty(oe, \"__esModule\", {\n    value: !0\n  }), oe.default = void 0;\n  var ie,\n      ae,\n      ue = 0;\n  var se = {\n    request: function (t) {\n      return ie(t);\n    },\n    cancel: function (t) {\n      return ae(t);\n    },\n    init: function (t) {\n      if (ie = t.requestAnimationFrame, ae = t.cancelAnimationFrame, !ie) for (var e = [\"ms\", \"moz\", \"webkit\", \"o\"], n = 0; n < e.length; n++) {\n        var r = e[n];\n        ie = t[\"\".concat(r, \"RequestAnimationFrame\")], ae = t[\"\".concat(r, \"CancelAnimationFrame\")] || t[\"\".concat(r, \"CancelRequestAnimationFrame\")];\n      }\n      ie || (ie = function (t) {\n        var e = Date.now(),\n            n = Math.max(0, 16 - (e - ue)),\n            r = setTimeout(function () {\n          t(e + n);\n        }, n);\n        return ue = e + n, r;\n      }, ae = function (t) {\n        return clearTimeout(t);\n      });\n    }\n  };\n  oe.default = se;\n  var le = {};\n\n  function ce(t) {\n    return (ce = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(le, \"__esModule\", {\n    value: !0\n  }), le.warnOnce = function (t, e) {\n    var n = !1;\n    return function () {\n      return n || (he.default.window.console.warn(e), n = !0), t.apply(this, arguments);\n    };\n  }, le.copyAction = function (t, e) {\n    return t.name = e.name, t.axis = e.axis, t.edges = e.edges, t;\n  }, Object.defineProperty(le, \"win\", {\n    enumerable: !0,\n    get: function () {\n      return he.default;\n    }\n  }), Object.defineProperty(le, \"browser\", {\n    enumerable: !0,\n    get: function () {\n      return ge.default;\n    }\n  }), Object.defineProperty(le, \"clone\", {\n    enumerable: !0,\n    get: function () {\n      return be.default;\n    }\n  }), Object.defineProperty(le, \"extend\", {\n    enumerable: !0,\n    get: function () {\n      return me.default;\n    }\n  }), Object.defineProperty(le, \"getOriginXY\", {\n    enumerable: !0,\n    get: function () {\n      return Oe.default;\n    }\n  }), Object.defineProperty(le, \"hypot\", {\n    enumerable: !0,\n    get: function () {\n      return we.default;\n    }\n  }), Object.defineProperty(le, \"normalizeListeners\", {\n    enumerable: !0,\n    get: function () {\n      return _e.default;\n    }\n  }), Object.defineProperty(le, \"raf\", {\n    enumerable: !0,\n    get: function () {\n      return Pe.default;\n    }\n  }), le.rect = le.pointer = le.is = le.dom = le.arr = void 0;\n  var fe = je(S);\n  le.arr = fe;\n  var pe = je($);\n  le.dom = pe;\n  var de = je(w);\n  le.is = de;\n  var ve = je(zt);\n  le.pointer = ve;\n  var ye = je($t);\n  le.rect = ye;\n\n  var he = xe(O),\n      ge = xe(C),\n      be = xe(V),\n      me = xe(ct),\n      Oe = xe(re),\n      we = xe(Et),\n      _e = xe(ft),\n      Pe = xe(oe);\n\n  function xe(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function Se() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Se = function () {\n      return t;\n    }, t;\n  }\n\n  function je(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== ce(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Se();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  var Me = {};\n\n  function ke(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function Ee(t, e, n) {\n    return e && ke(t.prototype, e), n && ke(t, n), t;\n  }\n\n  function Te(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  Object.defineProperty(Me, \"__esModule\", {\n    value: !0\n  }), Me.default = Me.BaseEvent = void 0;\n\n  var De = function () {\n    function e(t) {\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, e), Te(this, \"type\", void 0), Te(this, \"target\", void 0), Te(this, \"currentTarget\", void 0), Te(this, \"interactable\", void 0), Te(this, \"_interaction\", void 0), Te(this, \"timeStamp\", void 0), Te(this, \"immediatePropagationStopped\", !1), Te(this, \"propagationStopped\", !1), this._interaction = t;\n    }\n\n    return Ee(e, [{\n      key: \"interaction\",\n      get: function () {\n        return this._interaction._proxy;\n      }\n    }]), Ee(e, [{\n      key: \"preventDefault\",\n      value: function () {}\n    }, {\n      key: \"stopPropagation\",\n      value: function () {\n        this.propagationStopped = !0;\n      }\n    }, {\n      key: \"stopImmediatePropagation\",\n      value: function () {\n        this.immediatePropagationStopped = this.propagationStopped = !0;\n      }\n    }]), e;\n  }(),\n      Ie = Me.BaseEvent = De;\n\n  Me.default = Ie;\n  var ze = {};\n  Object.defineProperty(ze, \"__esModule\", {\n    value: !0\n  }), ze.default = ze.defaults = void 0;\n  var Ae = {\n    base: {\n      preventDefault: \"auto\",\n      deltaSource: \"page\"\n    },\n    perAction: {\n      enabled: !1,\n      origin: {\n        x: 0,\n        y: 0\n      }\n    },\n    actions: {}\n  },\n      Ce = ze.defaults = Ae;\n  ze.default = Ce;\n  var We = {};\n  Object.defineProperty(We, \"__esModule\", {\n    value: !0\n  }), We.default = We.InteractEvent = void 0;\n  var Re = Le(ct),\n      Fe = Le(re),\n      Xe = Le(Et),\n      Ye = Le(Me),\n      Ne = Le(ze);\n\n  function Le(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function Be(t) {\n    return (Be = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  function Ve(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function qe(t) {\n    return (qe = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) {\n      return t.__proto__ || Object.getPrototypeOf(t);\n    })(t);\n  }\n\n  function Ue(t) {\n    if (void 0 === t) throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n    return t;\n  }\n\n  function Ge(t, e) {\n    return (Ge = Object.setPrototypeOf || function (t, e) {\n      return t.__proto__ = e, t;\n    })(t, e);\n  }\n\n  function He(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var Ke = function () {\n    function g(t, e, n, r, o, i, a) {\n      var u, s, l;\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, g), s = this, u = !(l = qe(g).call(this, t)) || \"object\" !== Be(l) && \"function\" != typeof l ? Ue(s) : l, He(Ue(u), \"target\", void 0), He(Ue(u), \"currentTarget\", void 0), He(Ue(u), \"relatedTarget\", null), He(Ue(u), \"screenX\", void 0), He(Ue(u), \"screenY\", void 0), He(Ue(u), \"button\", void 0), He(Ue(u), \"buttons\", void 0), He(Ue(u), \"ctrlKey\", void 0), He(Ue(u), \"shiftKey\", void 0), He(Ue(u), \"altKey\", void 0), He(Ue(u), \"metaKey\", void 0), He(Ue(u), \"page\", void 0), He(Ue(u), \"client\", void 0), He(Ue(u), \"delta\", void 0), He(Ue(u), \"rect\", void 0), He(Ue(u), \"x0\", void 0), He(Ue(u), \"y0\", void 0), He(Ue(u), \"t0\", void 0), He(Ue(u), \"dt\", void 0), He(Ue(u), \"duration\", void 0), He(Ue(u), \"clientX0\", void 0), He(Ue(u), \"clientY0\", void 0), He(Ue(u), \"velocity\", void 0), He(Ue(u), \"speed\", void 0), He(Ue(u), \"swipe\", void 0), He(Ue(u), \"timeStamp\", void 0), He(Ue(u), \"dragEnter\", void 0), He(Ue(u), \"dragLeave\", void 0), He(Ue(u), \"axes\", void 0), He(Ue(u), \"preEnd\", void 0), o = o || t.element;\n      var c = t.interactable,\n          f = (c && c.options || Ne.default).deltaSource,\n          p = (0, Fe.default)(c, o, n),\n          d = \"start\" === r,\n          v = \"end\" === r,\n          y = d ? Ue(u) : t.prevEvent,\n          h = d ? t.coords.start : v ? {\n        page: y.page,\n        client: y.client,\n        timeStamp: t.coords.cur.timeStamp\n      } : t.coords.cur;\n      return u.page = (0, Re.default)({}, h.page), u.client = (0, Re.default)({}, h.client), u.rect = (0, Re.default)({}, t.rect), u.timeStamp = h.timeStamp, v || (u.page.x -= p.x, u.page.y -= p.y, u.client.x -= p.x, u.client.y -= p.y), u.ctrlKey = e.ctrlKey, u.altKey = e.altKey, u.shiftKey = e.shiftKey, u.metaKey = e.metaKey, u.button = e.button, u.buttons = e.buttons, u.target = o, u.currentTarget = o, u.preEnd = i, u.type = a || n + (r || \"\"), u.interactable = c, u.t0 = d ? t.pointers[t.pointers.length - 1].downTime : y.t0, u.x0 = t.coords.start.page.x - p.x, u.y0 = t.coords.start.page.y - p.y, u.clientX0 = t.coords.start.client.x - p.x, u.clientY0 = t.coords.start.client.y - p.y, u.delta = d || v ? {\n        x: 0,\n        y: 0\n      } : {\n        x: u[f].x - y[f].x,\n        y: u[f].y - y[f].y\n      }, u.dt = t.coords.delta.timeStamp, u.duration = u.timeStamp - u.t0, u.velocity = (0, Re.default)({}, t.coords.velocity[f]), u.speed = (0, Xe.default)(u.velocity.x, u.velocity.y), u.swipe = v || \"inertiastart\" === r ? u.getSwipe() : null, u;\n    }\n\n    var t, e, n;\n    return function (t, e) {\n      if (\"function\" != typeof e && null !== e) throw new TypeError(\"Super expression must either be null or a function\");\n      t.prototype = Object.create(e && e.prototype, {\n        constructor: {\n          value: t,\n          writable: !0,\n          configurable: !0\n        }\n      }), e && Ge(t, e);\n    }(g, Ye[\"default\"]), t = g, (e = [{\n      key: \"getSwipe\",\n      value: function () {\n        var t = this._interaction;\n        if (t.prevEvent.speed < 600 || 150 < this.timeStamp - t.prevEvent.timeStamp) return null;\n        var e = 180 * Math.atan2(t.prevEvent.velocityY, t.prevEvent.velocityX) / Math.PI;\n        e < 0 && (e += 360);\n        var n = 112.5 <= e && e < 247.5,\n            r = 202.5 <= e && e < 337.5;\n        return {\n          up: r,\n          down: !r && 22.5 <= e && e < 157.5,\n          left: n,\n          right: !n && (292.5 <= e || e < 67.5),\n          angle: e,\n          speed: t.prevEvent.speed,\n          velocity: {\n            x: t.prevEvent.velocityX,\n            y: t.prevEvent.velocityY\n          }\n        };\n      }\n    }, {\n      key: \"preventDefault\",\n      value: function () {}\n    }, {\n      key: \"stopImmediatePropagation\",\n      value: function () {\n        this.immediatePropagationStopped = this.propagationStopped = !0;\n      }\n    }, {\n      key: \"stopPropagation\",\n      value: function () {\n        this.propagationStopped = !0;\n      }\n    }, {\n      key: \"pageX\",\n      get: function () {\n        return this.page.x;\n      },\n      set: function (t) {\n        this.page.x = t;\n      }\n    }, {\n      key: \"pageY\",\n      get: function () {\n        return this.page.y;\n      },\n      set: function (t) {\n        this.page.y = t;\n      }\n    }, {\n      key: \"clientX\",\n      get: function () {\n        return this.client.x;\n      },\n      set: function (t) {\n        this.client.x = t;\n      }\n    }, {\n      key: \"clientY\",\n      get: function () {\n        return this.client.y;\n      },\n      set: function (t) {\n        this.client.y = t;\n      }\n    }, {\n      key: \"dx\",\n      get: function () {\n        return this.delta.x;\n      },\n      set: function (t) {\n        this.delta.x = t;\n      }\n    }, {\n      key: \"dy\",\n      get: function () {\n        return this.delta.y;\n      },\n      set: function (t) {\n        this.delta.y = t;\n      }\n    }, {\n      key: \"velocityX\",\n      get: function () {\n        return this.velocity.x;\n      },\n      set: function (t) {\n        this.velocity.x = t;\n      }\n    }, {\n      key: \"velocityY\",\n      get: function () {\n        return this.velocity.y;\n      },\n      set: function (t) {\n        this.velocity.y = t;\n      }\n    }]) && Ve(t.prototype, e), n && Ve(t, n), g;\n  }(),\n      $e = We.InteractEvent = Ke;\n\n  We.default = $e;\n  var Ze = {};\n\n  function Je(t) {\n    return (Je = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Ze, \"__esModule\", {\n    value: !0\n  }), Ze.default = void 0;\n  var Qe,\n      tn = an(S),\n      en = an($),\n      nn = (Qe = ct) && Qe.__esModule ? Qe : {\n    default: Qe\n  },\n      rn = an(w);\n\n  function on() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return on = function () {\n      return t;\n    }, t;\n  }\n\n  function an(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Je(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = on();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function un(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function sn(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var ln = function () {\n    function e(t) {\n      var a = this;\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, e), this.scope = t, sn(this, \"list\", []), sn(this, \"selectorMap\", {}), t.addListeners({\n        \"interactable:unset\": function (t) {\n          var e = t.interactable,\n              n = e.target,\n              r = e._context,\n              o = rn.string(n) ? a.selectorMap[n] : n[a.scope.id],\n              i = o.findIndex(function (t) {\n            return t.context === r;\n          });\n          o[i] && (o[i].context = null, o[i].interactable = null), o.splice(i, 1);\n        }\n      });\n    }\n\n    var t, n, r;\n    return t = e, (n = [{\n      key: \"new\",\n      value: function (t, e) {\n        e = (0, nn.default)(e || {}, {\n          actions: this.scope.actions\n        });\n        var n = new this.scope.Interactable(t, e, this.scope.document, this.scope.events),\n            r = {\n          context: n._context,\n          interactable: n\n        };\n        return this.scope.addDocument(n._doc), this.list.push(n), rn.string(t) ? (this.selectorMap[t] || (this.selectorMap[t] = []), this.selectorMap[t].push(r)) : (n.target[this.scope.id] || Object.defineProperty(t, this.scope.id, {\n          value: [],\n          configurable: !0\n        }), t[this.scope.id].push(r)), this.scope.fire(\"interactable:new\", {\n          target: t,\n          options: e,\n          interactable: n,\n          win: this.scope._win\n        }), n;\n      }\n    }, {\n      key: \"get\",\n      value: function (e, t) {\n        var n = t && t.context || this.scope.document,\n            r = rn.string(e),\n            o = r ? this.selectorMap[e] : e[this.scope.id];\n        if (!o) return null;\n        var i = tn.find(o, function (t) {\n          return t.context === n && (r || t.interactable.inContext(e));\n        });\n        return i && i.interactable;\n      }\n    }, {\n      key: \"forEachMatch\",\n      value: function (t, e) {\n        for (var n = 0; n < this.list.length; n++) {\n          var r = this.list[n],\n              o = void 0;\n          if ((rn.string(r.target) ? rn.element(t) && en.matchesSelector(t, r.target) : t === r.target) && r.inContext(t) && (o = e(r)), void 0 !== o) return o;\n        }\n      }\n    }]) && un(t.prototype, n), r && un(t, r), e;\n  }();\n\n  Ze.default = ln;\n  var cn = {};\n\n  function fn(t) {\n    return (fn = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(cn, \"__esModule\", {\n    value: !0\n  }), cn.default = cn.FakeEvent = void 0;\n  var pn = On(S),\n      dn = On($),\n      vn = bn(ct),\n      yn = On(w),\n      hn = bn(Tt),\n      gn = On(zt);\n\n  function bn(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function mn() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return mn = function () {\n      return t;\n    }, t;\n  }\n\n  function On(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== fn(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = mn();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function wn(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function _n(t, e) {\n    return function (t) {\n      if (Array.isArray(t)) return t;\n    }(t) || function (t, e) {\n      if (!(Symbol.iterator in Object(t) || \"[object Arguments]\" === Object.prototype.toString.call(t))) return;\n      var n = [],\n          r = !0,\n          o = !1,\n          i = void 0;\n\n      try {\n        for (var a, u = t[Symbol.iterator](); !(r = (a = u.next()).done) && (n.push(a.value), !e || n.length !== e); r = !0);\n      } catch (t) {\n        o = !0, i = t;\n      } finally {\n        try {\n          r || null == u.return || u.return();\n        } finally {\n          if (o) throw i;\n        }\n      }\n\n      return n;\n    }(t, e) || function () {\n      throw new TypeError(\"Invalid attempt to destructure non-iterable instance\");\n    }();\n  }\n\n  var Pn = function () {\n    function o(t) {\n      var e, n, r;\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, o), this.originalEvent = t, r = void 0, (n = \"currentTarget\") in (e = this) ? Object.defineProperty(e, n, {\n        value: r,\n        enumerable: !0,\n        configurable: !0,\n        writable: !0\n      }) : e[n] = r, (0, hn.default)(this, t);\n    }\n\n    var t, e, n;\n    return t = o, (e = [{\n      key: \"preventOriginalDefault\",\n      value: function () {\n        this.originalEvent.preventDefault();\n      }\n    }, {\n      key: \"stopPropagation\",\n      value: function () {\n        this.originalEvent.stopPropagation();\n      }\n    }, {\n      key: \"stopImmediatePropagation\",\n      value: function () {\n        this.originalEvent.stopImmediatePropagation();\n      }\n    }]) && wn(t.prototype, e), n && wn(t, n), o;\n  }();\n\n  function xn(t) {\n    if (!yn.object(t)) return {\n      capture: !!t,\n      passive: !1\n    };\n    var e = (0, vn.default)({}, t);\n    return e.capture = !!t.capture, e.passive = !!t.passive, e;\n  }\n\n  cn.FakeEvent = Pn;\n  var Sn = {\n    id: \"events\",\n    install: function (t) {\n      var f = [],\n          b = {},\n          c = [],\n          p = {\n        add: d,\n        remove: g,\n        addDelegate: function (e, n, t, r, o) {\n          var i = xn(o);\n\n          if (!b[t]) {\n            b[t] = [];\n\n            for (var a = 0; a < c.length; a++) {\n              var u = c[a];\n              d(u, t, m), d(u, t, O, !0);\n            }\n          }\n\n          var s = b[t],\n              l = pn.find(s, function (t) {\n            return t.selector === e && t.context === n;\n          });\n          l || (l = {\n            selector: e,\n            context: n,\n            listeners: []\n          }, s.push(l));\n          l.listeners.push([r, i]);\n        },\n        removeDelegate: function (t, e, n, r, o) {\n          var i,\n              a = xn(o),\n              u = b[n],\n              s = !1;\n          if (!u) return;\n\n          for (i = u.length - 1; 0 <= i; i--) {\n            var l = u[i];\n\n            if (l.selector === t && l.context === e) {\n              for (var c = l.listeners, f = c.length - 1; 0 <= f; f--) {\n                var p = _n(c[f], 2),\n                    d = p[0],\n                    v = p[1],\n                    y = v.capture,\n                    h = v.passive;\n\n                if (d === r && y === a.capture && h === a.passive) {\n                  c.splice(f, 1), c.length || (u.splice(i, 1), g(e, n, m), g(e, n, O, !0)), s = !0;\n                  break;\n                }\n              }\n\n              if (s) break;\n            }\n          }\n        },\n        delegateListener: m,\n        delegateUseCapture: O,\n        delegatedEvents: b,\n        documents: c,\n        targets: f,\n        supportsOptions: !1,\n        supportsPassive: !1\n      };\n\n      function d(e, t, n, r) {\n        var o = xn(r),\n            i = pn.find(f, function (t) {\n          return t.eventTarget === e;\n        });\n        i || (i = {\n          eventTarget: e,\n          events: {}\n        }, f.push(i)), i.events[t] || (i.events[t] = []), e.addEventListener && !pn.contains(i.events[t], n) && (e.addEventListener(t, n, p.supportsOptions ? o : o.capture), i.events[t].push(n));\n      }\n\n      function g(e, t, n, r) {\n        var o = xn(r),\n            i = pn.findIndex(f, function (t) {\n          return t.eventTarget === e;\n        }),\n            a = f[i];\n        if (a && a.events) if (\"all\" !== t) {\n          var u = !1,\n              s = a.events[t];\n\n          if (s) {\n            if (\"all\" === n) {\n              for (var l = s.length - 1; 0 <= l; l--) g(e, t, s[l], o);\n\n              return;\n            }\n\n            for (var c = 0; c < s.length; c++) if (s[c] === n) {\n              e.removeEventListener(t, n, p.supportsOptions ? o : o.capture), s.splice(c, 1), 0 === s.length && (delete a.events[t], u = !0);\n              break;\n            }\n          }\n\n          u && !Object.keys(a.events).length && f.splice(i, 1);\n        } else for (t in a.events) a.events.hasOwnProperty(t) && g(e, t, \"all\");\n      }\n\n      function m(t, e) {\n        for (var n = xn(e), r = new Pn(t), o = b[t.type], i = _n(gn.getEventTargets(t), 1)[0], a = i; yn.element(a);) {\n          for (var u = 0; u < o.length; u++) {\n            var s = o[u],\n                l = s.selector,\n                c = s.context;\n\n            if (dn.matchesSelector(a, l) && dn.nodeContains(c, i) && dn.nodeContains(c, a)) {\n              var f = s.listeners;\n              r.currentTarget = a;\n\n              for (var p = 0; p < f.length; p++) {\n                var d = _n(f[p], 2),\n                    v = d[0],\n                    y = d[1],\n                    h = y.capture,\n                    g = y.passive;\n\n                h === n.capture && g === n.passive && v(r);\n              }\n            }\n          }\n\n          a = dn.parentNode(a);\n        }\n      }\n\n      function O(t) {\n        return m.call(this, t, !0);\n      }\n\n      return t.document.createElement(\"div\").addEventListener(\"test\", null, {\n        get capture() {\n          return p.supportsOptions = !0;\n        },\n\n        get passive() {\n          return p.supportsPassive = !0;\n        }\n\n      }), t.events = p;\n    }\n  };\n  cn.default = Sn;\n  var jn = {};\n  Object.defineProperty(jn, \"__esModule\", {\n    value: !0\n  }), jn.default = jn.PointerInfo = void 0;\n\n  function Mn(t, e, n, r, o) {\n    !function (t, e) {\n      if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n    }(this, Mn), this.id = t, this.pointer = e, this.event = n, this.downTime = r, this.downTarget = o;\n  }\n\n  var kn = jn.PointerInfo = Mn;\n  jn.default = kn;\n  var En = {};\n\n  function Tn(t) {\n    return (Tn = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(En, \"__esModule\", {\n    value: !0\n  }), Object.defineProperty(En, \"PointerInfo\", {\n    enumerable: !0,\n    get: function () {\n      return Rn.default;\n    }\n  }), En.default = En.Interaction = En._ProxyMethods = En._ProxyValues = void 0;\n\n  var Dn,\n      In,\n      zn,\n      An,\n      Cn = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Tn(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Xn();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(le),\n      Wn = Fn(We),\n      Rn = Fn(jn);\n\n  function Fn(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function Xn() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Xn = function () {\n      return t;\n    }, t;\n  }\n\n  function Yn(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function Nn(t, e, n) {\n    return e && Yn(t.prototype, e), n && Yn(t, n), t;\n  }\n\n  function Ln(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  En._ProxyValues = Dn, (In = Dn || (En._ProxyValues = Dn = {})).interactable = \"\", In.element = \"\", In.prepared = \"\", In.pointerIsDown = \"\", In.pointerWasMoved = \"\", In._proxy = \"\", En._ProxyMethods = zn, (An = zn || (En._ProxyMethods = zn = {})).start = \"\", An.move = \"\", An.end = \"\", An.stop = \"\", An.interacting = \"\";\n\n  var Bn = 0,\n      Vn = function () {\n    function l(t) {\n      var e = this,\n          n = t.pointerType,\n          r = t.scopeFire;\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, l), Ln(this, \"interactable\", null), Ln(this, \"element\", null), Ln(this, \"rect\", void 0), Ln(this, \"_rects\", void 0), Ln(this, \"edges\", void 0), Ln(this, \"_scopeFire\", void 0), Ln(this, \"prepared\", {\n        name: null,\n        axis: null,\n        edges: null\n      }), Ln(this, \"pointerType\", void 0), Ln(this, \"pointers\", []), Ln(this, \"downEvent\", null), Ln(this, \"downPointer\", {}), Ln(this, \"_latestPointer\", {\n        pointer: null,\n        event: null,\n        eventTarget: null\n      }), Ln(this, \"prevEvent\", null), Ln(this, \"pointerIsDown\", !1), Ln(this, \"pointerWasMoved\", !1), Ln(this, \"_interacting\", !1), Ln(this, \"_ending\", !1), Ln(this, \"_stopped\", !0), Ln(this, \"_proxy\", null), Ln(this, \"simulation\", null), Ln(this, \"doMove\", Cn.warnOnce(function (t) {\n        this.move(t);\n      }, \"The interaction.doMove() method has been renamed to interaction.move()\")), Ln(this, \"coords\", {\n        start: Cn.pointer.newCoords(),\n        prev: Cn.pointer.newCoords(),\n        cur: Cn.pointer.newCoords(),\n        delta: Cn.pointer.newCoords(),\n        velocity: Cn.pointer.newCoords()\n      }), Ln(this, \"_id\", Bn++), this._scopeFire = r, this.pointerType = n;\n      var o = this;\n      this._proxy = {};\n\n      function i(t) {\n        Object.defineProperty(e._proxy, t, {\n          get: function () {\n            return o[t];\n          }\n        });\n      }\n\n      for (var a in Dn) i(a);\n\n      function u(t) {\n        Object.defineProperty(e._proxy, t, {\n          value: function () {\n            return o[t].apply(o, arguments);\n          }\n        });\n      }\n\n      for (var s in zn) u(s);\n\n      this._scopeFire(\"interactions:new\", {\n        interaction: this\n      });\n    }\n\n    return Nn(l, [{\n      key: \"pointerMoveTolerance\",\n      get: function () {\n        return 1;\n      }\n    }]), Nn(l, [{\n      key: \"pointerDown\",\n      value: function (t, e, n) {\n        var r = this.updatePointer(t, e, n, !0),\n            o = this.pointers[r];\n\n        this._scopeFire(\"interactions:down\", {\n          pointer: t,\n          event: e,\n          eventTarget: n,\n          pointerIndex: r,\n          pointerInfo: o,\n          type: \"down\",\n          interaction: this\n        });\n      }\n    }, {\n      key: \"start\",\n      value: function (t, e, n) {\n        return !(this.interacting() || !this.pointerIsDown || this.pointers.length < (\"gesture\" === t.name ? 2 : 1) || !e.options[t.name].enabled) && (Cn.copyAction(this.prepared, t), this.interactable = e, this.element = n, this.rect = e.getRect(n), this.edges = this.prepared.edges ? Cn.extend({}, this.prepared.edges) : {\n          left: !0,\n          right: !0,\n          top: !0,\n          bottom: !0\n        }, this._stopped = !1, this._interacting = this._doPhase({\n          interaction: this,\n          event: this.downEvent,\n          phase: \"start\"\n        }) && !this._stopped, this._interacting);\n      }\n    }, {\n      key: \"pointerMove\",\n      value: function (t, e, n) {\n        this.simulation || this.modification && this.modification.endResult || this.updatePointer(t, e, n, !1);\n        var r,\n            o,\n            i = this.coords.cur.page.x === this.coords.prev.page.x && this.coords.cur.page.y === this.coords.prev.page.y && this.coords.cur.client.x === this.coords.prev.client.x && this.coords.cur.client.y === this.coords.prev.client.y;\n        this.pointerIsDown && !this.pointerWasMoved && (r = this.coords.cur.client.x - this.coords.start.client.x, o = this.coords.cur.client.y - this.coords.start.client.y, this.pointerWasMoved = Cn.hypot(r, o) > this.pointerMoveTolerance);\n        var a = this.getPointerIndex(t),\n            u = {\n          pointer: t,\n          pointerIndex: a,\n          pointerInfo: this.pointers[a],\n          event: e,\n          type: \"move\",\n          eventTarget: n,\n          dx: r,\n          dy: o,\n          duplicate: i,\n          interaction: this\n        };\n        i || Cn.pointer.setCoordVelocity(this.coords.velocity, this.coords.delta), this._scopeFire(\"interactions:move\", u), i || this.simulation || (this.interacting() && (u.type = null, this.move(u)), this.pointerWasMoved && Cn.pointer.copyCoords(this.coords.prev, this.coords.cur));\n      }\n    }, {\n      key: \"move\",\n      value: function (t) {\n        t && t.event || Cn.pointer.setZeroCoords(this.coords.delta), (t = Cn.extend({\n          pointer: this._latestPointer.pointer,\n          event: this._latestPointer.event,\n          eventTarget: this._latestPointer.eventTarget,\n          interaction: this\n        }, t || {})).phase = \"move\", this._doPhase(t);\n      }\n    }, {\n      key: \"pointerUp\",\n      value: function (t, e, n, r) {\n        var o = this.getPointerIndex(t);\n        -1 === o && (o = this.updatePointer(t, e, n, !1));\n        var i = /cancel$/i.test(e.type) ? \"cancel\" : \"up\";\n        this._scopeFire(\"interactions:\".concat(i), {\n          pointer: t,\n          pointerIndex: o,\n          pointerInfo: this.pointers[o],\n          event: e,\n          eventTarget: n,\n          type: i,\n          curEventTarget: r,\n          interaction: this\n        }), this.simulation || this.end(e), this.pointerIsDown = !1, this.removePointer(t, e);\n      }\n    }, {\n      key: \"documentBlur\",\n      value: function (t) {\n        this.end(t), this._scopeFire(\"interactions:blur\", {\n          event: t,\n          type: \"blur\",\n          interaction: this\n        });\n      }\n    }, {\n      key: \"end\",\n      value: function (t) {\n        var e;\n        this._ending = !0, t = t || this._latestPointer.event, this.interacting() && (e = this._doPhase({\n          event: t,\n          interaction: this,\n          phase: \"end\"\n        })), !(this._ending = !1) === e && this.stop();\n      }\n    }, {\n      key: \"currentAction\",\n      value: function () {\n        return this._interacting ? this.prepared.name : null;\n      }\n    }, {\n      key: \"interacting\",\n      value: function () {\n        return this._interacting;\n      }\n    }, {\n      key: \"stop\",\n      value: function () {\n        this._scopeFire(\"interactions:stop\", {\n          interaction: this\n        }), this.interactable = this.element = null, this._interacting = !1, this._stopped = !0, this.prepared.name = this.prevEvent = null;\n      }\n    }, {\n      key: \"getPointerIndex\",\n      value: function (t) {\n        var e = Cn.pointer.getPointerId(t);\n        return \"mouse\" === this.pointerType || \"pen\" === this.pointerType ? this.pointers.length - 1 : Cn.arr.findIndex(this.pointers, function (t) {\n          return t.id === e;\n        });\n      }\n    }, {\n      key: \"getPointerInfo\",\n      value: function (t) {\n        return this.pointers[this.getPointerIndex(t)];\n      }\n    }, {\n      key: \"updatePointer\",\n      value: function (t, e, n, r) {\n        var o = Cn.pointer.getPointerId(t),\n            i = this.getPointerIndex(t),\n            a = this.pointers[i];\n        return r = !1 !== r && (r || /(down|start)$/i.test(e.type)), a ? a.pointer = t : (a = new Rn.default(o, t, e, null, null), i = this.pointers.length, this.pointers.push(a)), Cn.pointer.setCoords(this.coords.cur, this.pointers.map(function (t) {\n          return t.pointer;\n        }), this._now()), Cn.pointer.setCoordDeltas(this.coords.delta, this.coords.prev, this.coords.cur), r && (this.pointerIsDown = !0, a.downTime = this.coords.cur.timeStamp, a.downTarget = n, Cn.pointer.pointerExtend(this.downPointer, t), this.interacting() || (Cn.pointer.copyCoords(this.coords.start, this.coords.cur), Cn.pointer.copyCoords(this.coords.prev, this.coords.cur), this.downEvent = e, this.pointerWasMoved = !1)), this._updateLatestPointer(t, e, n), this._scopeFire(\"interactions:update-pointer\", {\n          pointer: t,\n          event: e,\n          eventTarget: n,\n          down: r,\n          pointerInfo: a,\n          pointerIndex: i,\n          interaction: this\n        }), i;\n      }\n    }, {\n      key: \"removePointer\",\n      value: function (t, e) {\n        var n = this.getPointerIndex(t);\n\n        if (-1 !== n) {\n          var r = this.pointers[n];\n          this._scopeFire(\"interactions:remove-pointer\", {\n            pointer: t,\n            event: e,\n            eventTarget: null,\n            pointerIndex: n,\n            pointerInfo: r,\n            interaction: this\n          }), this.pointers.splice(n, 1);\n        }\n      }\n    }, {\n      key: \"_updateLatestPointer\",\n      value: function (t, e, n) {\n        this._latestPointer.pointer = t, this._latestPointer.event = e, this._latestPointer.eventTarget = n;\n      }\n    }, {\n      key: \"destroy\",\n      value: function () {\n        this._latestPointer.pointer = null, this._latestPointer.event = null, this._latestPointer.eventTarget = null;\n      }\n    }, {\n      key: \"_createPreparedEvent\",\n      value: function (t, e, n, r) {\n        return new Wn.default(this, t, this.prepared.name, e, this.element, n, r);\n      }\n    }, {\n      key: \"_fireEvent\",\n      value: function (t) {\n        this.interactable.fire(t), (!this.prevEvent || t.timeStamp >= this.prevEvent.timeStamp) && (this.prevEvent = t);\n      }\n    }, {\n      key: \"_doPhase\",\n      value: function (t) {\n        var e = t.event,\n            n = t.phase,\n            r = t.preEnd,\n            o = t.type,\n            i = this.rect;\n        if (i && \"move\" === n && (Cn.rect.addEdges(this.edges, i, this.coords.delta[this.interactable.options.deltaSource]), i.width = i.right - i.left, i.height = i.bottom - i.top), !1 === this._scopeFire(\"interactions:before-action-\".concat(n), t)) return !1;\n\n        var a = t.iEvent = this._createPreparedEvent(e, n, r, o);\n\n        return this._scopeFire(\"interactions:action-\".concat(n), t), \"start\" === n && (this.prevEvent = a), this._fireEvent(a), this._scopeFire(\"interactions:after-action-\".concat(n), t), !0;\n      }\n    }, {\n      key: \"_now\",\n      value: function () {\n        return Date.now();\n      }\n    }]), l;\n  }(),\n      qn = En.Interaction = Vn;\n\n  En.default = qn;\n  var Un = {};\n\n  function Gn(t) {\n    return (Gn = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Un, \"__esModule\", {\n    value: !0\n  }), Un.install = Jn, Un.default = void 0;\n\n  var Hn = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Gn(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Kn();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w);\n\n  function Kn() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Kn = function () {\n      return t;\n    }, t;\n  }\n\n  function $n(t) {\n    return /^(always|never|auto)$/.test(t) ? (this.options.preventDefault = t, this) : Hn.bool(t) ? (this.options.preventDefault = t ? \"always\" : \"never\", this) : this.options.preventDefault;\n  }\n\n  function Zn(t) {\n    var e = t.interaction,\n        n = t.event;\n    e.interactable && e.interactable.checkAndPreventDefault(n);\n  }\n\n  function Jn(r) {\n    var t = r.Interactable;\n    t.prototype.preventDefault = $n, t.prototype.checkAndPreventDefault = function (t) {\n      return function (t, e, n) {\n        var r = t.options.preventDefault;\n        if (\"never\" !== r) if (\"always\" !== r) {\n          if (e.events.supportsPassive && /^touch(start|move)$/.test(n.type)) {\n            var o = (0, O.getWindow)(n.target).document,\n                i = e.getDocOptions(o);\n            if (!i || !i.events || !1 !== i.events.passive) return;\n          }\n\n          /^(mouse|pointer|touch)*(down|start)/i.test(n.type) || Hn.element(n.target) && (0, $.matchesSelector)(n.target, \"input,select,textarea,[contenteditable=true],[contenteditable=true] *\") || n.preventDefault();\n        } else n.preventDefault();\n      }(this, r, t);\n    }, r.interactions.docEvents.push({\n      type: \"dragstart\",\n      listener: function (t) {\n        for (var e = 0; e < r.interactions.list.length; e++) {\n          var n = r.interactions.list[e];\n          if (n.element && (n.element === t.target || (0, $.nodeContains)(n.element, t.target))) return void n.interactable.checkAndPreventDefault(t);\n        }\n      }\n    });\n  }\n\n  var Qn = {\n    id: \"core/interactablePreventDefault\",\n    install: Jn,\n    listeners: [\"down\", \"move\", \"up\", \"cancel\"].reduce(function (t, e) {\n      return t[\"interactions:\".concat(e)] = Zn, t;\n    }, {})\n  };\n  Un.default = Qn;\n  var tr = {};\n\n  function er(t) {\n    return (er = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(tr, \"__esModule\", {\n    value: !0\n  }), tr.default = void 0;\n\n  var nr = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== er(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = rr();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }($);\n\n  function rr() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return rr = function () {\n      return t;\n    }, t;\n  }\n\n  var or = {\n    methodOrder: [\"simulationResume\", \"mouseOrPen\", \"hasPointer\", \"idle\"],\n    search: function (t) {\n      for (var e = 0; e < or.methodOrder.length; e++) {\n        var n;\n        n = or.methodOrder[e];\n        var r = or[n](t);\n        if (r) return r;\n      }\n\n      return null;\n    },\n    simulationResume: function (t) {\n      var e = t.pointerType,\n          n = t.eventType,\n          r = t.eventTarget,\n          o = t.scope;\n      if (!/down|start/i.test(n)) return null;\n\n      for (var i = 0; i < o.interactions.list.length; i++) {\n        var a = o.interactions.list[i],\n            u = r;\n        if (a.simulation && a.simulation.allowResume && a.pointerType === e) for (; u;) {\n          if (u === a.element) return a;\n          u = nr.parentNode(u);\n        }\n      }\n\n      return null;\n    },\n    mouseOrPen: function (t) {\n      var e,\n          n = t.pointerId,\n          r = t.pointerType,\n          o = t.eventType,\n          i = t.scope;\n      if (\"mouse\" !== r && \"pen\" !== r) return null;\n\n      for (var a = 0; a < i.interactions.list.length; a++) {\n        var u = i.interactions.list[a];\n\n        if (u.pointerType === r) {\n          if (u.simulation && !ir(u, n)) continue;\n          if (u.interacting()) return u;\n          e = e || u;\n        }\n      }\n\n      if (e) return e;\n\n      for (var s = 0; s < i.interactions.list.length; s++) {\n        var l = i.interactions.list[s];\n        if (!(l.pointerType !== r || /down/i.test(o) && l.simulation)) return l;\n      }\n\n      return null;\n    },\n    hasPointer: function (t) {\n      for (var e = t.pointerId, n = t.scope, r = 0; r < n.interactions.list.length; r++) {\n        var o = n.interactions.list[r];\n        if (ir(o, e)) return o;\n      }\n\n      return null;\n    },\n    idle: function (t) {\n      for (var e = t.pointerType, n = t.scope, r = 0; r < n.interactions.list.length; r++) {\n        var o = n.interactions.list[r];\n\n        if (1 === o.pointers.length) {\n          var i = o.interactable;\n          if (i && (!i.options.gesture || !i.options.gesture.enabled)) continue;\n        } else if (2 <= o.pointers.length) continue;\n\n        if (!o.interacting() && e === o.pointerType) return o;\n      }\n\n      return null;\n    }\n  };\n\n  function ir(t, e) {\n    return t.pointers.some(function (t) {\n      return t.id === e;\n    });\n  }\n\n  var ar = or;\n  tr.default = ar;\n  var ur = {};\n  Object.defineProperty(ur, \"__esModule\", {\n    value: !0\n  }), ur.default = void 0;\n\n  var sr,\n      lr = (sr = Me) && sr.__esModule ? sr : {\n    default: sr\n  },\n      cr = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== pr(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = fr();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(S);\n\n  function fr() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return fr = function () {\n      return t;\n    }, t;\n  }\n\n  function pr(t) {\n    return (pr = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  function dr(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function vr(t) {\n    return (vr = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) {\n      return t.__proto__ || Object.getPrototypeOf(t);\n    })(t);\n  }\n\n  function yr(t) {\n    if (void 0 === t) throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n    return t;\n  }\n\n  function hr(t, e) {\n    return (hr = Object.setPrototypeOf || function (t, e) {\n      return t.__proto__ = e, t;\n    })(t, e);\n  }\n\n  function gr(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var br = function () {\n    function l(t, e, n) {\n      var r, o, i;\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, l), o = this, r = !(i = vr(l).call(this, e._interaction)) || \"object\" !== pr(i) && \"function\" != typeof i ? yr(o) : i, gr(yr(r), \"target\", void 0), gr(yr(r), \"dropzone\", void 0), gr(yr(r), \"dragEvent\", void 0), gr(yr(r), \"relatedTarget\", void 0), gr(yr(r), \"draggable\", void 0), gr(yr(r), \"timeStamp\", void 0), gr(yr(r), \"propagationStopped\", !1), gr(yr(r), \"immediatePropagationStopped\", !1);\n      var a = \"dragleave\" === n ? t.prev : t.cur,\n          u = a.element,\n          s = a.dropzone;\n      return r.type = n, r.target = u, r.currentTarget = u, r.dropzone = s, r.dragEvent = e, r.relatedTarget = e.target, r.draggable = e.interactable, r.timeStamp = e.timeStamp, r;\n    }\n\n    var t, e, n;\n    return function (t, e) {\n      if (\"function\" != typeof e && null !== e) throw new TypeError(\"Super expression must either be null or a function\");\n      t.prototype = Object.create(e && e.prototype, {\n        constructor: {\n          value: t,\n          writable: !0,\n          configurable: !0\n        }\n      }), e && hr(t, e);\n    }(l, lr[\"default\"]), t = l, (e = [{\n      key: \"reject\",\n      value: function () {\n        var r = this,\n            t = this._interaction.dropState;\n        if (\"dropactivate\" === this.type || this.dropzone && t.cur.dropzone === this.dropzone && t.cur.element === this.target) if (t.prev.dropzone = this.dropzone, t.prev.element = this.target, t.rejected = !0, t.events.enter = null, this.stopImmediatePropagation(), \"dropactivate\" === this.type) {\n          var e = t.activeDrops,\n              n = cr.findIndex(e, function (t) {\n            var e = t.dropzone,\n                n = t.element;\n            return e === r.dropzone && n === r.target;\n          });\n          t.activeDrops.splice(n, 1);\n          var o = new l(t, this.dragEvent, \"dropdeactivate\");\n          o.dropzone = this.dropzone, o.target = this.target, this.dropzone.fire(o);\n        } else this.dropzone.fire(new l(t, this.dragEvent, \"dragleave\"));\n      }\n    }, {\n      key: \"preventDefault\",\n      value: function () {}\n    }, {\n      key: \"stopPropagation\",\n      value: function () {\n        this.propagationStopped = !0;\n      }\n    }, {\n      key: \"stopImmediatePropagation\",\n      value: function () {\n        this.immediatePropagationStopped = this.propagationStopped = !0;\n      }\n    }]) && dr(t.prototype, e), n && dr(t, n), l;\n  }();\n\n  ur.default = br;\n  var mr = {};\n\n  function Or(t) {\n    return (Or = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(mr, \"__esModule\", {\n    value: !0\n  }), mr.default = void 0;\n  Sr(k({})), Sr(m({}));\n\n  var wr = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Or(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = xr();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(le),\n      _r = Sr(v),\n      Pr = Sr(ur);\n\n  function xr() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return xr = function () {\n      return t;\n    }, t;\n  }\n\n  function Sr(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function jr(t, e) {\n    for (var n = 0; n < t.slice().length; n++) {\n      r = t.slice()[n];\n      var r,\n          o = r.dropzone,\n          i = r.element;\n      e.dropzone = o, e.target = i, o.fire(e), e.propagationStopped = e.immediatePropagationStopped = !1;\n    }\n  }\n\n  function Mr(t, e) {\n    for (var n = function (t, e) {\n      for (var n = t.interactables, r = [], o = 0; o < n.list.length; o++) {\n        var i = n.list[o];\n\n        if (i.options.drop.enabled) {\n          var a = i.options.drop.accept;\n          if (!(wr.is.element(a) && a !== e || wr.is.string(a) && !wr.dom.matchesSelector(e, a) || wr.is.func(a) && !a({\n            dropzone: i,\n            draggableElement: e\n          }))) for (var u = wr.is.string(i.target) ? i._context.querySelectorAll(i.target) : wr.is.array(i.target) ? i.target : [i.target], s = 0; s < u.length; s++) {\n            var l;\n            l = u[s];\n            l !== e && r.push({\n              dropzone: i,\n              element: l\n            });\n          }\n        }\n      }\n\n      return r;\n    }(t, e), r = 0; r < n.length; r++) {\n      var o;\n      o = n[r];\n      o.rect = o.dropzone.getRect(o.element);\n    }\n\n    return n;\n  }\n\n  function kr(t, e, n) {\n    for (var r = t.dropState, o = t.interactable, i = t.element, a = [], u = 0; u < r.activeDrops.length; u++) {\n      s = r.activeDrops[u];\n      var s,\n          l = s.dropzone,\n          c = s.element,\n          f = s.rect;\n      a.push(l.dropCheck(e, n, o, i, c, f) ? c : null);\n    }\n\n    var p = wr.dom.indexOfDeepestElement(a);\n    return r.activeDrops[p] || null;\n  }\n\n  function Er(t, e, n) {\n    var r = t.dropState,\n        o = {\n      enter: null,\n      leave: null,\n      activate: null,\n      deactivate: null,\n      move: null,\n      drop: null\n    };\n    return \"dragstart\" === n.type && (o.activate = new Pr.default(r, n, \"dropactivate\"), o.activate.target = null, o.activate.dropzone = null), \"dragend\" === n.type && (o.deactivate = new Pr.default(r, n, \"dropdeactivate\"), o.deactivate.target = null, o.deactivate.dropzone = null), r.rejected || (r.cur.element !== r.prev.element && (r.prev.dropzone && (o.leave = new Pr.default(r, n, \"dragleave\"), n.dragLeave = o.leave.target = r.prev.element, n.prevDropzone = o.leave.dropzone = r.prev.dropzone), r.cur.dropzone && (o.enter = new Pr.default(r, n, \"dragenter\"), n.dragEnter = r.cur.element, n.dropzone = r.cur.dropzone)), \"dragend\" === n.type && r.cur.dropzone && (o.drop = new Pr.default(r, n, \"drop\"), n.dropzone = r.cur.dropzone, n.relatedTarget = r.cur.element), \"dragmove\" === n.type && r.cur.dropzone && (o.move = new Pr.default(r, n, \"dropmove\"), (o.move.dragmove = n).dropzone = r.cur.dropzone)), o;\n  }\n\n  function Tr(t, e) {\n    var n = t.dropState,\n        r = n.activeDrops,\n        o = n.cur,\n        i = n.prev;\n    e.leave && i.dropzone.fire(e.leave), e.move && o.dropzone.fire(e.move), e.enter && o.dropzone.fire(e.enter), e.drop && o.dropzone.fire(e.drop), e.deactivate && jr(r, e.deactivate), n.prev.dropzone = o.dropzone, n.prev.element = o.element;\n  }\n\n  function Dr(t, e) {\n    var n = t.interaction,\n        r = t.iEvent,\n        o = t.event;\n\n    if (\"dragmove\" === r.type || \"dragend\" === r.type) {\n      var i = n.dropState;\n      e.dynamicDrop && (i.activeDrops = Mr(e, n.element));\n      var a = r,\n          u = kr(n, a, o);\n      i.rejected = i.rejected && !!u && u.dropzone === i.cur.dropzone && u.element === i.cur.element, i.cur.dropzone = u && u.dropzone, i.cur.element = u && u.element, i.events = Er(n, 0, a);\n    }\n  }\n\n  var Ir = {\n    id: \"actions/drop\",\n    install: function (e) {\n      var t = e.actions,\n          n = e.interactStatic,\n          r = e.Interactable,\n          o = e.defaults;\n      e.usePlugin(_r.default), r.prototype.dropzone = function (t) {\n        return function (t, e) {\n          if (wr.is.object(e)) {\n            if (t.options.drop.enabled = !1 !== e.enabled, e.listeners) {\n              var n = wr.normalizeListeners(e.listeners),\n                  r = Object.keys(n).reduce(function (t, e) {\n                return t[/^(enter|leave)/.test(e) ? \"drag\".concat(e) : /^(activate|deactivate|move)/.test(e) ? \"drop\".concat(e) : e] = n[e], t;\n              }, {});\n              t.off(t.options.drop.listeners), t.on(r), t.options.drop.listeners = r;\n            }\n\n            return wr.is.func(e.ondrop) && t.on(\"drop\", e.ondrop), wr.is.func(e.ondropactivate) && t.on(\"dropactivate\", e.ondropactivate), wr.is.func(e.ondropdeactivate) && t.on(\"dropdeactivate\", e.ondropdeactivate), wr.is.func(e.ondragenter) && t.on(\"dragenter\", e.ondragenter), wr.is.func(e.ondragleave) && t.on(\"dragleave\", e.ondragleave), wr.is.func(e.ondropmove) && t.on(\"dropmove\", e.ondropmove), /^(pointer|center)$/.test(e.overlap) ? t.options.drop.overlap = e.overlap : wr.is.number(e.overlap) && (t.options.drop.overlap = Math.max(Math.min(1, e.overlap), 0)), \"accept\" in e && (t.options.drop.accept = e.accept), \"checker\" in e && (t.options.drop.checker = e.checker), t;\n          }\n\n          if (wr.is.bool(e)) return t.options.drop.enabled = e, t;\n          return t.options.drop;\n        }(this, t);\n      }, r.prototype.dropCheck = function (t, e, n, r, o, i) {\n        return function (t, e, n, r, o, i, a) {\n          var u = !1;\n          if (!(a = a || t.getRect(i))) return !!t.options.drop.checker && t.options.drop.checker(e, n, u, t, i, r, o);\n          var s = t.options.drop.overlap;\n\n          if (\"pointer\" === s) {\n            var l = wr.getOriginXY(r, o, \"drag\"),\n                c = wr.pointer.getPageXY(e);\n            c.x += l.x, c.y += l.y;\n            var f = c.x > a.left && c.x < a.right,\n                p = c.y > a.top && c.y < a.bottom;\n            u = f && p;\n          }\n\n          var d = r.getRect(o);\n\n          if (d && \"center\" === s) {\n            var v = d.left + d.width / 2,\n                y = d.top + d.height / 2;\n            u = v >= a.left && v <= a.right && y >= a.top && y <= a.bottom;\n          }\n\n          if (d && wr.is.number(s)) {\n            var h = Math.max(0, Math.min(a.right, d.right) - Math.max(a.left, d.left)) * Math.max(0, Math.min(a.bottom, d.bottom) - Math.max(a.top, d.top)) / (d.width * d.height);\n            u = s <= h;\n          }\n\n          t.options.drop.checker && (u = t.options.drop.checker(e, n, u, t, i, r, o));\n          return u;\n        }(this, t, e, n, r, o, i);\n      }, n.dynamicDrop = function (t) {\n        return wr.is.bool(t) ? (e.dynamicDrop = t, n) : e.dynamicDrop;\n      }, wr.extend(t.phaselessTypes, {\n        dragenter: !0,\n        dragleave: !0,\n        dropactivate: !0,\n        dropdeactivate: !0,\n        dropmove: !0,\n        drop: !0\n      }), t.methodDict.drop = \"dropzone\", e.dynamicDrop = !1, o.actions.drop = Ir.defaults;\n    },\n    listeners: {\n      \"interactions:before-action-start\": function (t) {\n        var e = t.interaction;\n        \"drag\" === e.prepared.name && (e.dropState = {\n          cur: {\n            dropzone: null,\n            element: null\n          },\n          prev: {\n            dropzone: null,\n            element: null\n          },\n          rejected: null,\n          events: null,\n          activeDrops: []\n        });\n      },\n      \"interactions:after-action-start\": function (t, e) {\n        var n = t.interaction,\n            r = (t.event, t.iEvent);\n\n        if (\"drag\" === n.prepared.name) {\n          var o = n.dropState;\n          o.activeDrops = null, o.events = null, o.activeDrops = Mr(e, n.element), o.events = Er(n, 0, r), o.events.activate && (jr(o.activeDrops, o.events.activate), e.fire(\"actions/drop:start\", {\n            interaction: n,\n            dragEvent: r\n          }));\n        }\n      },\n      \"interactions:action-move\": Dr,\n      \"interactions:action-end\": Dr,\n      \"interactions:after-action-move\": function (t, e) {\n        var n = t.interaction,\n            r = t.iEvent;\n        \"drag\" === n.prepared.name && (Tr(n, n.dropState.events), e.fire(\"actions/drop:move\", {\n          interaction: n,\n          dragEvent: r\n        }), n.dropState.events = {});\n      },\n      \"interactions:after-action-end\": function (t, e) {\n        var n = t.interaction,\n            r = t.iEvent;\n        \"drag\" === n.prepared.name && (Tr(n, n.dropState.events), e.fire(\"actions/drop:end\", {\n          interaction: n,\n          dragEvent: r\n        }));\n      },\n      \"interactions:stop\": function (t) {\n        var e = t.interaction;\n\n        if (\"drag\" === e.prepared.name) {\n          var n = e.dropState;\n          n && (n.activeDrops = null, n.events = null, n.cur.dropzone = null, n.cur.element = null, n.prev.dropzone = null, n.prev.element = null, n.rejected = !1);\n        }\n      }\n    },\n    getActiveDrops: Mr,\n    getDrop: kr,\n    getDropEvents: Er,\n    fireDropEvents: Tr,\n    defaults: {\n      enabled: !1,\n      accept: null,\n      overlap: \"pointer\"\n    }\n  },\n      zr = Ir;\n  mr.default = zr;\n  var Ar = {};\n\n  function Cr(t) {\n    return (Cr = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Ar, \"__esModule\", {\n    value: !0\n  }), Ar.default = void 0;\n\n  var Wr = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Cr(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Rr();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(le);\n\n  function Rr() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Rr = function () {\n      return t;\n    }, t;\n  }\n\n  function Fr(t) {\n    var e = t.interaction,\n        n = t.iEvent,\n        r = t.phase;\n\n    if (\"gesture\" === e.prepared.name) {\n      var o = e.pointers.map(function (t) {\n        return t.pointer;\n      }),\n          i = \"start\" === r,\n          a = \"end\" === r,\n          u = e.interactable.options.deltaSource;\n      if (n.touches = [o[0], o[1]], i) n.distance = Wr.pointer.touchDistance(o, u), n.box = Wr.pointer.touchBBox(o), n.scale = 1, n.ds = 0, n.angle = Wr.pointer.touchAngle(o, u), n.da = 0, e.gesture.startDistance = n.distance, e.gesture.startAngle = n.angle;else if (a) {\n        var s = e.prevEvent;\n        n.distance = s.distance, n.box = s.box, n.scale = s.scale, n.ds = 0, n.angle = s.angle, n.da = 0;\n      } else n.distance = Wr.pointer.touchDistance(o, u), n.box = Wr.pointer.touchBBox(o), n.scale = n.distance / e.gesture.startDistance, n.angle = Wr.pointer.touchAngle(o, u), n.ds = n.scale - e.gesture.scale, n.da = n.angle - e.gesture.angle;\n      e.gesture.distance = n.distance, e.gesture.angle = n.angle, Wr.is.number(n.scale) && n.scale !== 1 / 0 && !isNaN(n.scale) && (e.gesture.scale = n.scale);\n    }\n  }\n\n  var Xr = {\n    id: \"actions/gesture\",\n    before: [\"actions/drag\", \"actions/resize\"],\n    install: function (t) {\n      var e = t.actions,\n          n = t.Interactable,\n          r = t.defaults;\n      n.prototype.gesturable = function (t) {\n        return Wr.is.object(t) ? (this.options.gesture.enabled = !1 !== t.enabled, this.setPerAction(\"gesture\", t), this.setOnEvents(\"gesture\", t), this) : Wr.is.bool(t) ? (this.options.gesture.enabled = t, this) : this.options.gesture;\n      }, e.map.gesture = Xr, e.methodDict.gesture = \"gesturable\", r.actions.gesture = Xr.defaults;\n    },\n    listeners: {\n      \"interactions:action-start\": Fr,\n      \"interactions:action-move\": Fr,\n      \"interactions:action-end\": Fr,\n      \"interactions:new\": function (t) {\n        t.interaction.gesture = {\n          angle: 0,\n          distance: 0,\n          scale: 1,\n          startAngle: 0,\n          startDistance: 0\n        };\n      },\n      \"auto-start:check\": function (t) {\n        if (!(t.interaction.pointers.length < 2)) {\n          var e = t.interactable.options.gesture;\n          if (e && e.enabled) return !(t.action = {\n            name: \"gesture\"\n          });\n        }\n      }\n    },\n    defaults: {},\n    getCursor: function () {\n      return \"\";\n    }\n  },\n      Yr = Xr;\n  Ar.default = Yr;\n  var Nr = {};\n\n  function Lr(t) {\n    return (Lr = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Nr, \"__esModule\", {\n    value: !0\n  }), Nr.default = void 0;\n  var Br,\n      Vr = Hr($),\n      qr = (Br = ct) && Br.__esModule ? Br : {\n    default: Br\n  },\n      Ur = Hr(w);\n\n  function Gr() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Gr = function () {\n      return t;\n    }, t;\n  }\n\n  function Hr(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Lr(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Gr();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function Kr(t, e, n, r, o, i, a) {\n    if (!e) return !1;\n\n    if (!0 === e) {\n      var u = Ur.number(i.width) ? i.width : i.right - i.left,\n          s = Ur.number(i.height) ? i.height : i.bottom - i.top;\n      if (a = Math.min(a, (\"left\" === t || \"right\" === t ? u : s) / 2), u < 0 && (\"left\" === t ? t = \"right\" : \"right\" === t && (t = \"left\")), s < 0 && (\"top\" === t ? t = \"bottom\" : \"bottom\" === t && (t = \"top\")), \"left\" === t) return n.x < (0 <= u ? i.left : i.right) + a;\n      if (\"top\" === t) return n.y < (0 <= s ? i.top : i.bottom) + a;\n      if (\"right\" === t) return n.x > (0 <= u ? i.right : i.left) - a;\n      if (\"bottom\" === t) return n.y > (0 <= s ? i.bottom : i.top) - a;\n    }\n\n    return !!Ur.element(r) && (Ur.element(e) ? e === r : Vr.matchesUpTo(r, e, o));\n  }\n\n  function $r(t) {\n    var e = t.iEvent,\n        n = t.interaction;\n\n    if (\"resize\" === n.prepared.name && n.resizeAxes) {\n      var r = e;\n      n.interactable.options.resize.square ? (\"y\" === n.resizeAxes ? r.delta.x = r.delta.y : r.delta.y = r.delta.x, r.axes = \"xy\") : (r.axes = n.resizeAxes, \"x\" === n.resizeAxes ? r.delta.y = 0 : \"y\" === n.resizeAxes && (r.delta.x = 0));\n    }\n  }\n\n  var Zr = {\n    id: \"actions/resize\",\n    before: [\"actions/drag\"],\n    install: function (e) {\n      var t = e.actions,\n          n = e.browser,\n          r = e.Interactable,\n          o = e.defaults;\n      Zr.cursors = n.isIe9 ? {\n        x: \"e-resize\",\n        y: \"s-resize\",\n        xy: \"se-resize\",\n        top: \"n-resize\",\n        left: \"w-resize\",\n        bottom: \"s-resize\",\n        right: \"e-resize\",\n        topleft: \"se-resize\",\n        bottomright: \"se-resize\",\n        topright: \"ne-resize\",\n        bottomleft: \"ne-resize\"\n      } : {\n        x: \"ew-resize\",\n        y: \"ns-resize\",\n        xy: \"nwse-resize\",\n        top: \"ns-resize\",\n        left: \"ew-resize\",\n        bottom: \"ns-resize\",\n        right: \"ew-resize\",\n        topleft: \"nwse-resize\",\n        bottomright: \"nwse-resize\",\n        topright: \"nesw-resize\",\n        bottomleft: \"nesw-resize\"\n      }, Zr.defaultMargin = n.supportsTouch || n.supportsPointerEvent ? 20 : 10, r.prototype.resizable = function (t) {\n        return function (t, e, n) {\n          if (Ur.object(e)) return t.options.resize.enabled = !1 !== e.enabled, t.setPerAction(\"resize\", e), t.setOnEvents(\"resize\", e), Ur.string(e.axis) && /^x$|^y$|^xy$/.test(e.axis) ? t.options.resize.axis = e.axis : null === e.axis && (t.options.resize.axis = n.defaults.actions.resize.axis), Ur.bool(e.preserveAspectRatio) ? t.options.resize.preserveAspectRatio = e.preserveAspectRatio : Ur.bool(e.square) && (t.options.resize.square = e.square), t;\n          if (Ur.bool(e)) return t.options.resize.enabled = e, t;\n          return t.options.resize;\n        }(this, t, e);\n      }, t.map.resize = Zr, t.methodDict.resize = \"resizable\", o.actions.resize = Zr.defaults;\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        t.interaction.resizeAxes = \"xy\";\n      },\n      \"interactions:action-start\": function (t) {\n        !function (t) {\n          var e = t.iEvent,\n              n = t.interaction;\n\n          if (\"resize\" === n.prepared.name && n.prepared.edges) {\n            var r = e,\n                o = n.rect;\n            n._rects = {\n              start: (0, qr.default)({}, o),\n              corrected: (0, qr.default)({}, o),\n              previous: (0, qr.default)({}, o),\n              delta: {\n                left: 0,\n                right: 0,\n                width: 0,\n                top: 0,\n                bottom: 0,\n                height: 0\n              }\n            }, r.edges = n.prepared.edges, r.rect = n._rects.corrected, r.deltaRect = n._rects.delta;\n          }\n        }(t), $r(t);\n      },\n      \"interactions:action-move\": function (t) {\n        !function (t) {\n          var e = t.iEvent,\n              n = t.interaction;\n\n          if (\"resize\" === n.prepared.name && n.prepared.edges) {\n            var r = e,\n                o = n.interactable.options.resize.invert,\n                i = \"reposition\" === o || \"negate\" === o,\n                a = n.rect,\n                u = n._rects,\n                s = u.start,\n                l = u.corrected,\n                c = u.delta,\n                f = u.previous;\n\n            if ((0, qr.default)(f, l), i) {\n              if ((0, qr.default)(l, a), \"reposition\" === o) {\n                if (l.top > l.bottom) {\n                  var p = l.top;\n                  l.top = l.bottom, l.bottom = p;\n                }\n\n                if (l.left > l.right) {\n                  var d = l.left;\n                  l.left = l.right, l.right = d;\n                }\n              }\n            } else l.top = Math.min(a.top, s.bottom), l.bottom = Math.max(a.bottom, s.top), l.left = Math.min(a.left, s.right), l.right = Math.max(a.right, s.left);\n\n            for (var v in l.width = l.right - l.left, l.height = l.bottom - l.top, l) c[v] = l[v] - f[v];\n\n            r.edges = n.prepared.edges, r.rect = l, r.deltaRect = c;\n          }\n        }(t), $r(t);\n      },\n      \"interactions:action-end\": function (t) {\n        var e = t.iEvent,\n            n = t.interaction;\n\n        if (\"resize\" === n.prepared.name && n.prepared.edges) {\n          var r = e;\n          r.edges = n.prepared.edges, r.rect = n._rects.corrected, r.deltaRect = n._rects.delta;\n        }\n      },\n      \"auto-start:check\": function (t) {\n        var e = t.interaction,\n            n = t.interactable,\n            r = t.element,\n            o = t.rect,\n            i = t.buttons;\n\n        if (o) {\n          var a = (0, qr.default)({}, e.coords.cur.page),\n              u = n.options.resize;\n\n          if (u && u.enabled && (!e.pointerIsDown || !/mouse|pointer/.test(e.pointerType) || 0 != (i & u.mouseButtons))) {\n            if (Ur.object(u.edges)) {\n              var s = {\n                left: !1,\n                right: !1,\n                top: !1,\n                bottom: !1\n              };\n\n              for (var l in s) s[l] = Kr(l, u.edges[l], a, e._latestPointer.eventTarget, r, o, u.margin || Zr.defaultMargin);\n\n              s.left = s.left && !s.right, s.top = s.top && !s.bottom, (s.left || s.right || s.top || s.bottom) && (t.action = {\n                name: \"resize\",\n                edges: s\n              });\n            } else {\n              var c = \"y\" !== u.axis && a.x > o.right - Zr.defaultMargin,\n                  f = \"x\" !== u.axis && a.y > o.bottom - Zr.defaultMargin;\n              (c || f) && (t.action = {\n                name: \"resize\",\n                axes: (c ? \"x\" : \"\") + (f ? \"y\" : \"\")\n              });\n            }\n\n            return !t.action && void 0;\n          }\n        }\n      }\n    },\n    defaults: {\n      square: !1,\n      preserveAspectRatio: !1,\n      axis: \"xy\",\n      margin: NaN,\n      edges: null,\n      invert: \"none\"\n    },\n    cursors: null,\n    getCursor: function (t) {\n      var e = t.edges,\n          n = t.axis,\n          r = t.name,\n          o = Zr.cursors,\n          i = null;\n      if (n) i = o[r + n];else if (e) {\n        for (var a = \"\", u = [\"top\", \"bottom\", \"left\", \"right\"], s = 0; s < u.length; s++) {\n          var l = u[s];\n          e[l] && (a += l);\n        }\n\n        i = o[a];\n      }\n      return i;\n    },\n    defaultMargin: null\n  },\n      Jr = Zr;\n  Nr.default = Jr;\n  var Qr = {};\n  Object.defineProperty(Qr, \"__esModule\", {\n    value: !0\n  }), Object.defineProperty(Qr, \"drag\", {\n    enumerable: !0,\n    get: function () {\n      return to.default;\n    }\n  }), Object.defineProperty(Qr, \"drop\", {\n    enumerable: !0,\n    get: function () {\n      return eo.default;\n    }\n  }), Object.defineProperty(Qr, \"gesture\", {\n    enumerable: !0,\n    get: function () {\n      return no.default;\n    }\n  }), Object.defineProperty(Qr, \"resize\", {\n    enumerable: !0,\n    get: function () {\n      return ro.default;\n    }\n  }), Qr.default = void 0;\n  var to = oo(v),\n      eo = oo(mr),\n      no = oo(Ar),\n      ro = oo(Nr);\n\n  function oo(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var io = {\n    id: \"actions\",\n    install: function (t) {\n      t.usePlugin(no.default), t.usePlugin(ro.default), t.usePlugin(to.default), t.usePlugin(eo.default);\n    }\n  };\n  Qr.default = io;\n  var ao = {};\n  Object.defineProperty(ao, \"__esModule\", {\n    value: !0\n  }), ao.default = void 0;\n  ao.default = {};\n  var uo = {};\n\n  function so(t) {\n    return (so = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(uo, \"__esModule\", {\n    value: !0\n  }), uo.getContainer = go, uo.getScroll = bo, uo.getScrollSize = function (t) {\n    fo.window(t) && (t = window.document.body);\n    return {\n      x: t.scrollWidth,\n      y: t.scrollHeight\n    };\n  }, uo.getScrollSizeDelta = function (t, e) {\n    var n = t.interaction,\n        r = t.element,\n        o = n && n.interactable.options[n.prepared.name].autoScroll;\n    if (!o || !o.enabled) return e(), {\n      x: 0,\n      y: 0\n    };\n    var i = go(o.container, n.interactable, r),\n        a = bo(i);\n    e();\n    var u = bo(i);\n    return {\n      x: u.x - a.x,\n      y: u.y - a.y\n    };\n  }, uo.default = void 0;\n  var lo,\n      co = yo($),\n      fo = yo(w),\n      po = (lo = oe) && lo.__esModule ? lo : {\n    default: lo\n  };\n\n  function vo() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return vo = function () {\n      return t;\n    }, t;\n  }\n\n  function yo(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== so(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = vo();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  var ho = {\n    defaults: {\n      enabled: !1,\n      margin: 60,\n      container: null,\n      speed: 300\n    },\n    now: Date.now,\n    interaction: null,\n    i: 0,\n    x: 0,\n    y: 0,\n    isScrolling: !1,\n    prevTime: 0,\n    margin: 0,\n    speed: 0,\n    start: function (t) {\n      ho.isScrolling = !0, po.default.cancel(ho.i), (t.autoScroll = ho).interaction = t, ho.prevTime = ho.now(), ho.i = po.default.request(ho.scroll);\n    },\n    stop: function () {\n      ho.isScrolling = !1, ho.interaction && (ho.interaction.autoScroll = null), po.default.cancel(ho.i);\n    },\n    scroll: function () {\n      var t = ho.interaction,\n          e = t.interactable,\n          n = t.element,\n          r = t.prepared.name,\n          o = e.options[r].autoScroll,\n          i = go(o.container, e, n),\n          a = ho.now(),\n          u = (a - ho.prevTime) / 1e3,\n          s = o.speed * u;\n\n      if (1 <= s) {\n        var l = {\n          x: ho.x * s,\n          y: ho.y * s\n        };\n\n        if (l.x || l.y) {\n          var c = bo(i);\n          fo.window(i) ? i.scrollBy(l.x, l.y) : i && (i.scrollLeft += l.x, i.scrollTop += l.y);\n          var f = bo(i),\n              p = {\n            x: f.x - c.x,\n            y: f.y - c.y\n          };\n          (p.x || p.y) && e.fire({\n            type: \"autoscroll\",\n            target: n,\n            interactable: e,\n            delta: p,\n            interaction: t,\n            container: i\n          });\n        }\n\n        ho.prevTime = a;\n      }\n\n      ho.isScrolling && (po.default.cancel(ho.i), ho.i = po.default.request(ho.scroll));\n    },\n    check: function (t, e) {\n      var n = t.options;\n      return n[e].autoScroll && n[e].autoScroll.enabled;\n    },\n    onInteractionMove: function (t) {\n      var e = t.interaction,\n          n = t.pointer;\n      if (e.interacting() && ho.check(e.interactable, e.prepared.name)) if (e.simulation) ho.x = ho.y = 0;else {\n        var r,\n            o,\n            i,\n            a,\n            u = e.interactable,\n            s = e.element,\n            l = e.prepared.name,\n            c = u.options[l].autoScroll,\n            f = go(c.container, u, s);\n        if (fo.window(f)) a = n.clientX < ho.margin, r = n.clientY < ho.margin, o = n.clientX > f.innerWidth - ho.margin, i = n.clientY > f.innerHeight - ho.margin;else {\n          var p = co.getElementClientRect(f);\n          a = n.clientX < p.left + ho.margin, r = n.clientY < p.top + ho.margin, o = n.clientX > p.right - ho.margin, i = n.clientY > p.bottom - ho.margin;\n        }\n        ho.x = o ? 1 : a ? -1 : 0, ho.y = i ? 1 : r ? -1 : 0, ho.isScrolling || (ho.margin = c.margin, ho.speed = c.speed, ho.start(e));\n      }\n    }\n  };\n\n  function go(t, e, n) {\n    return (fo.string(t) ? (0, $t.getStringOptionResult)(t, e, n) : t) || (0, O.getWindow)(n);\n  }\n\n  function bo(t) {\n    return fo.window(t) && (t = window.document.body), {\n      x: t.scrollLeft,\n      y: t.scrollTop\n    };\n  }\n\n  var mo = {\n    id: \"auto-scroll\",\n    install: function (t) {\n      var e = t.defaults,\n          n = t.actions;\n      (t.autoScroll = ho).now = function () {\n        return t.now();\n      }, n.phaselessTypes.autoscroll = !0, e.perAction.autoScroll = ho.defaults;\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        t.interaction.autoScroll = null;\n      },\n      \"interactions:destroy\": function (t) {\n        t.interaction.autoScroll = null, ho.stop(), ho.interaction && (ho.interaction = null);\n      },\n      \"interactions:stop\": ho.stop,\n      \"interactions:action-move\": function (t) {\n        return ho.onInteractionMove(t);\n      }\n    }\n  };\n  uo.default = mo;\n  var Oo = {};\n\n  function wo(t) {\n    return (wo = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Oo, \"__esModule\", {\n    value: !0\n  }), Oo.default = void 0;\n\n  var _o = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== wo(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Po();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w);\n\n  function Po() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Po = function () {\n      return t;\n    }, t;\n  }\n\n  function xo(t) {\n    return _o.bool(t) ? (this.options.styleCursor = t, this) : null === t ? (delete this.options.styleCursor, this) : this.options.styleCursor;\n  }\n\n  function So(t) {\n    return _o.func(t) ? (this.options.actionChecker = t, this) : null === t ? (delete this.options.actionChecker, this) : this.options.actionChecker;\n  }\n\n  var jo = {\n    id: \"auto-start/interactableMethods\",\n    install: function (d) {\n      var t = d.Interactable;\n      t.prototype.getAction = function (t, e, n, r) {\n        var o,\n            i,\n            a,\n            u,\n            s,\n            l,\n            c,\n            f,\n            p = (i = e, a = n, u = r, s = d, l = (o = this).getRect(u), c = i.buttons || {\n          0: 1,\n          1: 4,\n          3: 8,\n          4: 16\n        }[i.button], f = {\n          action: null,\n          interactable: o,\n          interaction: a,\n          element: u,\n          rect: l,\n          buttons: c\n        }, s.fire(\"auto-start:check\", f), f.action);\n        return this.options.actionChecker ? this.options.actionChecker(t, e, p, this, r, n) : p;\n      }, t.prototype.ignoreFrom = (0, le.warnOnce)(function (t) {\n        return this._backCompatOption(\"ignoreFrom\", t);\n      }, \"Interactable.ignoreFrom() has been deprecated. Use Interactble.draggable({ignoreFrom: newValue}).\"), t.prototype.allowFrom = (0, le.warnOnce)(function (t) {\n        return this._backCompatOption(\"allowFrom\", t);\n      }, \"Interactable.allowFrom() has been deprecated. Use Interactble.draggable({allowFrom: newValue}).\"), t.prototype.actionChecker = So, t.prototype.styleCursor = xo;\n    }\n  };\n  Oo.default = jo;\n  var Mo = {};\n\n  function ko(t) {\n    return (ko = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Mo, \"__esModule\", {\n    value: !0\n  }), Mo.default = void 0;\n\n  var Eo,\n      To = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== ko(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Io();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(le),\n      Do = (Eo = Oo) && Eo.__esModule ? Eo : {\n    default: Eo\n  };\n\n  function Io() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Io = function () {\n      return t;\n    }, t;\n  }\n\n  function zo(t, e, n, r, o) {\n    return e.testIgnoreAllow(e.options[t.name], n, r) && e.options[t.name].enabled && Ro(e, n, t, o) ? t : null;\n  }\n\n  function Ao(t, e, n, r, o, i, a) {\n    for (var u = 0, s = r.length; u < s; u++) {\n      var l = r[u],\n          c = o[u],\n          f = l.getAction(e, n, t, c);\n\n      if (f) {\n        var p = zo(f, l, c, i, a);\n        if (p) return {\n          action: p,\n          interactable: l,\n          element: c\n        };\n      }\n    }\n\n    return {\n      action: null,\n      interactable: null,\n      element: null\n    };\n  }\n\n  function Co(t, e, n, r, o) {\n    var i = [],\n        a = [],\n        u = r;\n\n    function s(t) {\n      i.push(t), a.push(u);\n    }\n\n    for (; To.is.element(u);) {\n      i = [], a = [], o.interactables.forEachMatch(u, s);\n      var l = Ao(t, e, n, i, a, r, o);\n      if (l.action && !l.interactable.options[l.action.name].manualStart) return l;\n      u = To.dom.parentNode(u);\n    }\n\n    return {\n      action: null,\n      interactable: null,\n      element: null\n    };\n  }\n\n  function Wo(t, e, n) {\n    var r = e.action,\n        o = e.interactable,\n        i = e.element;\n    r = r || {\n      name: null\n    }, t.interactable = o, t.element = i, To.copyAction(t.prepared, r), t.rect = o && r.name ? o.getRect(i) : null, Yo(t, n), n.fire(\"autoStart:prepared\", {\n      interaction: t\n    });\n  }\n\n  function Ro(t, e, n, r) {\n    var o = t.options,\n        i = o[n.name].max,\n        a = o[n.name].maxPerElement,\n        u = r.autoStart.maxInteractions,\n        s = 0,\n        l = 0,\n        c = 0;\n    if (!(i && a && u)) return !1;\n\n    for (var f = 0; f < r.interactions.list.length; f++) {\n      var p = r.interactions.list[f],\n          d = p.prepared.name;\n\n      if (p.interacting()) {\n        if (u <= ++s) return !1;\n\n        if (p.interactable === t) {\n          if (i <= (l += d === n.name ? 1 : 0)) return !1;\n          if (p.element === e && (c++, d === n.name && a <= c)) return !1;\n        }\n      }\n    }\n\n    return 0 < u;\n  }\n\n  function Fo(t, e) {\n    return To.is.number(t) ? (e.autoStart.maxInteractions = t, this) : e.autoStart.maxInteractions;\n  }\n\n  function Xo(t, e, n) {\n    var r = n.autoStart.cursorElement;\n    r && r !== t && (r.style.cursor = \"\"), t.ownerDocument.documentElement.style.cursor = e, t.style.cursor = e, n.autoStart.cursorElement = e ? t : null;\n  }\n\n  function Yo(t, e) {\n    var n = t.interactable,\n        r = t.element,\n        o = t.prepared;\n\n    if (\"mouse\" === t.pointerType && n && n.options.styleCursor) {\n      var i = \"\";\n\n      if (o.name) {\n        var a = n.options[o.name].cursorChecker;\n        i = To.is.func(a) ? a(o, n, r, t._interacting) : e.actions.map[o.name].getCursor(o);\n      }\n\n      Xo(t.element, i || \"\", e);\n    } else e.autoStart.cursorElement && Xo(e.autoStart.cursorElement, \"\", e);\n  }\n\n  var No = {\n    id: \"auto-start/base\",\n    before: [\"actions\", \"actions/drag\", \"actions/resize\", \"actions/gesture\"],\n    install: function (e) {\n      var t = e.interactStatic,\n          n = e.defaults;\n      e.usePlugin(Do.default), n.base.actionChecker = null, n.base.styleCursor = !0, To.extend(n.perAction, {\n        manualStart: !1,\n        max: 1 / 0,\n        maxPerElement: 1,\n        allowFrom: null,\n        ignoreFrom: null,\n        mouseButtons: 1\n      }), t.maxInteractions = function (t) {\n        return Fo(t, e);\n      }, e.autoStart = {\n        maxInteractions: 1 / 0,\n        withinInteractionLimit: Ro,\n        cursorElement: null\n      };\n    },\n    listeners: {\n      \"interactions:down\": function (t, e) {\n        var n = t.interaction,\n            r = t.pointer,\n            o = t.event,\n            i = t.eventTarget;\n        n.interacting() || Wo(n, Co(n, r, o, i, e), e);\n      },\n      \"interactions:move\": function (t, e) {\n        var n, r, o, i, a, u;\n        r = e, o = (n = t).interaction, i = n.pointer, a = n.event, u = n.eventTarget, \"mouse\" !== o.pointerType || o.pointerIsDown || o.interacting() || Wo(o, Co(o, i, a, u, r), r), function (t, e) {\n          var n = t.interaction;\n\n          if (n.pointerIsDown && !n.interacting() && n.pointerWasMoved && n.prepared.name) {\n            e.fire(\"autoStart:before-start\", t);\n            var r = n.interactable,\n                o = n.prepared.name;\n            o && r && (r.options[o].manualStart || !Ro(r, n.element, n.prepared, e) ? n.stop() : (n.start(n.prepared, r, n.element), Yo(n, e)));\n          }\n        }(t, e);\n      },\n      \"interactions:stop\": function (t, e) {\n        var n = t.interaction,\n            r = n.interactable;\n        r && r.options.styleCursor && Xo(n.element, \"\", e);\n      }\n    },\n    maxInteractions: Fo,\n    withinInteractionLimit: Ro,\n    validateAction: zo\n  };\n  Mo.default = No;\n  var Lo = {};\n\n  function Bo(t) {\n    return (Bo = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Lo, \"__esModule\", {\n    value: !0\n  }), Lo.default = void 0;\n\n  var Vo,\n      qo = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Bo(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Go();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w),\n      Uo = (Vo = Mo) && Vo.__esModule ? Vo : {\n    default: Vo\n  };\n\n  function Go() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Go = function () {\n      return t;\n    }, t;\n  }\n\n  var Ho = {\n    id: \"auto-start/dragAxis\",\n    listeners: {\n      \"autoStart:before-start\": function (t, r) {\n        var o = t.interaction,\n            i = t.eventTarget,\n            e = t.dx,\n            n = t.dy;\n\n        if (\"drag\" === o.prepared.name) {\n          var a = Math.abs(e),\n              u = Math.abs(n),\n              s = o.interactable.options.drag,\n              l = s.startAxis,\n              c = u < a ? \"x\" : a < u ? \"y\" : \"xy\";\n\n          if (o.prepared.axis = \"start\" === s.lockAxis ? c[0] : s.lockAxis, \"xy\" != c && \"xy\" !== l && l !== c) {\n            o.prepared.name = null;\n\n            function f(t) {\n              if (t !== o.interactable) {\n                var e = o.interactable.options.drag;\n\n                if (!e.manualStart && t.testIgnoreAllow(e, p, i)) {\n                  var n = t.getAction(o.downPointer, o.downEvent, o, p);\n                  if (n && \"drag\" === n.name && function (t, e) {\n                    if (!e) return;\n                    var n = e.options.drag.startAxis;\n                    return \"xy\" === t || \"xy\" === n || n === t;\n                  }(c, t) && Uo.default.validateAction(n, t, p, i, r)) return t;\n                }\n              }\n            }\n\n            for (var p = i; qo.element(p);) {\n              var d = r.interactables.forEachMatch(p, f);\n\n              if (d) {\n                o.prepared.name = \"drag\", o.interactable = d, o.element = p;\n                break;\n              }\n\n              p = (0, $.parentNode)(p);\n            }\n          }\n        }\n      }\n    }\n  };\n  Lo.default = Ho;\n  var Ko = {};\n  Object.defineProperty(Ko, \"__esModule\", {\n    value: !0\n  }), Ko.default = void 0;\n  var $o,\n      Zo = ($o = Mo) && $o.__esModule ? $o : {\n    default: $o\n  };\n\n  function Jo(t) {\n    var e = t.prepared && t.prepared.name;\n    if (!e) return null;\n    var n = t.interactable.options;\n    return n[e].hold || n[e].delay;\n  }\n\n  var Qo = {\n    id: \"auto-start/hold\",\n    install: function (t) {\n      var e = t.defaults;\n      t.usePlugin(Zo.default), e.perAction.hold = 0, e.perAction.delay = 0;\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        t.interaction.autoStartHoldTimer = null;\n      },\n      \"autoStart:prepared\": function (t) {\n        var e = t.interaction,\n            n = Jo(e);\n        0 < n && (e.autoStartHoldTimer = setTimeout(function () {\n          e.start(e.prepared, e.interactable, e.element);\n        }, n));\n      },\n      \"interactions:move\": function (t) {\n        var e = t.interaction,\n            n = t.duplicate;\n        e.pointerWasMoved && !n && clearTimeout(e.autoStartHoldTimer);\n      },\n      \"autoStart:before-start\": function (t) {\n        var e = t.interaction;\n        0 < Jo(e) && (e.prepared.name = null);\n      }\n    },\n    getHoldDuration: Jo\n  };\n  Ko.default = Qo;\n  var ti = {};\n  Object.defineProperty(ti, \"__esModule\", {\n    value: !0\n  }), Object.defineProperty(ti, \"autoStart\", {\n    enumerable: !0,\n    get: function () {\n      return ei.default;\n    }\n  }), Object.defineProperty(ti, \"dragAxis\", {\n    enumerable: !0,\n    get: function () {\n      return ni.default;\n    }\n  }), Object.defineProperty(ti, \"hold\", {\n    enumerable: !0,\n    get: function () {\n      return ri.default;\n    }\n  }), ti.default = void 0;\n  var ei = oi(Mo),\n      ni = oi(Lo),\n      ri = oi(Ko);\n\n  function oi(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var ii = {\n    id: \"auto-start\",\n    install: function (t) {\n      t.usePlugin(ei.default), t.usePlugin(ri.default), t.usePlugin(ni.default);\n    }\n  };\n  ti.default = ii;\n  var ai = {};\n  Object.defineProperty(ai, \"__esModule\", {\n    value: !0\n  }), ai.default = void 0;\n  ai.default = {};\n  var ui = {};\n  Object.defineProperty(ui, \"__esModule\", {\n    value: !0\n  }), ui.default = void 0;\n  ui.default = {};\n  var si = {};\n\n  function li(t) {\n    return (li = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(si, \"__esModule\", {\n    value: !0\n  }), si.default = void 0;\n  var ci,\n      fi,\n      pi = hi(D),\n      di = (hi(ct), function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== li(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = yi();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w)),\n      vi = hi(O);\n\n  function yi() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return yi = function () {\n      return t;\n    }, t;\n  }\n\n  function hi(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  (fi = ci = ci || {}).touchAction = \"touchAction\", fi.boxSizing = \"boxSizing\", fi.noListeners = \"noListeners\";\n  var gi = {\n    touchAction: \"https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action\",\n    boxSizing: \"https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing\"\n  };\n  ci.touchAction, ci.boxSizing, ci.noListeners;\n\n  function bi(t, e, n) {\n    return n.test(t.style[e] || vi.default.window.getComputedStyle(t)[e]);\n  }\n\n  var mi = \"dev-tools\",\n      Oi = {\n    id: mi,\n    install: function () {}\n  };\n  si.default = Oi;\n  var wi = {};\n  Object.defineProperty(wi, \"__esModule\", {\n    value: !0\n  }), wi.default = void 0;\n  wi.default = {};\n  var _i = {};\n\n  function Pi(t) {\n    return (Pi = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(_i, \"__esModule\", {\n    value: !0\n  }), _i.getRectOffset = Ai, _i.default = void 0;\n\n  var xi = ki(V),\n      Si = ki(ct),\n      ji = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Pi(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Mi();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }($t);\n\n  function Mi() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Mi = function () {\n      return t;\n    }, t;\n  }\n\n  function ki(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function Ei(t, e) {\n    return function (t) {\n      if (Array.isArray(t)) return t;\n    }(t) || function (t, e) {\n      if (!(Symbol.iterator in Object(t) || \"[object Arguments]\" === Object.prototype.toString.call(t))) return;\n      var n = [],\n          r = !0,\n          o = !1,\n          i = void 0;\n\n      try {\n        for (var a, u = t[Symbol.iterator](); !(r = (a = u.next()).done) && (n.push(a.value), !e || n.length !== e); r = !0);\n      } catch (t) {\n        o = !0, i = t;\n      } finally {\n        try {\n          r || null == u.return || u.return();\n        } finally {\n          if (o) throw i;\n        }\n      }\n\n      return n;\n    }(t, e) || function () {\n      throw new TypeError(\"Invalid attempt to destructure non-iterable instance\");\n    }();\n  }\n\n  function Ti(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function Di(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var Ii = function () {\n    function e(t) {\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, e), this.interaction = t, Di(this, \"states\", []), Di(this, \"startOffset\", {\n        left: 0,\n        right: 0,\n        top: 0,\n        bottom: 0\n      }), Di(this, \"startDelta\", null), Di(this, \"result\", null), Di(this, \"endResult\", null), Di(this, \"edges\", void 0), this.result = zi();\n    }\n\n    var t, n, r;\n    return t = e, (n = [{\n      key: \"start\",\n      value: function (t, e) {\n        var n = t.phase,\n            r = this.interaction,\n            o = function (t) {\n          var n = t.interactable.options[t.prepared.name],\n              e = n.modifiers;\n          if (e && e.length) return e.filter(function (t) {\n            return !t.options || !1 !== t.options.enabled;\n          });\n          return [\"snap\", \"snapSize\", \"snapEdges\", \"restrict\", \"restrictEdges\", \"restrictSize\"].map(function (t) {\n            var e = n[t];\n            return e && e.enabled && {\n              options: e,\n              methods: e._methods\n            };\n          }).filter(function (t) {\n            return !!t;\n          });\n        }(r);\n\n        this.prepareStates(o), this.edges = (0, Si.default)({}, r.edges), this.startOffset = Ai(r.rect, e);\n        var i = {\n          phase: n,\n          pageCoords: e,\n          preEnd: !(this.startDelta = {\n            x: 0,\n            y: 0\n          })\n        };\n        return this.result = zi(), this.startAll(i), this.result = this.setAll(i);\n      }\n    }, {\n      key: \"fillArg\",\n      value: function (t) {\n        var e = this.interaction;\n        t.interaction = e, t.interactable = e.interactable, t.element = e.element, t.rect = t.rect || e.rect, t.edges = this.edges, t.startOffset = this.startOffset;\n      }\n    }, {\n      key: \"startAll\",\n      value: function (t) {\n        this.fillArg(t);\n\n        for (var e = 0; e < this.states.length; e++) {\n          var n = this.states[e];\n          n.methods.start && (t.state = n).methods.start(t);\n        }\n      }\n    }, {\n      key: \"setAll\",\n      value: function (t) {\n        this.fillArg(t);\n        var e = t.phase,\n            n = t.preEnd,\n            r = t.skipModifiers,\n            o = t.rect;\n        t.coords = (0, Si.default)({}, t.pageCoords), t.rect = (0, Si.default)({}, o);\n\n        for (var i = r ? this.states.slice(r) : this.states, a = zi(t.coords, t.rect), u = 0; u < i.length; u++) {\n          var s = i[u],\n              l = s.options,\n              c = (0, Si.default)({}, t.coords),\n              f = null;\n          s.methods.set && this.shouldDo(l, n, e) && (f = (t.state = s).methods.set(t), ji.addEdges(this.interaction.edges, t.rect, {\n            x: t.coords.x - c.x,\n            y: t.coords.y - c.y\n          })), a.eventProps.push(f);\n        }\n\n        a.delta.x = t.coords.x - t.pageCoords.x, a.delta.y = t.coords.y - t.pageCoords.y, a.rectDelta.left = t.rect.left - o.left, a.rectDelta.right = t.rect.right - o.right, a.rectDelta.top = t.rect.top - o.top, a.rectDelta.bottom = t.rect.bottom - o.bottom;\n        var p = this.result.coords,\n            d = this.result.rect;\n\n        if (p && d) {\n          var v = a.rect.left !== d.left || a.rect.right !== d.right || a.rect.top !== d.top || a.rect.bottom !== d.bottom;\n          a.changed = v || p.x !== a.coords.x || p.y !== a.coords.y;\n        }\n\n        return a;\n      }\n    }, {\n      key: \"applyToInteraction\",\n      value: function (t) {\n        var e = this.interaction,\n            n = t.phase,\n            r = e.coords.cur,\n            o = e.coords.start,\n            i = this.result,\n            a = this.startDelta,\n            u = i.delta;\n        \"start\" === n && (0, Si.default)(this.startDelta, i.delta);\n\n        for (var s = 0; s < [[o, a], [r, u]].length; s++) {\n          var l = Ei([[o, a], [r, u]][s], 2),\n              c = l[0],\n              f = l[1];\n          c.page.x += f.x, c.page.y += f.y, c.client.x += f.x, c.client.y += f.y;\n        }\n\n        var p = this.result.rectDelta,\n            d = t.rect || e.rect;\n        d.left += p.left, d.right += p.right, d.top += p.top, d.bottom += p.bottom, d.width = d.right - d.left, d.height = d.bottom - d.top;\n      }\n    }, {\n      key: \"setAndApply\",\n      value: function (t) {\n        var e = this.interaction,\n            n = t.phase,\n            r = t.preEnd,\n            o = t.skipModifiers,\n            i = this.setAll({\n          preEnd: r,\n          phase: n,\n          pageCoords: t.modifiedCoords || e.coords.cur.page\n        });\n        if (!(this.result = i).changed && (!o || o < this.states.length) && e.interacting()) return !1;\n\n        if (t.modifiedCoords) {\n          var a = e.coords.cur.page,\n              u = t.modifiedCoords.x - a.x,\n              s = t.modifiedCoords.y - a.y;\n          i.coords.x += u, i.coords.y += s, i.delta.x += u, i.delta.y += s;\n        }\n\n        this.applyToInteraction(t);\n      }\n    }, {\n      key: \"beforeEnd\",\n      value: function (t) {\n        var e = t.interaction,\n            n = t.event,\n            r = this.states;\n\n        if (r && r.length) {\n          for (var o = !1, i = 0; i < r.length; i++) {\n            var a = r[i],\n                u = (t.state = a).options,\n                s = a.methods,\n                l = s.beforeEnd && s.beforeEnd(t);\n            if (l) return this.endResult = l, !1;\n            o = o || !o && this.shouldDo(u, !0, t.phase, !0);\n          }\n\n          o && e.move({\n            event: n,\n            preEnd: !0\n          });\n        }\n      }\n    }, {\n      key: \"stop\",\n      value: function (t) {\n        var e = t.interaction;\n\n        if (this.states && this.states.length) {\n          var n = (0, Si.default)({\n            states: this.states,\n            interactable: e.interactable,\n            element: e.element,\n            rect: null\n          }, t);\n          this.fillArg(n);\n\n          for (var r = 0; r < this.states.length; r++) {\n            var o = this.states[r];\n            (n.state = o).methods.stop && o.methods.stop(n);\n          }\n\n          this.states = null, this.endResult = null;\n        }\n      }\n    }, {\n      key: \"prepareStates\",\n      value: function (t) {\n        this.states = [];\n\n        for (var e = 0; e < t.length; e++) {\n          var n = t[e],\n              r = n.options,\n              o = n.methods,\n              i = n.name;\n          r && !1 === r.enabled || this.states.push({\n            options: r,\n            methods: o,\n            index: e,\n            name: i\n          });\n        }\n\n        return this.states;\n      }\n    }, {\n      key: \"restoreInteractionCoords\",\n      value: function (t) {\n        var e = t.interaction,\n            n = e.coords,\n            r = e.rect,\n            o = e.modification;\n\n        if (o.result) {\n          for (var i = o.startDelta, a = o.result, u = a.delta, s = a.rectDelta, l = [[n.start, i], [n.cur, u]], c = 0; c < l.length; c++) {\n            var f = Ei(l[c], 2),\n                p = f[0],\n                d = f[1];\n            p.page.x -= d.x, p.page.y -= d.y, p.client.x -= d.x, p.client.y -= d.y;\n          }\n\n          r.left -= s.left, r.right -= s.right, r.top -= s.top, r.bottom -= s.bottom;\n        }\n      }\n    }, {\n      key: \"shouldDo\",\n      value: function (t, e, n, r) {\n        return !(!t || !1 === t.enabled || r && !t.endOnly || t.endOnly && !e || \"start\" === n && !t.setStart);\n      }\n    }, {\n      key: \"copyFrom\",\n      value: function (t) {\n        this.startOffset = t.startOffset, this.startDelta = t.startDelta, this.edges = t.edges, this.states = t.states.map(function (t) {\n          return (0, xi.default)(t);\n        }), this.result = zi((0, Si.default)({}, t.result.coords), (0, Si.default)({}, t.result.rect));\n      }\n    }, {\n      key: \"destroy\",\n      value: function () {\n        for (var t in this) this[t] = null;\n      }\n    }]) && Ti(t.prototype, n), r && Ti(t, r), e;\n  }();\n\n  function zi(t, e) {\n    return {\n      rect: e,\n      coords: t,\n      delta: {\n        x: 0,\n        y: 0\n      },\n      rectDelta: {\n        left: 0,\n        right: 0,\n        top: 0,\n        bottom: 0\n      },\n      eventProps: [],\n      changed: !0\n    };\n  }\n\n  function Ai(t, e) {\n    return t ? {\n      left: e.x - t.left,\n      top: e.y - t.top,\n      right: t.right - e.x,\n      bottom: t.bottom - e.y\n    } : {\n      left: 0,\n      top: 0,\n      right: 0,\n      bottom: 0\n    };\n  }\n\n  _i.default = Ii;\n  var Ci = {};\n  Object.defineProperty(Ci, \"__esModule\", {\n    value: !0\n  }), Ci.makeModifier = function (t, r) {\n    function e(t) {\n      var e = t || {};\n\n      for (var n in e.enabled = !1 !== e.enabled, o) n in e || (e[n] = o[n]);\n\n      return {\n        options: e,\n        methods: i,\n        name: r\n      };\n    }\n\n    var o = t.defaults,\n        i = {\n      start: t.start,\n      set: t.set,\n      beforeEnd: t.beforeEnd,\n      stop: t.stop\n    };\n    r && \"string\" == typeof r && (e._defaults = o, e._methods = i);\n    return e;\n  }, Ci.addEventModifiers = Fi, Ci.default = void 0;\n  var Wi,\n      Ri = (Wi = _i) && Wi.__esModule ? Wi : {\n    default: Wi\n  };\n\n  function Fi(t) {\n    var e = t.iEvent,\n        n = t.interaction.modification.result;\n    n && (e.modifiers = n.eventProps);\n  }\n\n  var Xi = {\n    id: \"modifiers/base\",\n    install: function (t) {\n      t.defaults.perAction.modifiers = [];\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        var e = t.interaction;\n        e.modification = new Ri.default(e);\n      },\n      \"interactions:before-action-start\": function (t) {\n        var e = t.interaction.modification;\n        e.start(t, t.interaction.coords.start.page), t.interaction.edges = e.edges, e.applyToInteraction(t);\n      },\n      \"interactions:before-action-move\": function (t) {\n        return t.interaction.modification.setAndApply(t);\n      },\n      \"interactions:before-action-end\": function (t) {\n        return t.interaction.modification.beforeEnd(t);\n      },\n      \"interactions:action-start\": Fi,\n      \"interactions:action-move\": Fi,\n      \"interactions:action-end\": Fi,\n      \"interactions:after-action-start\": function (t) {\n        return t.interaction.modification.restoreInteractionCoords(t);\n      },\n      \"interactions:after-action-move\": function (t) {\n        return t.interaction.modification.restoreInteractionCoords(t);\n      },\n      \"interactions:stop\": function (t) {\n        return t.interaction.modification.stop(t);\n      }\n    },\n    before: [\"actions\", \"action/drag\", \"actions/resize\", \"actions/gesture\"]\n  };\n  Ci.default = Xi;\n  var Yi = {};\n\n  function Ni(t) {\n    return (Ni = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Yi, \"__esModule\", {\n    value: !0\n  }), Yi.addTotal = Vi, Yi.applyPending = Ui, Yi.default = void 0;\n\n  var Li = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Ni(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Bi();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }($t);\n\n  function Bi() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Bi = function () {\n      return t;\n    }, t;\n  }\n\n  function Vi(t) {\n    t.pointerIsDown && (Hi(t.coords.cur, t.offset.total), t.offset.pending.x = 0, t.offset.pending.y = 0);\n  }\n\n  function qi(t) {\n    Ui(t.interaction);\n  }\n\n  function Ui(t) {\n    if (!(e = t).offset.pending.x && !e.offset.pending.y) return !1;\n    var e,\n        n = t.offset.pending;\n    return Hi(t.coords.cur, n), Hi(t.coords.delta, n), Li.addEdges(t.edges, t.rect, n), n.x = 0, !(n.y = 0);\n  }\n\n  function Gi(t) {\n    var e = t.x,\n        n = t.y;\n    this.offset.pending.x += e, this.offset.pending.y += n, this.offset.total.x += e, this.offset.total.y += n;\n  }\n\n  function Hi(t, e) {\n    var n = t.page,\n        r = t.client,\n        o = e.x,\n        i = e.y;\n    n.x += o, n.y += i, r.x += o, r.y += i;\n  }\n\n  En._ProxyMethods.offsetBy = \"\";\n  var Ki = {\n    id: \"offset\",\n    install: function (t) {\n      t.Interaction.prototype.offsetBy = Gi;\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        t.interaction.offset = {\n          total: {\n            x: 0,\n            y: 0\n          },\n          pending: {\n            x: 0,\n            y: 0\n          }\n        };\n      },\n      \"interactions:update-pointer\": function (t) {\n        return Vi(t.interaction);\n      },\n      \"interactions:before-action-start\": qi,\n      \"interactions:before-action-move\": qi,\n      \"interactions:before-action-end\": function (t) {\n        var e = t.interaction;\n        if (Ui(e)) return e.move({\n          offset: !0\n        }), e.end(), !1;\n      },\n      \"interactions:stop\": function (t) {\n        var e = t.interaction;\n        e.offset.total.x = 0, e.offset.total.y = 0, e.offset.pending.x = 0, e.offset.pending.y = 0;\n      }\n    }\n  };\n  Yi.default = Ki;\n  var $i = {};\n\n  function Zi(t) {\n    return (Zi = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty($i, \"__esModule\", {\n    value: !0\n  }), $i.default = $i.InertiaState = void 0;\n  var Ji = ua(_i),\n      Qi = aa(Ci),\n      ta = ua(Yi),\n      ea = aa($),\n      na = ua(Et),\n      ra = aa(w),\n      oa = ua(oe);\n\n  function ia() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return ia = function () {\n      return t;\n    }, t;\n  }\n\n  function aa(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Zi(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = ia();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function ua(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function sa(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function la(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var ca = function () {\n    function e(t) {\n      !function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, e), this.interaction = t, la(this, \"active\", !1), la(this, \"isModified\", !1), la(this, \"smoothEnd\", !1), la(this, \"allowResume\", !1), la(this, \"modification\", null), la(this, \"modifierCount\", 0), la(this, \"modifierArg\", null), la(this, \"startCoords\", null), la(this, \"t0\", 0), la(this, \"v0\", 0), la(this, \"te\", 0), la(this, \"targetOffset\", null), la(this, \"modifiedOffset\", null), la(this, \"currentOffset\", null), la(this, \"lambda_v0\", 0), la(this, \"one_ve_v0\", 0), la(this, \"timeout\", null);\n    }\n\n    var t, n, r;\n    return t = e, (n = [{\n      key: \"start\",\n      value: function (t) {\n        var e = this.interaction,\n            n = fa(e);\n        if (!n || !n.enabled) return !1;\n        var r = e.coords.velocity.client,\n            o = (0, na.default)(r.x, r.y),\n            i = this.modification || (this.modification = new Ji.default(e));\n        if (i.copyFrom(e.modification), this.t0 = e._now(), this.allowResume = n.allowResume, this.v0 = o, this.currentOffset = {\n          x: 0,\n          y: 0\n        }, this.startCoords = e.coords.cur.page, this.modifierArg = {\n          interaction: e,\n          interactable: e.interactable,\n          element: e.element,\n          rect: e.rect,\n          edges: e.edges,\n          pageCoords: this.startCoords,\n          preEnd: !0,\n          phase: \"inertiastart\"\n        }, this.t0 - e.coords.cur.timeStamp < 50 && o > n.minSpeed && o > n.endSpeed) this.startInertia();else {\n          if (i.result = i.setAll(this.modifierArg), !i.result.changed) return !1;\n          this.startSmoothEnd();\n        }\n        return e.modification.result.rect = null, e.offsetBy(this.targetOffset), e._doPhase({\n          interaction: e,\n          event: t,\n          phase: \"inertiastart\"\n        }), e.offsetBy({\n          x: -this.targetOffset.x,\n          y: -this.targetOffset.y\n        }), e.modification.result.rect = null, this.active = !0, e.simulation = this, !0;\n      }\n    }, {\n      key: \"startInertia\",\n      value: function () {\n        var t = this,\n            e = this.interaction.coords.velocity.client,\n            n = fa(this.interaction),\n            r = n.resistance,\n            o = -Math.log(n.endSpeed / this.v0) / r;\n        this.targetOffset = {\n          x: (e.x - o) / r,\n          y: (e.y - o) / r\n        }, this.te = o, this.lambda_v0 = r / this.v0, this.one_ve_v0 = 1 - n.endSpeed / this.v0;\n        var i = this.modification,\n            a = this.modifierArg;\n        a.pageCoords = {\n          x: this.startCoords.x + this.targetOffset.x,\n          y: this.startCoords.y + this.targetOffset.y\n        }, i.result = i.setAll(a), i.result.changed && (this.isModified = !0, this.modifiedOffset = {\n          x: this.targetOffset.x + i.result.delta.x,\n          y: this.targetOffset.y + i.result.delta.y\n        }), this.timeout = oa.default.request(function () {\n          return t.inertiaTick();\n        });\n      }\n    }, {\n      key: \"startSmoothEnd\",\n      value: function () {\n        var t = this;\n        this.smoothEnd = !0, this.isModified = !0, this.targetOffset = {\n          x: this.modification.result.delta.x,\n          y: this.modification.result.delta.y\n        }, this.timeout = oa.default.request(function () {\n          return t.smoothEndTick();\n        });\n      }\n    }, {\n      key: \"inertiaTick\",\n      value: function () {\n        var t,\n            e,\n            n,\n            r,\n            o,\n            i,\n            a,\n            u = this,\n            s = this.interaction,\n            l = fa(s).resistance,\n            c = (s._now() - this.t0) / 1e3;\n\n        if (c < this.te) {\n          var f,\n              p = 1 - (Math.exp(-l * c) - this.lambda_v0) / this.one_ve_v0,\n              d = {\n            x: (f = this.isModified ? (e = t = 0, n = this.targetOffset.x, r = this.targetOffset.y, o = this.modifiedOffset.x, i = this.modifiedOffset.y, {\n              x: pa(a = p, t, n, o),\n              y: pa(a, e, r, i)\n            }) : {\n              x: this.targetOffset.x * p,\n              y: this.targetOffset.y * p\n            }).x - this.currentOffset.x,\n            y: f.y - this.currentOffset.y\n          };\n          this.currentOffset.x += d.x, this.currentOffset.y += d.y, s.offsetBy(d), s.move(), this.timeout = oa.default.request(function () {\n            return u.inertiaTick();\n          });\n        } else s.offsetBy({\n          x: this.modifiedOffset.x - this.currentOffset.x,\n          y: this.modifiedOffset.y - this.currentOffset.y\n        }), this.end();\n      }\n    }, {\n      key: \"smoothEndTick\",\n      value: function () {\n        var t = this,\n            e = this.interaction,\n            n = e._now() - this.t0,\n            r = fa(e).smoothEndDuration;\n\n        if (n < r) {\n          var o = da(n, 0, this.targetOffset.x, r),\n              i = da(n, 0, this.targetOffset.y, r),\n              a = {\n            x: o - this.currentOffset.x,\n            y: i - this.currentOffset.y\n          };\n          this.currentOffset.x += a.x, this.currentOffset.y += a.y, e.offsetBy(a), e.move({\n            skipModifiers: this.modifierCount\n          }), this.timeout = oa.default.request(function () {\n            return t.smoothEndTick();\n          });\n        } else e.offsetBy({\n          x: this.targetOffset.x - this.currentOffset.x,\n          y: this.targetOffset.y - this.currentOffset.y\n        }), this.end();\n      }\n    }, {\n      key: \"resume\",\n      value: function (t) {\n        var e = t.pointer,\n            n = t.event,\n            r = t.eventTarget,\n            o = this.interaction;\n        o.offsetBy({\n          x: -this.currentOffset.x,\n          y: -this.currentOffset.y\n        }), o.updatePointer(e, n, r, !0), o._doPhase({\n          interaction: o,\n          event: n,\n          phase: \"resume\"\n        }), (0, zt.copyCoords)(o.coords.prev, o.coords.cur), this.stop();\n      }\n    }, {\n      key: \"end\",\n      value: function () {\n        this.interaction.move(), this.interaction.end(), this.stop();\n      }\n    }, {\n      key: \"stop\",\n      value: function () {\n        this.active = this.smoothEnd = !1, this.interaction.simulation = null, oa.default.cancel(this.timeout);\n      }\n    }]) && sa(t.prototype, n), r && sa(t, r), e;\n  }();\n\n  function fa(t) {\n    var e = t.interactable,\n        n = t.prepared;\n    return e && e.options && n.name && e.options[n.name].inertia;\n  }\n\n  function pa(t, e, n, r) {\n    var o = 1 - t;\n    return o * o * e + 2 * o * t * n + t * t * r;\n  }\n\n  function da(t, e, n, r) {\n    return -n * (t /= r) * (t - 2) + e;\n  }\n\n  $i.InertiaState = ca;\n  var va = {\n    id: \"inertia\",\n    before: [\"modifiers/base\"],\n    install: function (t) {\n      var e = t.defaults;\n      t.usePlugin(ta.default), t.usePlugin(Qi.default), t.actions.phases.inertiastart = !0, t.actions.phases.resume = !0, e.perAction.inertia = {\n        enabled: !1,\n        resistance: 10,\n        minSpeed: 100,\n        endSpeed: 10,\n        allowResume: !0,\n        smoothEndDuration: 300\n      };\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        var e = t.interaction;\n        e.inertia = new ca(e);\n      },\n      \"interactions:before-action-end\": function (t) {\n        var e = t.interaction,\n            n = t.event;\n        return (!e._interacting || e.simulation || !e.inertia.start(n)) && null;\n      },\n      \"interactions:down\": function (t) {\n        var e = t.interaction,\n            n = t.eventTarget,\n            r = e.inertia;\n        if (r.active) for (var o = n; ra.element(o);) {\n          if (o === e.element) {\n            r.resume(t);\n            break;\n          }\n\n          o = ea.parentNode(o);\n        }\n      },\n      \"interactions:stop\": function (t) {\n        var e = t.interaction.inertia;\n        e.active && e.stop();\n      },\n      \"interactions:before-action-resume\": function (t) {\n        var e = t.interaction.modification;\n        e.stop(t), e.start(t, t.interaction.coords.cur.page), e.applyToInteraction(t);\n      },\n      \"interactions:before-action-inertiastart\": function (t) {\n        return t.interaction.modification.setAndApply(t);\n      },\n      \"interactions:action-resume\": Qi.addEventModifiers,\n      \"interactions:action-inertiastart\": Qi.addEventModifiers,\n      \"interactions:after-action-inertiastart\": function (t) {\n        return t.interaction.modification.restoreInteractionCoords(t);\n      },\n      \"interactions:after-action-resume\": function (t) {\n        return t.interaction.modification.restoreInteractionCoords(t);\n      }\n    }\n  };\n  $i.default = va;\n  var ya,\n      ha = {};\n\n  function ga(t) {\n    return (ga = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(ha, \"__esModule\", {\n    value: !0\n  }), ha.init = ha.default = void 0;\n  var ba = new ((ya = m({})) && ya.__esModule ? ya : {\n    default: ya\n  }).default(),\n      ma = ba.interactStatic;\n  ha.default = ma;\n\n  function Oa(t) {\n    return ba.init(t);\n  }\n\n  ha.init = Oa, \"object\" === (\"undefined\" == typeof window ? \"undefined\" : ga(window)) && window && Oa(window);\n  var wa = {};\n  Object.defineProperty(wa, \"__esModule\", {\n    value: !0\n  }), wa.default = void 0;\n  wa.default = {};\n  var _a = {};\n  Object.defineProperty(_a, \"__esModule\", {\n    value: !0\n  }), _a.default = void 0;\n  _a.default = {};\n  var Pa = {};\n\n  function xa(t, e) {\n    return function (t) {\n      if (Array.isArray(t)) return t;\n    }(t) || function (t, e) {\n      if (!(Symbol.iterator in Object(t) || \"[object Arguments]\" === Object.prototype.toString.call(t))) return;\n      var n = [],\n          r = !0,\n          o = !1,\n          i = void 0;\n\n      try {\n        for (var a, u = t[Symbol.iterator](); !(r = (a = u.next()).done) && (n.push(a.value), !e || n.length !== e); r = !0);\n      } catch (t) {\n        o = !0, i = t;\n      } finally {\n        try {\n          r || null == u.return || u.return();\n        } finally {\n          if (o) throw i;\n        }\n      }\n\n      return n;\n    }(t, e) || function () {\n      throw new TypeError(\"Invalid attempt to destructure non-iterable instance\");\n    }();\n  }\n\n  Object.defineProperty(Pa, \"__esModule\", {\n    value: !0\n  }), Pa.default = void 0;\n\n  Pa.default = function (v) {\n    function t(t, e) {\n      for (var n = v.range, r = v.limits, o = void 0 === r ? {\n        left: -1 / 0,\n        right: 1 / 0,\n        top: -1 / 0,\n        bottom: 1 / 0\n      } : r, i = v.offset, a = void 0 === i ? {\n        x: 0,\n        y: 0\n      } : i, u = {\n        range: n,\n        grid: v,\n        x: null,\n        y: null\n      }, s = 0; s < y.length; s++) {\n        var l = xa(y[s], 2),\n            c = l[0],\n            f = l[1],\n            p = Math.round((t - a.x) / v[c]),\n            d = Math.round((e - a.y) / v[f]);\n        u[c] = Math.max(o.left, Math.min(o.right, p * v[c] + a.x)), u[f] = Math.max(o.top, Math.min(o.bottom, d * v[f] + a.y));\n      }\n\n      return u;\n    }\n\n    var y = [[\"x\", \"y\"], [\"left\", \"top\"], [\"right\", \"bottom\"], [\"width\", \"height\"]].filter(function (t) {\n      var e = xa(t, 2),\n          n = e[0],\n          r = e[1];\n      return n in v || r in v;\n    });\n    return t.grid = v, t.coordFields = y, t;\n  };\n\n  var Sa = {};\n  Object.defineProperty(Sa, \"__esModule\", {\n    value: !0\n  }), Object.defineProperty(Sa, \"edgeTarget\", {\n    enumerable: !0,\n    get: function () {\n      return ja.default;\n    }\n  }), Object.defineProperty(Sa, \"elements\", {\n    enumerable: !0,\n    get: function () {\n      return Ma.default;\n    }\n  }), Object.defineProperty(Sa, \"grid\", {\n    enumerable: !0,\n    get: function () {\n      return ka.default;\n    }\n  });\n  var ja = Ea(wa),\n      Ma = Ea(_a),\n      ka = Ea(Pa);\n\n  function Ea(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var Ta = {};\n\n  function Da(t) {\n    return (Da = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Ta, \"__esModule\", {\n    value: !0\n  }), Ta.default = void 0;\n\n  var Ia,\n      za = (Ia = ct) && Ia.__esModule ? Ia : {\n    default: Ia\n  },\n      Aa = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Da(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Ca();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(Sa);\n\n  function Ca() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Ca = function () {\n      return t;\n    }, t;\n  }\n\n  var Wa = {\n    id: \"snappers\",\n    install: function (t) {\n      var e = t.interactStatic;\n      e.snappers = (0, za.default)(e.snappers || {}, Aa), e.createSnapGrid = e.snappers.grid;\n    }\n  };\n  Ta.default = Wa;\n  var Ra = {};\n  Object.defineProperty(Ra, \"__esModule\", {\n    value: !0\n  }), Ra.aspectRatio = Ra.default = void 0;\n  var Fa = Ya(ct),\n      Xa = Ya(_i);\n\n  function Ya(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function Na(e, t) {\n    var n = Object.keys(e);\n\n    if (Object.getOwnPropertySymbols) {\n      var r = Object.getOwnPropertySymbols(e);\n      t && (r = r.filter(function (t) {\n        return Object.getOwnPropertyDescriptor(e, t).enumerable;\n      })), n.push.apply(n, r);\n    }\n\n    return n;\n  }\n\n  function La(e) {\n    for (var t = 1; t < arguments.length; t++) {\n      var n = null != arguments[t] ? arguments[t] : {};\n      t % 2 ? Na(Object(n), !0).forEach(function (t) {\n        Ba(e, t, n[t]);\n      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(n)) : Na(Object(n)).forEach(function (t) {\n        Object.defineProperty(e, t, Object.getOwnPropertyDescriptor(n, t));\n      });\n    }\n\n    return e;\n  }\n\n  function Ba(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var Va = {\n    start: function (t) {\n      var e = t.state,\n          n = t.rect,\n          r = t.edges,\n          o = t.pageCoords,\n          i = e.options.ratio,\n          a = e.options,\n          u = a.equalDelta,\n          s = a.modifiers;\n      \"preserve\" === i && (i = n.width / n.height), e.startCoords = (0, Fa.default)({}, o), e.startRect = (0, Fa.default)({}, n), e.ratio = i, e.equalDelta = u;\n      var l = e.linkedEdges = {\n        top: r.top || r.left && !r.bottom,\n        left: r.left || r.top && !r.right,\n        bottom: r.bottom || r.right && !r.top,\n        right: r.right || r.bottom && !r.left\n      };\n      if (e.xIsPrimaryAxis = !(!r.left && !r.right), e.equalDelta) e.edgeSign = (l.left ? 1 : -1) * (l.top ? 1 : -1);else {\n        var c = e.xIsPrimaryAxis ? l.top : l.left;\n        e.edgeSign = c ? -1 : 1;\n      }\n\n      if ((0, Fa.default)(t.edges, l), s && s.length) {\n        var f = new Xa.default(t.interaction);\n        f.copyFrom(t.interaction.modification), f.prepareStates(s), (e.subModification = f).startAll(La({}, t));\n      }\n    },\n    set: function (t) {\n      var e = t.state,\n          n = t.rect,\n          r = t.coords,\n          o = (0, Fa.default)({}, r),\n          i = e.equalDelta ? qa : Ua;\n      if (i(e, e.xIsPrimaryAxis, r, n), !e.subModification) return null;\n      var a = (0, Fa.default)({}, n);\n      (0, $t.addEdges)(e.linkedEdges, a, {\n        x: r.x - o.x,\n        y: r.y - o.y\n      });\n      var u = e.subModification.setAll(La({}, t, {\n        rect: a,\n        edges: e.linkedEdges,\n        pageCoords: r,\n        prevCoords: r,\n        prevRect: a\n      })),\n          s = u.delta;\n      u.changed && (i(e, Math.abs(s.x) > Math.abs(s.y), u.coords, u.rect), (0, Fa.default)(r, u.coords));\n      return u.eventProps;\n    },\n    defaults: {\n      ratio: \"preserve\",\n      equalDelta: !1,\n      modifiers: [],\n      enabled: !1\n    }\n  };\n\n  function qa(t, e, n) {\n    var r = t.startCoords,\n        o = t.edgeSign;\n    e ? n.y = r.y + (n.x - r.x) * o : n.x = r.x + (n.y - r.y) * o;\n  }\n\n  function Ua(t, e, n, r) {\n    var o = t.startRect,\n        i = t.startCoords,\n        a = t.ratio,\n        u = t.edgeSign;\n\n    if (e) {\n      var s = r.width / a;\n      n.y = i.y + (s - o.height) * u;\n    } else {\n      var l = r.height * a;\n      n.x = i.x + (l - o.width) * u;\n    }\n  }\n\n  Ra.aspectRatio = Va;\n  var Ga = (0, Ci.makeModifier)(Va, \"aspectRatio\");\n  Ra.default = Ga;\n  var Ha = {};\n  Object.defineProperty(Ha, \"__esModule\", {\n    value: !0\n  }), Ha.default = void 0;\n\n  function Ka() {}\n\n  Ka._defaults = {};\n  var $a = Ka;\n  Ha.default = $a;\n  var Za = {};\n\n  function Ja(t) {\n    return (Ja = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Za, \"__esModule\", {\n    value: !0\n  }), Za.getRestrictionRect = iu, Za.restrict = Za.default = void 0;\n  var Qa,\n      tu = (Qa = ct) && Qa.__esModule ? Qa : {\n    default: Qa\n  },\n      eu = ou(w),\n      nu = ou($t);\n\n  function ru() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return ru = function () {\n      return t;\n    }, t;\n  }\n\n  function ou(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Ja(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = ru();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function iu(t, e, n) {\n    return eu.func(t) ? nu.resolveRectLike(t, e.interactable, e.element, [n.x, n.y, e]) : nu.resolveRectLike(t, e.interactable, e.element);\n  }\n\n  var au = {\n    start: function (t) {\n      var e = t.rect,\n          n = t.startOffset,\n          r = t.state,\n          o = t.interaction,\n          i = t.pageCoords,\n          a = r.options,\n          u = a.elementRect,\n          s = (0, tu.default)({\n        left: 0,\n        top: 0,\n        right: 0,\n        bottom: 0\n      }, a.offset || {});\n\n      if (e && u) {\n        var l = iu(a.restriction, o, i);\n\n        if (l) {\n          var c = l.right - l.left - e.width,\n              f = l.bottom - l.top - e.height;\n          c < 0 && (s.left += c, s.right += c), f < 0 && (s.top += f, s.bottom += f);\n        }\n\n        s.left += n.left - e.width * u.left, s.top += n.top - e.height * u.top, s.right += n.right - e.width * (1 - u.right), s.bottom += n.bottom - e.height * (1 - u.bottom);\n      }\n\n      r.offset = s;\n    },\n    set: function (t) {\n      var e = t.coords,\n          n = t.interaction,\n          r = t.state,\n          o = r.options,\n          i = r.offset,\n          a = iu(o.restriction, n, e);\n\n      if (a) {\n        var u = nu.xywhToTlbr(a);\n        e.x = Math.max(Math.min(u.right - i.right, e.x), u.left + i.left), e.y = Math.max(Math.min(u.bottom - i.bottom, e.y), u.top + i.top);\n      }\n    },\n    defaults: {\n      restriction: null,\n      elementRect: null,\n      offset: null,\n      endOnly: !1,\n      enabled: !1\n    }\n  };\n  Za.restrict = au;\n  var uu = (0, Ci.makeModifier)(au, \"restrict\");\n  Za.default = uu;\n  var su = {};\n\n  function lu(t) {\n    return (lu = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(su, \"__esModule\", {\n    value: !0\n  }), su.restrictEdges = su.default = void 0;\n\n  var cu,\n      fu = (cu = ct) && cu.__esModule ? cu : {\n    default: cu\n  },\n      pu = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== lu(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = du();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }($t);\n\n  function du() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return du = function () {\n      return t;\n    }, t;\n  }\n\n  var vu = {\n    top: 1 / 0,\n    left: 1 / 0,\n    bottom: -1 / 0,\n    right: -1 / 0\n  },\n      yu = {\n    top: -1 / 0,\n    left: -1 / 0,\n    bottom: 1 / 0,\n    right: 1 / 0\n  };\n\n  function hu(t, e) {\n    for (var n = [\"top\", \"left\", \"bottom\", \"right\"], r = 0; r < n.length; r++) {\n      var o = n[r];\n      o in t || (t[o] = e[o]);\n    }\n\n    return t;\n  }\n\n  var gu = {\n    noInner: vu,\n    noOuter: yu,\n    start: function (t) {\n      var e,\n          n = t.interaction,\n          r = t.startOffset,\n          o = t.state,\n          i = o.options;\n\n      if (i) {\n        var a = (0, Za.getRestrictionRect)(i.offset, n, n.coords.start.page);\n        e = pu.rectToXY(a);\n      }\n\n      e = e || {\n        x: 0,\n        y: 0\n      }, o.offset = {\n        top: e.y + r.top,\n        left: e.x + r.left,\n        bottom: e.y - r.bottom,\n        right: e.x - r.right\n      };\n    },\n    set: function (t) {\n      var e = t.coords,\n          n = t.edges,\n          r = t.interaction,\n          o = t.state,\n          i = o.offset,\n          a = o.options;\n\n      if (n) {\n        var u = (0, fu.default)({}, e),\n            s = (0, Za.getRestrictionRect)(a.inner, r, u) || {},\n            l = (0, Za.getRestrictionRect)(a.outer, r, u) || {};\n        hu(s, vu), hu(l, yu), n.top ? e.y = Math.min(Math.max(l.top + i.top, u.y), s.top + i.top) : n.bottom && (e.y = Math.max(Math.min(l.bottom + i.bottom, u.y), s.bottom + i.bottom)), n.left ? e.x = Math.min(Math.max(l.left + i.left, u.x), s.left + i.left) : n.right && (e.x = Math.max(Math.min(l.right + i.right, u.x), s.right + i.right));\n      }\n    },\n    defaults: {\n      inner: null,\n      outer: null,\n      offset: null,\n      endOnly: !1,\n      enabled: !1\n    }\n  };\n  su.restrictEdges = gu;\n  var bu = (0, Ci.makeModifier)(gu, \"restrictEdges\");\n  su.default = bu;\n  var mu,\n      Ou = {};\n  Object.defineProperty(Ou, \"__esModule\", {\n    value: !0\n  }), Ou.restrictRect = Ou.default = void 0;\n  var wu = (0, ((mu = ct) && mu.__esModule ? mu : {\n    default: mu\n  }).default)({\n    get elementRect() {\n      return {\n        top: 0,\n        left: 0,\n        bottom: 1,\n        right: 1\n      };\n    },\n\n    set elementRect(t) {}\n\n  }, Za.restrict.defaults),\n      _u = {\n    start: Za.restrict.start,\n    set: Za.restrict.set,\n    defaults: wu\n  };\n  Ou.restrictRect = _u;\n  var Pu = (0, Ci.makeModifier)(_u, \"restrictRect\");\n  Ou.default = Pu;\n  var xu = {};\n\n  function Su(t) {\n    return (Su = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(xu, \"__esModule\", {\n    value: !0\n  }), xu.restrictSize = xu.default = void 0;\n\n  var ju,\n      Mu = (ju = ct) && ju.__esModule ? ju : {\n    default: ju\n  },\n      ku = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Su(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Eu();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }($t);\n\n  function Eu() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Eu = function () {\n      return t;\n    }, t;\n  }\n\n  var Tu = {\n    width: -1 / 0,\n    height: -1 / 0\n  },\n      Du = {\n    width: 1 / 0,\n    height: 1 / 0\n  };\n  var Iu = {\n    start: function (t) {\n      return su.restrictEdges.start(t);\n    },\n    set: function (t) {\n      var e = t.interaction,\n          n = t.state,\n          r = t.rect,\n          o = t.edges,\n          i = n.options;\n\n      if (o) {\n        var a = ku.tlbrToXywh((0, Za.getRestrictionRect)(i.min, e, t.coords)) || Tu,\n            u = ku.tlbrToXywh((0, Za.getRestrictionRect)(i.max, e, t.coords)) || Du;\n        n.options = {\n          endOnly: i.endOnly,\n          inner: (0, Mu.default)({}, su.restrictEdges.noInner),\n          outer: (0, Mu.default)({}, su.restrictEdges.noOuter)\n        }, o.top ? (n.options.inner.top = r.bottom - a.height, n.options.outer.top = r.bottom - u.height) : o.bottom && (n.options.inner.bottom = r.top + a.height, n.options.outer.bottom = r.top + u.height), o.left ? (n.options.inner.left = r.right - a.width, n.options.outer.left = r.right - u.width) : o.right && (n.options.inner.right = r.left + a.width, n.options.outer.right = r.left + u.width), su.restrictEdges.set(t), n.options = i;\n      }\n    },\n    defaults: {\n      min: null,\n      max: null,\n      endOnly: !1,\n      enabled: !1\n    }\n  };\n  xu.restrictSize = Iu;\n  var zu = (0, Ci.makeModifier)(Iu, \"restrictSize\");\n  xu.default = zu;\n  var Au = {};\n  Object.defineProperty(Au, \"__esModule\", {\n    value: !0\n  }), Au.default = void 0;\n\n  function Cu() {}\n\n  Cu._defaults = {};\n  var Wu = Cu;\n  Au.default = Wu;\n  var Ru = {};\n\n  function Fu(t) {\n    return (Fu = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Ru, \"__esModule\", {\n    value: !0\n  }), Ru.snap = Ru.default = void 0;\n\n  var Xu = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Fu(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Yu();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(le);\n\n  function Yu() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Yu = function () {\n      return t;\n    }, t;\n  }\n\n  var Nu = {\n    start: function (t) {\n      var e,\n          n,\n          r,\n          o = t.interaction,\n          i = t.interactable,\n          a = t.element,\n          u = t.rect,\n          s = t.state,\n          l = t.startOffset,\n          c = s.options,\n          f = c.offsetWithOrigin ? (n = (e = t).interaction.element, Xu.rect.rectToXY(Xu.rect.resolveRectLike(e.state.options.origin, null, null, [n])) || Xu.getOriginXY(e.interactable, n, e.interaction.prepared.name)) : {\n        x: 0,\n        y: 0\n      };\n      if (\"startCoords\" === c.offset) r = {\n        x: o.coords.start.page.x,\n        y: o.coords.start.page.y\n      };else {\n        var p = Xu.rect.resolveRectLike(c.offset, i, a, [o]);\n        (r = Xu.rect.rectToXY(p) || {\n          x: 0,\n          y: 0\n        }).x += f.x, r.y += f.y;\n      }\n      var d = c.relativePoints;\n      s.offsets = u && d && d.length ? d.map(function (t, e) {\n        return {\n          index: e,\n          relativePoint: t,\n          x: l.left - u.width * t.x + r.x,\n          y: l.top - u.height * t.y + r.y\n        };\n      }) : [Xu.extend({\n        index: 0,\n        relativePoint: null\n      }, r)];\n    },\n    set: function (t) {\n      var e = t.interaction,\n          n = t.coords,\n          r = t.state,\n          o = r.options,\n          i = r.offsets,\n          a = Xu.getOriginXY(e.interactable, e.element, e.prepared.name),\n          u = Xu.extend({}, n),\n          s = [];\n      o.offsetWithOrigin || (u.x -= a.x, u.y -= a.y);\n\n      for (var l = 0; l < i.length; l++) for (var c = i[l], f = u.x - c.x, p = u.y - c.y, d = 0, v = o.targets.length; d < v; d++) {\n        var y = o.targets[d],\n            h = void 0;\n        (h = Xu.is.func(y) ? y(f, p, e, c, d) : y) && s.push({\n          x: (Xu.is.number(h.x) ? h.x : f) + c.x,\n          y: (Xu.is.number(h.y) ? h.y : p) + c.y,\n          range: Xu.is.number(h.range) ? h.range : o.range,\n          source: y,\n          index: d,\n          offset: c\n        });\n      }\n\n      for (var g = {\n        target: null,\n        inRange: !1,\n        distance: 0,\n        range: 0,\n        delta: {\n          x: 0,\n          y: 0\n        }\n      }, b = 0; b < s.length; b++) {\n        var m = s[b],\n            O = m.range,\n            w = m.x - u.x,\n            _ = m.y - u.y,\n            P = Xu.hypot(w, _),\n            x = P <= O;\n\n        O === 1 / 0 && g.inRange && g.range !== 1 / 0 && (x = !1), g.target && !(x ? g.inRange && O !== 1 / 0 ? P / O < g.distance / g.range : O === 1 / 0 && g.range !== 1 / 0 || P < g.distance : !g.inRange && P < g.distance) || (g.target = m, g.distance = P, g.range = O, g.inRange = x, g.delta.x = w, g.delta.y = _);\n      }\n\n      return g.inRange && (n.x = g.target.x, n.y = g.target.y), r.closest = g;\n    },\n    defaults: {\n      range: 1 / 0,\n      targets: null,\n      offset: null,\n      offsetWithOrigin: !0,\n      origin: null,\n      relativePoints: null,\n      endOnly: !1,\n      enabled: !1\n    }\n  };\n  Ru.snap = Nu;\n  var Lu = (0, Ci.makeModifier)(Nu, \"snap\");\n  Ru.default = Lu;\n  var Bu = {};\n\n  function Vu(t) {\n    return (Vu = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Bu, \"__esModule\", {\n    value: !0\n  }), Bu.snapSize = Bu.default = void 0;\n\n  var qu,\n      Uu = (qu = ct) && qu.__esModule ? qu : {\n    default: qu\n  },\n      Gu = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Vu(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Hu();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(w);\n\n  function Hu() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Hu = function () {\n      return t;\n    }, t;\n  }\n\n  function Ku(t, e) {\n    return function (t) {\n      if (Array.isArray(t)) return t;\n    }(t) || function (t, e) {\n      if (!(Symbol.iterator in Object(t) || \"[object Arguments]\" === Object.prototype.toString.call(t))) return;\n      var n = [],\n          r = !0,\n          o = !1,\n          i = void 0;\n\n      try {\n        for (var a, u = t[Symbol.iterator](); !(r = (a = u.next()).done) && (n.push(a.value), !e || n.length !== e); r = !0);\n      } catch (t) {\n        o = !0, i = t;\n      } finally {\n        try {\n          r || null == u.return || u.return();\n        } finally {\n          if (o) throw i;\n        }\n      }\n\n      return n;\n    }(t, e) || function () {\n      throw new TypeError(\"Invalid attempt to destructure non-iterable instance\");\n    }();\n  }\n\n  var $u = {\n    start: function (t) {\n      var e = t.state,\n          n = t.edges,\n          r = e.options;\n      if (!n) return null;\n      t.state = {\n        options: {\n          targets: null,\n          relativePoints: [{\n            x: n.left ? 0 : 1,\n            y: n.top ? 0 : 1\n          }],\n          offset: r.offset || \"self\",\n          origin: {\n            x: 0,\n            y: 0\n          },\n          range: r.range\n        }\n      }, e.targetFields = e.targetFields || [[\"width\", \"height\"], [\"x\", \"y\"]], Ru.snap.start(t), e.offsets = t.state.offsets, t.state = e;\n    },\n    set: function (t) {\n      var e = t.interaction,\n          n = t.state,\n          r = t.coords,\n          o = n.options,\n          i = n.offsets,\n          a = {\n        x: r.x - i[0].x,\n        y: r.y - i[0].y\n      };\n      n.options = (0, Uu.default)({}, o), n.options.targets = [];\n\n      for (var u = 0; u < (o.targets || []).length; u++) {\n        var s = (o.targets || [])[u],\n            l = void 0;\n\n        if (l = Gu.func(s) ? s(a.x, a.y, e) : s) {\n          for (var c = 0; c < n.targetFields.length; c++) {\n            var f = Ku(n.targetFields[c], 2),\n                p = f[0],\n                d = f[1];\n\n            if (p in l || d in l) {\n              l.x = l[p], l.y = l[d];\n              break;\n            }\n          }\n\n          n.options.targets.push(l);\n        }\n      }\n\n      var v = Ru.snap.set(t);\n      return n.options = o, v;\n    },\n    defaults: {\n      range: 1 / 0,\n      targets: null,\n      offset: null,\n      endOnly: !1,\n      enabled: !1\n    }\n  };\n  Bu.snapSize = $u;\n  var Zu = (0, Ci.makeModifier)($u, \"snapSize\");\n  Bu.default = Zu;\n  var Ju = {};\n  Object.defineProperty(Ju, \"__esModule\", {\n    value: !0\n  }), Ju.snapEdges = Ju.default = void 0;\n  var Qu = es(V),\n      ts = es(ct);\n\n  function es(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var ns = {\n    start: function (t) {\n      var e = t.edges;\n      return e ? (t.state.targetFields = t.state.targetFields || [[e.left ? \"left\" : \"right\", e.top ? \"top\" : \"bottom\"]], Bu.snapSize.start(t)) : null;\n    },\n    set: Bu.snapSize.set,\n    defaults: (0, ts.default)((0, Qu.default)(Bu.snapSize.defaults), {\n      targets: null,\n      range: null,\n      offset: {\n        x: 0,\n        y: 0\n      }\n    })\n  };\n  Ju.snapEdges = ns;\n  var rs = (0, Ci.makeModifier)(ns, \"snapEdges\");\n  Ju.default = rs;\n  var os = {};\n  Object.defineProperty(os, \"__esModule\", {\n    value: !0\n  }), os.default = void 0;\n\n  function is() {}\n\n  is._defaults = {};\n  var as = is;\n  os.default = as;\n  var us = {};\n  Object.defineProperty(us, \"__esModule\", {\n    value: !0\n  }), us.default = void 0;\n\n  function ss() {}\n\n  ss._defaults = {};\n  var ls = ss;\n  us.default = ls;\n  var cs = {};\n  Object.defineProperty(cs, \"__esModule\", {\n    value: !0\n  }), cs.default = void 0;\n\n  var fs = Ps(Ra),\n      ps = Ps(Ha),\n      ds = Ps(su),\n      vs = Ps(Za),\n      ys = Ps(Ou),\n      hs = Ps(xu),\n      gs = Ps(Au),\n      bs = Ps(Ju),\n      ms = Ps(Ru),\n      Os = Ps(Bu),\n      ws = Ps(os),\n      _s = Ps(us);\n\n  function Ps(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var xs = {\n    aspectRatio: fs.default,\n    restrictEdges: ds.default,\n    restrict: vs.default,\n    restrictRect: ys.default,\n    restrictSize: hs.default,\n    snapEdges: bs.default,\n    snap: ms.default,\n    snapSize: Os.default,\n    spring: ws.default,\n    avoid: ps.default,\n    transform: _s.default,\n    rubberband: gs.default\n  };\n  cs.default = xs;\n  var Ss = {};\n  Object.defineProperty(Ss, \"__esModule\", {\n    value: !0\n  }), Ss.default = void 0;\n  var js = Es(Ta),\n      Ms = Es(cs),\n      ks = Es(Ci);\n\n  function Es(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var Ts = {\n    id: \"modifiers\",\n    install: function (t) {\n      var e = t.interactStatic;\n\n      for (var n in t.usePlugin(ks.default), t.usePlugin(js.default), e.modifiers = Ms.default, Ms.default) {\n        var r = Ms.default[n],\n            o = r._defaults,\n            i = r._methods;\n        o._methods = i, t.defaults.perAction[n] = o;\n      }\n    }\n  };\n  Ss.default = Ts;\n  var Ds = {};\n  Object.defineProperty(Ds, \"__esModule\", {\n    value: !0\n  }), Ds.default = void 0;\n  Ds.default = {};\n  var Is = {};\n  Object.defineProperty(Is, \"__esModule\", {\n    value: !0\n  }), Is.PointerEvent = Is.default = void 0;\n\n  var zs,\n      As = (zs = Me) && zs.__esModule ? zs : {\n    default: zs\n  },\n      Cs = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Rs(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Ws();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(zt);\n\n  function Ws() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Ws = function () {\n      return t;\n    }, t;\n  }\n\n  function Rs(t) {\n    return (Rs = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  function Fs(t, e) {\n    for (var n = 0; n < e.length; n++) {\n      var r = e[n];\n      r.enumerable = r.enumerable || !1, r.configurable = !0, \"value\" in r && (r.writable = !0), Object.defineProperty(t, r.key, r);\n    }\n  }\n\n  function Xs(t) {\n    return (Xs = Object.setPrototypeOf ? Object.getPrototypeOf : function (t) {\n      return t.__proto__ || Object.getPrototypeOf(t);\n    })(t);\n  }\n\n  function Ys(t) {\n    if (void 0 === t) throw new ReferenceError(\"this hasn't been initialised - super() hasn't been called\");\n    return t;\n  }\n\n  function Ns(t, e) {\n    return (Ns = Object.setPrototypeOf || function (t, e) {\n      return t.__proto__ = e, t;\n    })(t, e);\n  }\n\n  function Ls(t, e, n) {\n    return e in t ? Object.defineProperty(t, e, {\n      value: n,\n      enumerable: !0,\n      configurable: !0,\n      writable: !0\n    }) : t[e] = n, t;\n  }\n\n  var Bs = function () {\n    function f(t, e, n, r, o, i) {\n      var a, u, s;\n\n      if (!function (t, e) {\n        if (!(t instanceof e)) throw new TypeError(\"Cannot call a class as a function\");\n      }(this, f), u = this, a = !(s = Xs(f).call(this, o)) || \"object\" !== Rs(s) && \"function\" != typeof s ? Ys(u) : s, Ls(Ys(a), \"type\", void 0), Ls(Ys(a), \"originalEvent\", void 0), Ls(Ys(a), \"pointerId\", void 0), Ls(Ys(a), \"pointerType\", void 0), Ls(Ys(a), \"double\", void 0), Ls(Ys(a), \"pageX\", void 0), Ls(Ys(a), \"pageY\", void 0), Ls(Ys(a), \"clientX\", void 0), Ls(Ys(a), \"clientY\", void 0), Ls(Ys(a), \"dt\", void 0), Ls(Ys(a), \"eventable\", void 0), Cs.pointerExtend(Ys(a), n), n !== e && Cs.pointerExtend(Ys(a), e), a.timeStamp = i, a.originalEvent = n, a.type = t, a.pointerId = Cs.getPointerId(e), a.pointerType = Cs.getPointerType(e), a.target = r, a.currentTarget = null, \"tap\" === t) {\n        var l = o.getPointerIndex(e);\n        a.dt = a.timeStamp - o.pointers[l].downTime;\n        var c = a.timeStamp - o.tapTime;\n        a.double = !!(o.prevTap && \"doubletap\" !== o.prevTap.type && o.prevTap.target === a.target && c < 500);\n      } else \"doubletap\" === t && (a.dt = e.timeStamp - o.tapTime);\n\n      return a;\n    }\n\n    var t, e, n;\n    return function (t, e) {\n      if (\"function\" != typeof e && null !== e) throw new TypeError(\"Super expression must either be null or a function\");\n      t.prototype = Object.create(e && e.prototype, {\n        constructor: {\n          value: t,\n          writable: !0,\n          configurable: !0\n        }\n      }), e && Ns(t, e);\n    }(f, As[\"default\"]), t = f, (e = [{\n      key: \"_subtractOrigin\",\n      value: function (t) {\n        var e = t.x,\n            n = t.y;\n        return this.pageX -= e, this.pageY -= n, this.clientX -= e, this.clientY -= n, this;\n      }\n    }, {\n      key: \"_addOrigin\",\n      value: function (t) {\n        var e = t.x,\n            n = t.y;\n        return this.pageX += e, this.pageY += n, this.clientX += e, this.clientY += n, this;\n      }\n    }, {\n      key: \"preventDefault\",\n      value: function () {\n        this.originalEvent.preventDefault();\n      }\n    }]) && Fs(t.prototype, e), n && Fs(t, n), f;\n  }();\n\n  Is.PointerEvent = Is.default = Bs;\n  var Vs = {};\n\n  function qs(t) {\n    return (qs = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(Vs, \"__esModule\", {\n    value: !0\n  }), Vs.default = void 0;\n  Ks(En), Ks(m({}));\n\n  var Us = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== qs(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Hs();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(le),\n      Gs = Ks(Is);\n\n  function Hs() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Hs = function () {\n      return t;\n    }, t;\n  }\n\n  function Ks(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  var $s = {\n    id: \"pointer-events/base\",\n    install: function (t) {\n      t.pointerEvents = $s, t.defaults.actions.pointerEvents = $s.defaults, Us.extend(t.actions.phaselessTypes, $s.types);\n    },\n    listeners: {\n      \"interactions:new\": function (t) {\n        var e = t.interaction;\n        e.prevTap = null, e.tapTime = 0;\n      },\n      \"interactions:update-pointer\": function (t) {\n        var e = t.down,\n            n = t.pointerInfo;\n        if (!e && n.hold) return;\n        n.hold = {\n          duration: 1 / 0,\n          timeout: null\n        };\n      },\n      \"interactions:move\": function (t, e) {\n        var n = t.interaction,\n            r = t.pointer,\n            o = t.event,\n            i = t.eventTarget,\n            a = t.duplicate,\n            u = n.getPointerIndex(r);\n        a || n.pointerIsDown && !n.pointerWasMoved || (n.pointerIsDown && clearTimeout(n.pointers[u].hold.timeout), Zs({\n          interaction: n,\n          pointer: r,\n          event: o,\n          eventTarget: i,\n          type: \"move\"\n        }, e));\n      },\n      \"interactions:down\": function (t, e) {\n        !function (t, e) {\n          for (var n = t.interaction, r = t.pointer, o = t.event, i = t.eventTarget, a = t.pointerIndex, u = n.pointers[a].hold, s = Us.dom.getPath(i), l = {\n            interaction: n,\n            pointer: r,\n            event: o,\n            eventTarget: i,\n            type: \"hold\",\n            targets: [],\n            path: s,\n            node: null\n          }, c = 0; c < s.length; c++) {\n            var f = s[c];\n            l.node = f, e.fire(\"pointerEvents:collect-targets\", l);\n          }\n\n          if (!l.targets.length) return;\n\n          for (var p = 1 / 0, d = 0; d < l.targets.length; d++) {\n            var v = l.targets[d].eventable.options.holdDuration;\n            v < p && (p = v);\n          }\n\n          u.duration = p, u.timeout = setTimeout(function () {\n            Zs({\n              interaction: n,\n              eventTarget: i,\n              pointer: r,\n              event: o,\n              type: \"hold\"\n            }, e);\n          }, p);\n        }(t, e), Zs(t, e);\n      },\n      \"interactions:up\": function (t, e) {\n        var n, r, o, i, a, u;\n        Qs(t), Zs(t, e), r = e, o = (n = t).interaction, i = n.pointer, a = n.event, u = n.eventTarget, o.pointerWasMoved || Zs({\n          interaction: o,\n          eventTarget: u,\n          pointer: i,\n          event: a,\n          type: \"tap\"\n        }, r);\n      },\n      \"interactions:cancel\": function (t, e) {\n        Qs(t), Zs(t, e);\n      }\n    },\n    PointerEvent: Gs.default,\n    fire: Zs,\n    collectEventTargets: Js,\n    defaults: {\n      holdDuration: 600,\n      ignoreFrom: null,\n      allowFrom: null,\n      origin: {\n        x: 0,\n        y: 0\n      }\n    },\n    types: {\n      down: !0,\n      move: !0,\n      up: !0,\n      cancel: !0,\n      tap: !0,\n      doubletap: !0,\n      hold: !0\n    }\n  };\n\n  function Zs(t, e) {\n    var n = t.interaction,\n        r = t.pointer,\n        o = t.event,\n        i = t.eventTarget,\n        a = t.type,\n        u = t.targets,\n        s = void 0 === u ? Js(t, e) : u,\n        l = new Gs.default(a, r, o, i, n, e.now());\n    e.fire(\"pointerEvents:new\", {\n      pointerEvent: l\n    });\n\n    for (var c = {\n      interaction: n,\n      pointer: r,\n      event: o,\n      eventTarget: i,\n      targets: s,\n      type: a,\n      pointerEvent: l\n    }, f = 0; f < s.length; f++) {\n      var p = s[f];\n\n      for (var d in p.props || {}) l[d] = p.props[d];\n\n      var v = Us.getOriginXY(p.eventable, p.node);\n      if (l._subtractOrigin(v), l.eventable = p.eventable, l.currentTarget = p.node, p.eventable.fire(l), l._addOrigin(v), l.immediatePropagationStopped || l.propagationStopped && f + 1 < s.length && s[f + 1].node !== l.currentTarget) break;\n    }\n\n    if (e.fire(\"pointerEvents:fired\", c), \"tap\" === a) {\n      var y = l.double ? Zs({\n        interaction: n,\n        pointer: r,\n        event: o,\n        eventTarget: i,\n        type: \"doubletap\"\n      }, e) : l;\n      n.prevTap = y, n.tapTime = y.timeStamp;\n    }\n\n    return l;\n  }\n\n  function Js(t, e) {\n    var n = t.interaction,\n        r = t.pointer,\n        o = t.event,\n        i = t.eventTarget,\n        a = t.type,\n        u = n.getPointerIndex(r),\n        s = n.pointers[u];\n    if (\"tap\" === a && (n.pointerWasMoved || !s || s.downTarget !== i)) return [];\n\n    for (var l = Us.dom.getPath(i), c = {\n      interaction: n,\n      pointer: r,\n      event: o,\n      eventTarget: i,\n      type: a,\n      path: l,\n      targets: [],\n      node: null\n    }, f = 0; f < l.length; f++) {\n      var p = l[f];\n      c.node = p, e.fire(\"pointerEvents:collect-targets\", c);\n    }\n\n    return \"hold\" === a && (c.targets = c.targets.filter(function (t) {\n      return t.eventable.options.holdDuration === n.pointers[u].hold.duration;\n    })), c.targets;\n  }\n\n  function Qs(t) {\n    var e = t.interaction,\n        n = t.pointerIndex;\n    e.pointers[n].hold && clearTimeout(e.pointers[n].hold.timeout);\n  }\n\n  var tl = $s;\n  Vs.default = tl;\n  var el = {};\n  Object.defineProperty(el, \"__esModule\", {\n    value: !0\n  }), el.default = void 0;\n  rl(Is);\n  var nl = rl(Vs);\n\n  function rl(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function ol(t) {\n    var e = t.interaction;\n    e.holdIntervalHandle && (clearInterval(e.holdIntervalHandle), e.holdIntervalHandle = null);\n  }\n\n  var il = {\n    id: \"pointer-events/holdRepeat\",\n    install: function (t) {\n      t.usePlugin(nl.default);\n      var e = t.pointerEvents;\n      e.defaults.holdRepeatInterval = 0, e.types.holdrepeat = t.actions.phaselessTypes.holdrepeat = !0;\n    },\n    listeners: [\"move\", \"up\", \"cancel\", \"endall\"].reduce(function (t, e) {\n      return t[\"pointerEvents:\".concat(e)] = ol, t;\n    }, {\n      \"pointerEvents:new\": function (t) {\n        var e = t.pointerEvent;\n        \"hold\" === e.type && (e.count = (e.count || 0) + 1);\n      },\n      \"pointerEvents:fired\": function (t, e) {\n        var n = t.interaction,\n            r = t.pointerEvent,\n            o = t.eventTarget,\n            i = t.targets;\n\n        if (\"hold\" === r.type && i.length) {\n          var a = i[0].eventable.options.holdRepeatInterval;\n          a <= 0 || (n.holdIntervalHandle = setTimeout(function () {\n            e.pointerEvents.fire({\n              interaction: n,\n              eventTarget: o,\n              type: \"hold\",\n              pointer: r,\n              event: r\n            }, e);\n          }, a));\n        }\n      }\n    })\n  };\n  el.default = il;\n  var al = {};\n  Object.defineProperty(al, \"__esModule\", {\n    value: !0\n  }), al.default = void 0;\n  var ul,\n      sl = (ul = ct) && ul.__esModule ? ul : {\n    default: ul\n  };\n\n  function ll(t) {\n    return (0, sl.default)(this.events.options, t), this;\n  }\n\n  var cl = {\n    id: \"pointer-events/interactableTargets\",\n    install: function (t) {\n      var e = t.Interactable;\n      e.prototype.pointerEvents = ll;\n      var r = e.prototype._backCompatOption;\n\n      e.prototype._backCompatOption = function (t, e) {\n        var n = r.call(this, t, e);\n        return n === this && (this.events.options[t] = e), n;\n      };\n    },\n    listeners: {\n      \"pointerEvents:collect-targets\": function (t, e) {\n        var r = t.targets,\n            o = t.node,\n            i = t.type,\n            a = t.eventTarget;\n        e.interactables.forEachMatch(o, function (t) {\n          var e = t.events,\n              n = e.options;\n          e.types[i] && e.types[i].length && t.testIgnoreAllow(n, o, a) && r.push({\n            node: o,\n            eventable: e,\n            props: {\n              interactable: t\n            }\n          });\n        });\n      },\n      \"interactable:new\": function (t) {\n        var e = t.interactable;\n\n        e.events.getRect = function (t) {\n          return e.getRect(t);\n        };\n      },\n      \"interactable:set\": function (t, e) {\n        var n = t.interactable,\n            r = t.options;\n        (0, sl.default)(n.events.options, e.pointerEvents.defaults), (0, sl.default)(n.events.options, r.pointerEvents || {});\n      }\n    }\n  };\n  al.default = cl;\n  var fl = {};\n\n  function pl(t) {\n    return (pl = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(fl, \"__esModule\", {\n    value: !0\n  }), Object.defineProperty(fl, \"holdRepeat\", {\n    enumerable: !0,\n    get: function () {\n      return vl.default;\n    }\n  }), Object.defineProperty(fl, \"interactableTargets\", {\n    enumerable: !0,\n    get: function () {\n      return yl.default;\n    }\n  }), fl.pointerEvents = fl.default = void 0;\n\n  var dl = function (t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== pl(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = gl();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    n.default = t, e && e.set(t, n);\n    return n;\n  }(Vs);\n\n  fl.pointerEvents = dl;\n  var vl = hl(el),\n      yl = hl(al);\n\n  function hl(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  function gl() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return gl = function () {\n      return t;\n    }, t;\n  }\n\n  var bl = {\n    id: \"pointer-events\",\n    install: function (t) {\n      t.usePlugin(dl), t.usePlugin(vl.default), t.usePlugin(yl.default);\n    }\n  };\n  fl.default = bl;\n  var ml = {};\n  Object.defineProperty(ml, \"__esModule\", {\n    value: !0\n  }), ml.install = wl, ml.default = void 0;\n  var Ol;\n  (Ol = k({})) && Ol.__esModule;\n\n  function wl(e) {\n    var t = e.Interactable;\n    e.actions.phases.reflow = !0, t.prototype.reflow = function (t) {\n      return function (u, s, l) {\n        function t() {\n          var e = c[d],\n              t = u.getRect(e);\n          if (!t) return \"break\";\n          var n = le.arr.find(l.interactions.list, function (t) {\n            return t.interacting() && t.interactable === u && t.element === e && t.prepared.name === s.name;\n          }),\n              r = void 0;\n          if (n) n.move(), p && (r = n._reflowPromise || new f(function (t) {\n            n._reflowResolve = t;\n          }));else {\n            var o = le.rect.tlbrToXywh(t),\n                i = {\n              page: {\n                x: o.x,\n                y: o.y\n              },\n              client: {\n                x: o.x,\n                y: o.y\n              },\n              timeStamp: l.now()\n            },\n                a = le.pointer.coordsToEvent(i);\n\n            r = function (t, e, n, r, o) {\n              var i = t.interactions.new({\n                pointerType: \"reflow\"\n              }),\n                  a = {\n                interaction: i,\n                event: o,\n                pointer: o,\n                eventTarget: n,\n                phase: \"reflow\"\n              };\n              i.interactable = e, i.element = n, i.prepared = (0, le.extend)({}, r), i.prevEvent = o, i.updatePointer(o, o, n, !0), i._doPhase(a);\n              var u = le.win.window.Promise ? new le.win.window.Promise(function (t) {\n                i._reflowResolve = t;\n              }) : null;\n              i._reflowPromise = u, i.start(r, e, n), i._interacting ? (i.move(a), i.end(o)) : i.stop();\n              return i.removePointer(o, o), i.pointerIsDown = !1, u;\n            }(l, u, e, s, a);\n          }\n          p && p.push(r);\n        }\n\n        for (var c = le.is.string(u.target) ? le.arr.from(u._context.querySelectorAll(u.target)) : [u.target], f = le.win.window.Promise, p = f ? [] : null, d = 0; d < c.length; d++) {\n          if (\"break\" === t()) break;\n        }\n\n        return p && f.all(p).then(function () {\n          return u;\n        });\n      }(this, t, e);\n    };\n  }\n\n  var _l = {\n    id: \"reflow\",\n    install: wl,\n    listeners: {\n      \"interactions:stop\": function (t, e) {\n        var n = t.interaction;\n        \"reflow\" === n.pointerType && (n._reflowResolve && n._reflowResolve(), le.arr.remove(e.interactions.list, n));\n      }\n    }\n  };\n  ml.default = _l;\n  var Pl = {};\n  Object.defineProperty(Pl, \"__esModule\", {\n    value: !0\n  }), Pl.default = void 0;\n  Pl.default = {};\n  var xl = {};\n  Object.defineProperty(xl, \"__esModule\", {\n    value: !0\n  }), xl.exchange = void 0;\n  xl.exchange = {};\n  var Sl = {};\n  Object.defineProperty(Sl, \"__esModule\", {\n    value: !0\n  }), Sl.default = void 0;\n  Sl.default = {};\n  var jl = {};\n\n  function Ml(t) {\n    return (Ml = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  Object.defineProperty(jl, \"__esModule\", {\n    value: !0\n  }), jl.default = void 0;\n  var kl = Hl(Qr),\n      El = Hl(ao),\n      Tl = Hl(uo),\n      Dl = Hl(ti),\n      Il = Hl(ai),\n      zl = Hl(ui),\n      Al = Hl(Un),\n      Cl = (Hl(si), Gl(wi)),\n      Wl = Hl($i),\n      Rl = Hl(ha),\n      Fl = Hl(Ss),\n      Xl = Hl(Ds),\n      Yl = Hl(Yi),\n      Nl = Hl(fl),\n      Ll = Hl(ml),\n      Bl = Gl(Pl),\n      Vl = Gl(zt),\n      ql = Gl(Sl);\n\n  function Ul() {\n    if (\"function\" != typeof WeakMap) return null;\n    var t = new WeakMap();\n    return Ul = function () {\n      return t;\n    }, t;\n  }\n\n  function Gl(t) {\n    if (t && t.__esModule) return t;\n    if (null === t || \"object\" !== Ml(t) && \"function\" != typeof t) return {\n      default: t\n    };\n    var e = Ul();\n    if (e && e.has(t)) return e.get(t);\n    var n = {},\n        r = Object.defineProperty && Object.getOwnPropertyDescriptor;\n\n    for (var o in t) if (Object.prototype.hasOwnProperty.call(t, o)) {\n      var i = r ? Object.getOwnPropertyDescriptor(t, o) : null;\n      i && (i.get || i.set) ? Object.defineProperty(n, o, i) : n[o] = t[o];\n    }\n\n    return n.default = t, e && e.set(t, n), n;\n  }\n\n  function Hl(t) {\n    return t && t.__esModule ? t : {\n      default: t\n    };\n  }\n\n  Rl.default.use(Xl.default), Rl.default.use(Al.default), Rl.default.use(Yl.default), Rl.default.use(Il.default), Rl.default.use(El.default), Rl.default.use(Nl.default), Rl.default.use(Wl.default), Rl.default.use(Fl.default), Rl.default.use(Dl.default), Rl.default.use(kl.default), Rl.default.use(Tl.default), Rl.default.use(Ll.default), Rl.default.feedback = Cl, Rl.default.use(zl.default), Rl.default.vue = {\n    components: ql\n  }, Rl.default.__utils = {\n    exchange: xl.exchange,\n    displace: Bl,\n    pointer: Vl\n  };\n  var Kl = Rl.default;\n  jl.default = Kl;\n  var $l = {\n    exports: {}\n  };\n  Object.defineProperty($l.exports, \"__esModule\", {\n    value: !0\n  }), $l.exports.default = void 0;\n  var Zl,\n      Jl = (Zl = jl) && Zl.__esModule ? Zl : {\n    default: Zl\n  };\n\n  function Ql(t) {\n    return (Ql = \"function\" == typeof Symbol && \"symbol\" == typeof Symbol.iterator ? function (t) {\n      return typeof t;\n    } : function (t) {\n      return t && \"function\" == typeof Symbol && t.constructor === Symbol && t !== Symbol.prototype ? \"symbol\" : typeof t;\n    })(t);\n  }\n\n  if (\"object\" === Ql($l) && $l) try {\n    $l.exports = Jl.default;\n  } catch (t) {}\n  Jl.default.default = Jl.default;\n  var tc = Jl.default;\n  return $l.exports.default = tc, $l = $l.exports;\n});\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/interactjs/dist/interact.min.js?");
-
-/***/ })
-
-}]);;
 var __ember_auto_import__ =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// install a JSONP callback for chunk loading
@@ -95126,37 +107947,124 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js":
+/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js":
 /*!****************************************************************************************************************************!*\
-  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js ***!
+  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js ***!
   \****************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n    d('interactjs', [], function() { return __webpack_require__(/*! ./node_modules/interactjs/dist/interact.min.js */ \"./node_modules/interactjs/dist/interact.min.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n    d('@glimmer/tracking', [], function() { return __webpack_require__(/*! ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/index.js\"); });\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js?");
 
 /***/ }),
 
-/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js":
+/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js ***!
+  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js?");
 
 /***/ }),
 
 /***/ 0:
 /*!*****************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js ***!
+  !*** multi /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js ***!
   \*****************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/app.js?");
+eval("__webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/app.js?");
 
 /***/ })
 
-/******/ });//# sourceMappingURL=vendor.map
+/******/ });;
+(window["webpackJsonp_ember_auto_import_"] = window["webpackJsonp_ember_auto_import_"] || []).push([["vendors~app"],{
+
+/***/ "./node_modules/@glimmer/env/dist/modules/es2017/index.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@glimmer/env/dist/modules/es2017/index.js ***!
+  \****************************************************************/
+/*! exports provided: DEBUG, CI */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"DEBUG\", function() { return DEBUG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CI\", function() { return CI; });\nconst DEBUG = false;\nconst CI = false;\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/env/dist/modules/es2017/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/index.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/index.js ***!
+  \*********************************************************************/
+/*! exports provided: tracked, setPropertyDidChange */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _src_tracked__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/tracked */ \"./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"tracked\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return _src_tracked__WEBPACK_IMPORTED_MODULE_0__[\"setPropertyDidChange\"]; });\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js ***!
+  \***************************************************************************/
+/*! exports provided: tracked, setPropertyDidChange */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tracked\", function() { return tracked; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"setPropertyDidChange\", function() { return setPropertyDidChange; });\n/* harmony import */ var _glimmer_env__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @glimmer/env */ \"./node_modules/@glimmer/env/dist/modules/es2017/index.js\");\n/* harmony import */ var _glimmer_validator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @glimmer/validator */ \"./node_modules/@glimmer/validator/dist/modules/es2017/index.js\");\n\n\n/**\n * @decorator\n *\n * Marks a property as tracked.\n *\n * By default, a component's properties are expected to be static,\n * meaning you are not able to update them and have the template update accordingly.\n * Marking a property as tracked means that when that property changes,\n * a rerender of the component is scheduled so the template is kept up to date.\n *\n * @example\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    remainingApples = 10\n * }\n * ```\n *\n * When something changes the component's `remainingApples` property, the rerender\n * will be scheduled.\n *\n * @example Computed Properties\n *\n * In the case that you have a getter that depends on other properties, tracked\n * properties accessed within the getter will automatically be tracked for you.\n * That means when any of those dependent tracked properties is changed, a\n * rerender of the component will be scheduled.\n *\n * In the following example we have two properties,\n * `eatenApples`, and `remainingApples`.\n *\n *\n * ```typescript\n * import Component from '@glimmer/component';\n * import { tracked } from '@glimmer/tracking';\n *\n * const totalApples = 100;\n *\n * export default class MyComponent extends Component {\n *    @tracked\n *    eatenApples = 0\n *\n *    get remainingApples() {\n *      return totalApples - this.eatenApples;\n *    }\n *\n *    increment() {\n *      this.eatenApples = this.eatenApples + 1;\n *    }\n *  }\n * ```\n */\n\nlet tracked = (...args) => {\n  let [target, key, descriptor] = args; // Error on `@tracked()`, `@tracked(...args)`, and `@tracked get propName()`\n\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && typeof target === 'string') throwTrackedWithArgumentsError(args);\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && target === undefined) throwTrackedWithEmptyArgumentsError();\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && descriptor && descriptor.get) throwTrackedComputedPropertyError();\n\n  if (descriptor) {\n    return descriptorForField(target, key, descriptor);\n  } else {\n    // In TypeScript's implementation, decorators on simple class fields do not\n    // receive a descriptor, so we define the property on the target directly.\n    Object.defineProperty(target, key, descriptorForField(target, key));\n  }\n};\n\nfunction throwTrackedComputedPropertyError() {\n  throw new Error(`The @tracked decorator does not need to be applied to getters. Properties implemented using a getter will recompute automatically when any tracked properties they access change.`);\n}\n\nfunction throwTrackedWithArgumentsError(args) {\n  throw new Error(`You attempted to use @tracked with ${args.length > 1 ? 'arguments' : 'an argument'} ( @tracked(${args.map(d => `'${d}'`).join(', ')}) ), which is no longer necessary nor supported. Dependencies are now automatically tracked, so you can just use ${'`@tracked`'}.`);\n}\n\nfunction throwTrackedWithEmptyArgumentsError() {\n  throw new Error('You attempted to use @tracked(), which is no longer necessary nor supported. Remove the parentheses and you will be good to go!');\n}\n\nfunction descriptorForField(_target, key, desc) {\n  if (_glimmer_env__WEBPACK_IMPORTED_MODULE_0__[\"DEBUG\"] && desc && (desc.value || desc.get || desc.set)) {\n    throw new Error(`You attempted to use @tracked on ${key}, but that element is not a class field. @tracked is only usable on class fields. Native getters and setters will autotrack add any tracked fields they encounter, so there is no need mark getters and setters with @tracked.`);\n  }\n\n  let {\n    getter,\n    setter\n  } = Object(_glimmer_validator__WEBPACK_IMPORTED_MODULE_1__[\"trackedData\"])(key, desc && desc.initializer);\n  return {\n    enumerable: true,\n    configurable: true,\n\n    get() {\n      return getter(this);\n    },\n\n    set(newValue) {\n      setter(this, newValue);\n      propertyDidChange();\n    }\n\n  };\n}\n\nlet propertyDidChange = function () {};\n\nfunction setPropertyDidChange(cb) {\n  propertyDidChange = cb;\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/tracking/dist/modules/es2017/src/tracked.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/index.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/index.js ***!
+  \**********************************************************************/
+/*! exports provided: ALLOW_CYCLES, bump, combine, COMPUTE, CONSTANT_TAG, CONSTANT, createCombinatorTag, createTag, createUpdatableTag, CURRENT_TAG, dirty, INITIAL, isConst, isConstTag, update, validate, value, VOLATILE_TAG, VOLATILE, dirtyTag, tagFor, updateTag, track, consume, EPOCH, trackedData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _lib_validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"ALLOW_CYCLES\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"bump\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"COMPUTE\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createCombinatorTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"CURRENT_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"INITIAL\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConst\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"validate\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"value\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE_TAG\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return _lib_validators__WEBPACK_IMPORTED_MODULE_0__[\"VOLATILE\"]; });\n\n/* harmony import */ var _lib_meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./lib/meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return _lib_meta__WEBPACK_IMPORTED_MODULE_1__[\"updateTag\"]; });\n\n/* harmony import */ var _lib_tracking__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./lib/tracking */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"track\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"consume\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"EPOCH\"]; });\n\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return _lib_tracking__WEBPACK_IMPORTED_MODULE_2__[\"trackedData\"]; });\n\n\n\n\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js ***!
+  \*************************************************************************/
+/*! exports provided: dirtyTag, tagFor, updateTag */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirtyTag\", function() { return dirtyTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"tagFor\", function() { return tagFor; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"updateTag\", function() { return updateTag; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n\nconst TRACKED_TAGS = new WeakMap();\n\nfunction isObject(u) {\n  return typeof u === 'object' && u !== null;\n}\n\nfunction dirtyTag(obj, key) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (tag === undefined) {\n      updateTag(obj, key, Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])());\n    } else if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(tag);\n    }\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\nfunction tagFor(obj, key) {\n  if (isObject(obj)) {\n    let tags = TRACKED_TAGS.get(obj);\n\n    if (tags === undefined) {\n      tags = new Map();\n      TRACKED_TAGS.set(obj, tags);\n    } else if (tags.has(key)) {\n      return tags.get(key);\n    }\n\n    let tag = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createUpdatableTag\"])();\n    tags.set(key, tag);\n    return tag;\n  } else {\n    return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n  }\n}\nfunction updateTag(obj, key, newTag) {\n  if (isObject(obj)) {\n    let tag = tagFor(obj, key);\n\n    if (Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"isConstTag\"])(tag)) {\n      throw new Error(`BUG: Can't update a constant tag`);\n    } else {\n      Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"update\"])(tag, newTag);\n    }\n\n    return tag;\n  } else {\n    throw new Error(`BUG: Can't update a tag for a primitive`);\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js ***!
+  \*****************************************************************************/
+/*! exports provided: track, consume, EPOCH, trackedData */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"track\", function() { return track; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"consume\", function() { return consume; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"EPOCH\", function() { return EPOCH; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"trackedData\", function() { return trackedData; });\n/* harmony import */ var _validators__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validators */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js\");\n/* harmony import */ var _meta__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./meta */ \"./node_modules/@glimmer/validator/dist/modules/es2017/lib/meta.js\");\n\n\n\n/**\n * Whenever a tracked computed property is entered, the current tracker is\n * saved off and a new tracker is replaced.\n *\n * Any tracked properties consumed are added to the current tracker.\n *\n * When a tracked computed property is exited, the tracker's tags are\n * combined and added to the parent tracker.\n *\n * The consequence is that each tracked computed property has a tag\n * that corresponds to the tracked properties consumed inside of\n * itself, including child tracked computed properties.\n */\n\nlet CURRENT_TRACKER = null;\n/**\n * An object that that tracks @tracked properties that were consumed.\n */\n\nclass Tracker {\n  constructor() {\n    this.tags = new Set();\n    this.last = null;\n  }\n\n  add(tag) {\n    this.tags.add(tag);\n    this.last = tag;\n  }\n\n  combine() {\n    let {\n      tags\n    } = this;\n\n    if (tags.size === 0) {\n      return _validators__WEBPACK_IMPORTED_MODULE_0__[\"CONSTANT_TAG\"];\n    } else if (tags.size === 1) {\n      return this.last;\n    } else {\n      let tagsArr = [];\n      tags.forEach(tag => tagsArr.push(tag));\n      return Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"combine\"])(tagsArr);\n    }\n  }\n\n}\n\nfunction track(callback) {\n  let parent = CURRENT_TRACKER;\n  let current = new Tracker();\n  CURRENT_TRACKER = current;\n\n  try {\n    callback();\n  } finally {\n    CURRENT_TRACKER = parent;\n  }\n\n  return current.combine();\n}\nfunction consume(tag) {\n  if (CURRENT_TRACKER !== null) {\n    CURRENT_TRACKER.add(tag);\n  }\n} //////////\n\nconst EPOCH = Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"createTag\"])();\nfunction trackedData(key, initializer) {\n  let values = new WeakMap();\n  let hasInitializer = typeof initializer === 'function';\n\n  function getter(self) {\n    consume(Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"tagFor\"])(self, key));\n    let value; // If the field has never been initialized, we should initialize it\n\n    if (hasInitializer && !values.has(self)) {\n      value = initializer();\n      values.set(self, value);\n    } else {\n      value = values.get(self);\n    }\n\n    return value;\n  }\n\n  function setter(self, value) {\n    Object(_validators__WEBPACK_IMPORTED_MODULE_0__[\"dirty\"])(EPOCH);\n    Object(_meta__WEBPACK_IMPORTED_MODULE_1__[\"dirtyTag\"])(self, key);\n    values.set(self, value);\n  }\n\n  return {\n    getter,\n    setter\n  };\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/tracking.js?");
+
+/***/ }),
+
+/***/ "./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js ***!
+  \*******************************************************************************/
+/*! exports provided: CONSTANT, INITIAL, VOLATILE, bump, COMPUTE, value, validate, ALLOW_CYCLES, dirty, update, createTag, createUpdatableTag, CONSTANT_TAG, isConst, isConstTag, VOLATILE_TAG, CURRENT_TAG, combine, createCombinatorTag */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT\", function() { return CONSTANT; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"INITIAL\", function() { return INITIAL; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE\", function() { return VOLATILE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"bump\", function() { return bump; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"COMPUTE\", function() { return COMPUTE; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"value\", function() { return value; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"validate\", function() { return validate; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"ALLOW_CYCLES\", function() { return ALLOW_CYCLES; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"dirty\", function() { return dirty; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"update\", function() { return update; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createTag\", function() { return createTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createUpdatableTag\", function() { return createUpdatableTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CONSTANT_TAG\", function() { return CONSTANT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConst\", function() { return isConst; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"isConstTag\", function() { return isConstTag; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"VOLATILE_TAG\", function() { return VOLATILE_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"CURRENT_TAG\", function() { return CURRENT_TAG; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"combine\", function() { return combine; });\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"createCombinatorTag\", function() { return createCombinatorTag; });\nconst symbol = typeof Symbol !== 'undefined' ? Symbol : key => `__${key}${Math.floor(Math.random() * Date.now())}__`;\nconst CONSTANT = 0;\nconst INITIAL = 1;\nconst VOLATILE = 9007199254740991; // MAX_INT\n\nlet $REVISION = INITIAL;\nfunction bump() {\n  $REVISION++;\n} //////////\n\nconst COMPUTE = symbol('TAG_COMPUTE'); //////////\n\n/**\n * `value` receives a tag and returns an opaque Revision based on that tag. This\n * snapshot can then later be passed to `validate` with the same tag to\n * determine if the tag has changed at all since the time that `value` was\n * called.\n *\n * The current implementation returns the global revision count directly for\n * performance reasons. This is an implementation detail, and should not be\n * relied on directly by users of these APIs. Instead, Revisions should be\n * treated as if they are opaque/unknown, and should only be interacted with via\n * the `value`/`validate` API.\n *\n * @param tag\n */\n\nfunction value(_tag) {\n  return $REVISION;\n}\n/**\n * `validate` receives a tag and a snapshot from a previous call to `value` with\n * the same tag, and determines if the tag is still valid compared to the\n * snapshot. If the tag's state has changed at all since then, `validate` will\n * return false, otherwise it will return true. This is used to determine if a\n * calculation related to the tags should be rerun.\n *\n * @param tag\n * @param snapshot\n */\n\nfunction validate(tag, snapshot) {\n  return snapshot >= tag[COMPUTE]();\n}\nconst TYPE = symbol('TAG_TYPE');\nlet ALLOW_CYCLES;\n\nif (false) {}\n\nclass MonomorphicTagImpl {\n  constructor(type) {\n    this.revision = INITIAL;\n    this.lastChecked = INITIAL;\n    this.lastValue = INITIAL;\n    this.isUpdating = false;\n    this.subtag = null;\n    this.subtags = null;\n    this[TYPE] = type;\n  }\n\n  [COMPUTE]() {\n    let {\n      lastChecked\n    } = this;\n\n    if (lastChecked !== $REVISION) {\n      this.isUpdating = true;\n      this.lastChecked = $REVISION;\n\n      try {\n        let {\n          subtags,\n          subtag,\n          revision\n        } = this;\n\n        if (subtag !== null) {\n          revision = Math.max(revision, subtag[COMPUTE]());\n        }\n\n        if (subtags !== null) {\n          for (let i = 0; i < subtags.length; i++) {\n            let value = subtags[i][COMPUTE]();\n            revision = Math.max(value, revision);\n          }\n        }\n\n        this.lastValue = revision;\n      } finally {\n        this.isUpdating = false;\n      }\n    }\n\n    if (this.isUpdating === true) {\n      if (false) {}\n\n      this.lastChecked = ++$REVISION;\n    }\n\n    return this.lastValue;\n  }\n\n  static update(_tag, subtag) {\n    if (false\n    /* Updatable */\n    ) {} // TODO: TS 3.7 should allow us to do this via assertion\n\n\n    let tag = _tag;\n\n    if (subtag === CONSTANT_TAG) {\n      tag.subtag = null;\n    } else {\n      tag.subtag = subtag; // subtag could be another type of tag, e.g. CURRENT_TAG or VOLATILE_TAG.\n      // If so, lastChecked/lastValue will be undefined, result in these being\n      // NaN. This is fine, it will force the system to recompute.\n\n      tag.lastChecked = Math.min(tag.lastChecked, subtag.lastChecked);\n      tag.lastValue = Math.max(tag.lastValue, subtag.lastValue);\n    }\n  }\n\n  static dirty(tag) {\n    if (false) {}\n\n    tag.revision = ++$REVISION;\n  }\n\n}\n\nconst dirty = MonomorphicTagImpl.dirty;\nconst update = MonomorphicTagImpl.update; //////////\n\nfunction createTag() {\n  return new MonomorphicTagImpl(0\n  /* Dirtyable */\n  );\n}\nfunction createUpdatableTag() {\n  return new MonomorphicTagImpl(1\n  /* Updatable */\n  );\n} //////////\n\nconst CONSTANT_TAG = new MonomorphicTagImpl(3\n/* Constant */\n);\nfunction isConst({\n  tag\n}) {\n  return tag === CONSTANT_TAG;\n}\nfunction isConstTag(tag) {\n  return tag === CONSTANT_TAG;\n} //////////\n\nclass VolatileTag {\n  [COMPUTE]() {\n    return VOLATILE;\n  }\n\n}\n\nconst VOLATILE_TAG = new VolatileTag(); //////////\n\nclass CurrentTag {\n  [COMPUTE]() {\n    return $REVISION;\n  }\n\n}\n\nconst CURRENT_TAG = new CurrentTag(); //////////\n\nfunction combine(tags) {\n  let optimized = [];\n\n  for (let i = 0, l = tags.length; i < l; i++) {\n    let tag = tags[i];\n    if (tag === CONSTANT_TAG) continue;\n    optimized.push(tag);\n  }\n\n  return createCombinatorTag(optimized);\n}\nfunction createCombinatorTag(tags) {\n  switch (tags.length) {\n    case 0:\n      return CONSTANT_TAG;\n\n    case 1:\n      return tags[0];\n\n    default:\n      let tag = new MonomorphicTagImpl(2\n      /* Combinator */\n      );\n      tag.subtags = tags;\n      return tag;\n  }\n}\n\n//# sourceURL=webpack://__ember_auto_import__/./node_modules/@glimmer/validator/dist/modules/es2017/lib/validators.js?");
+
+/***/ })
+
+}]);//# sourceMappingURL=vendor.map

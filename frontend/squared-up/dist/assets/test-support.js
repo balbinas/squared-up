@@ -14278,6 +14278,74 @@ define('ember-cli-test-loader/test-support/index', ['exports'], function (export
   }exports.default = TestLoader;
   ;
 });
+define("ember-lifeline/test-support/index", ["exports", "ember-lifeline/test-support/poll-task-for", "ember-lifeline/test-support/setup-lifeline-validation"], function (_exports, _pollTaskFor, _setupLifelineValidation) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "pollTaskFor", {
+    enumerable: true,
+    get: function () {
+      return _pollTaskFor.default;
+    }
+  });
+  Object.defineProperty(_exports, "setupLifelineValidation", {
+    enumerable: true,
+    get: function () {
+      return _setupLifelineValidation.default;
+    }
+  });
+});
+define("ember-lifeline/test-support/poll-task-for", ["exports", "@ember/test-helpers", "ember-lifeline"], function (_exports, _testHelpers, _emberLifeline) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = pollTaskFor;
+
+  function pollTaskFor(token) {
+    (true && !(!!_emberLifeline.queuedPollTasks[token]) && Ember.assert(`You cannot advance pollTask '${token}' when \`next\` has not been called.`, !!_emberLifeline.queuedPollTasks[token]));
+    Ember.run.join(null, _emberLifeline.queuedPollTasks[token]);
+    return (0, _testHelpers.settled)();
+  }
+});
+define("ember-lifeline/test-support/setup-lifeline-validation", ["exports", "ember-lifeline"], function (_exports, _emberLifeline) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  _exports.default = setupLifelineValidation;
+  // @ts-ignore
+  const FAILED_ASSERTION_MESSAGE = 'One or more objects registered disposables that were not correctly disposed of. Please ensure that objects correctly run their registered disposables by calling `runDisposables` in the `destroy` method of the object.';
+
+  function setupLifelineValidation(hooks) {
+    let registeredDisposables = new Map();
+    hooks.beforeEach(function () {
+      (0, _emberLifeline._setRegisteredDisposables)(registeredDisposables);
+    });
+    hooks.afterEach(function (assert) {
+      let test = QUnit.config.current;
+
+      try {
+        let retainedObjects = [];
+        registeredDisposables.forEach((_, k) => retainedObjects.push(k.toString()));
+
+        if (retainedObjects.length > 0) {
+          if (test.expected !== null) {
+            test.expected += 1;
+          }
+
+          assert.deepEqual(retainedObjects, [], FAILED_ASSERTION_MESSAGE);
+        }
+      } finally {
+        (0, _emberLifeline._setRegisteredDisposables)(new WeakMap());
+      }
+    });
+  }
+});
 define("ember-qunit/adapter", ["exports", "qunit", "@ember/test-helpers/has-ember-version"], function (_exports, _qunit, _hasEmberVersion) {
   "use strict";
 
@@ -16399,36 +16467,36 @@ var __ember_auto_import__ =
 /************************************************************************/
 /******/ ({
 
-/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js":
+/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js":
 /*!**************************************************************************************************************************!*\
-  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js ***!
+  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js ***!
   \**************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js?");
+eval("\nwindow._eai_r = require;\nwindow._eai_d = define;\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js?");
 
 /***/ }),
 
-/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js":
+/***/ "../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js":
 /*!******************************************************************************************************************************!*\
-  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js ***!
+  !*** /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js ***!
   \******************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js?");
+eval("\nif (typeof document !== 'undefined') {\n  __webpack_require__.p = (function(){\n    var scripts = document.querySelectorAll('script');\n    return scripts[scripts.length - 1].src.replace(/\\/[^/]*$/, '/');\n  })();\n}\n\nmodule.exports = (function(){\n  var d = _eai_d;\n  var r = _eai_r;\n  window.emberAutoImportDynamic = function(specifier) {\n    return r('_eai_dyn_' + specifier);\n  };\n})();\n\n\n//# sourceURL=webpack://__ember_auto_import__//private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js?");
 
 /***/ }),
 
 /***/ 1:
 /*!*******************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js ***!
+  !*** multi /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js ***!
   \*******************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/l.js_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-35921KKRG5ltofQkT/cache-250-bundler/staging/tests.js?");
+eval("__webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js\");\nmodule.exports = __webpack_require__(/*! /private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js */\"../../../../../../../../private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js\");\n\n\n//# sourceURL=webpack://__ember_auto_import__/multi_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/l.js_/private/var/folders/h5/6fcmvcnx06x8j20_316rz2q80000gp/T/broccoli-38297nWt677EElDmG/cache-290-bundler/staging/tests.js?");
 
 /***/ })
 

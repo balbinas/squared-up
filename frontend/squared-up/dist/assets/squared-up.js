@@ -119,6 +119,7 @@
       if (this.dragging) {
         let distX = x - this.clickX;
         let distY = y - this.clickY;
+        console.log(distX, this.clickX, this.clickY, distY);
         this.updateRectangle(this.rectId, distX, distY);
       } else {
         let rect = {
@@ -139,6 +140,19 @@
   }
 
   _exports.default = _default;
+});
+;define("squared-up/components/re-sizable/component", ["exports", "ember-resizable/components/re-sizable/component"], function (_exports, _component) {
+  "use strict";
+
+  Object.defineProperty(_exports, "__esModule", {
+    value: true
+  });
+  Object.defineProperty(_exports, "default", {
+    enumerable: true,
+    get: function () {
+      return _component.default;
+    }
+  });
 });
 ;define("squared-up/components/rectangle", ["exports", "@glimmer/component"], function (_exports, _component) {
   "use strict";
@@ -174,7 +188,7 @@
     }
   });
 });
-;define("squared-up/controllers/application", ["exports"], function (_exports) {
+;define("squared-up/controllers/layout", ["exports"], function (_exports) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -192,7 +206,7 @@
 
   function _initializerWarningHelper(descriptor, context) { throw new Error('Decorating class property failed. Please ensure that ' + 'proposal-class-properties is enabled and runs after the decorators transform.'); }
 
-  let ApplicationController = (_class = (_temp = class ApplicationController extends Ember.Controller {
+  let LayoutController = (_class = (_temp = class LayoutController extends Ember.Controller {
     constructor(...args) {
       super(...args);
 
@@ -256,18 +270,18 @@
         startY: 0,
         endX: 100,
         endY: 100,
-        color: 'red'
+        color: 'skyblue'
       }, {
         id: 2,
         startX: 300,
         startY: 300,
         endX: 500,
         endY: 500,
-        color: 'green'
+        color: 'pink'
       }];
     }
   }), _applyDecoratedDescriptor(_class.prototype, "addRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "addRectangle"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "updateRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "updateRectangle"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "deleteRectangle", [Ember._action], Object.getOwnPropertyDescriptor(_class.prototype, "deleteRectangle"), _class.prototype)), _class);
-  _exports.default = ApplicationController;
+  _exports.default = LayoutController;
 });
 ;define("squared-up/controllers/login", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
   "use strict";
@@ -619,7 +633,7 @@
     this.route('layouts');
   });
 });
-;define("squared-up/routes/layout", ["exports", "squared-up/config/environment", "fetch", "interactjs"], function (_exports, _environment, _fetch, _interactjs) {
+;define("squared-up/routes/layout", ["exports", "squared-up/config/environment", "fetch"], function (_exports, _environment, _fetch) {
   "use strict";
 
   Object.defineProperty(_exports, "__esModule", {
@@ -763,8 +777,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "yhsuhBST",
-    "block": "{\"symbols\":[\"rect\",\"@rectangles\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n\"],[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,2],[]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"        \"],[7,\"rectangle\",[],[[\"@id\",\"@startX\",\"@startY\",\"@endX\",\"@endY\",\"@color\"],[[27,[24,1],[\"id\"]],[27,[24,1],[\"startX\"]],[27,[24,1],[\"startY\"]],[27,[24,1],[\"endX\"]],[27,[24,1],[\"endY\"]],[27,[24,1],[\"color\"]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[11]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
+    "id": "kI9aPNo0",
+    "block": "{\"symbols\":[\"rect\",\"@rectangles\"],\"statements\":[[5,[27,[26,1,\"BlockHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[31,0,0,[27,[26,0,\"CallHead\"],[]],[[27,[24,2],[]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[7,\"rectangle\",[],[[\"@id\",\"@startX\",\"@startY\",\"@endX\",\"@endY\",\"@color\"],[[27,[24,1],[\"id\"]],[27,[24,1],[\"startX\"]],[27,[24,1],[\"startY\"]],[27,[24,1],[\"endX\"]],[27,[24,1],[\"endY\"]],[27,[24,1],[\"color\"]]]],null],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]]],\"hasEval\":false,\"upvars\":[\"-track-array\",\"each\"]}",
     "meta": {
       "moduleName": "squared-up/templates/components/layout.hbs"
     }
@@ -799,8 +813,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "/WFcNu9p",
-    "block": "{\"symbols\":[],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layout: \"],[1,0,0,0,[27,[24,0],[\"model\",\"name\"]]],[11],[1,1,0,0,\"\\n\\n    \"],[7,\"layout\",[],[[\"@rectangles\",\"@addRectangle\",\"@updateRectangle\",\"@deleteRectangle\"],[[27,[26,0,\"AppendSingleId\"],[]],[27,[26,1,\"AppendSingleId\"],[]],[27,[26,2,\"AppendSingleId\"],[]],[27,[26,3,\"AppendSingleId\"],[]]]],null],[1,1,0,0,\"\\n\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"rectangles\",\"addRectangle\",\"updateRectangle\",\"deleteRectangle\"]}",
+    "id": "EWQRNMMR",
+    "block": "{\"symbols\":[],\"statements\":[[9,\"h1\",true],[10],[1,1,0,0,\"Layout: \"],[1,0,0,0,[27,[24,0],[\"model\",\"name\"]]],[11],[1,1,0,0,\"\\n\\n\"],[7,\"layout\",[],[[\"@rectangles\",\"@addRectangle\",\"@updateRectangle\",\"@deleteRectangle\"],[[27,[26,0,\"AppendSingleId\"],[]],[27,[26,1,\"AppendSingleId\"],[]],[27,[26,2,\"AppendSingleId\"],[]],[27,[26,3,\"AppendSingleId\"],[]]]],null]],\"hasEval\":false,\"upvars\":[\"rectangles\",\"addRectangle\",\"updateRectangle\",\"deleteRectangle\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layout.hbs"
     }
@@ -817,8 +831,8 @@
   _exports.default = void 0;
 
   var _default = Ember.HTMLBars.template({
-    "id": "CR1zAwA+",
-    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,2,\"BlockHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,0,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"link-to\",\"-track-array\",\"each\"]}",
+    "id": "mS5Sm8VK",
+    "block": "{\"symbols\":[\"ly\"],\"statements\":[[9,\"div\",true],[10],[1,1,0,0,\"\\n    \"],[9,\"h1\",true],[10],[1,1,0,0,\"Layouts\"],[11],[1,1,0,0,\"\\n\\n\"],[5,[27,[26,2,\"BlockHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[31,0,0,[27,[26,1,\"CallHead\"],[]],[[27,[24,0],[\"model\"]]],null]],null]],null,[[\"default\"],[{\"statements\":[[1,1,0,0,\"    \"],[9,\"p\",true],[10],[1,1,0,0,\" \"],[5,[27,[26,0,\"BlockHead\"],[]],null,[[\"route\",\"model\"],[\"layout\",[27,[24,1],[\"id\"]]]],[[\"default\"],[{\"statements\":[[1,1,0,0,\"\\n            Open \"],[1,0,0,0,[27,[24,1],[\"name\"]]],[1,1,0,0,\"\\n        \"]],\"parameters\":[]}]]],[1,1,0,0,\" \"],[11],[1,1,0,0,\"\\n\"]],\"parameters\":[1]}]]],[1,1,0,0,\"\\n\"],[11]],\"hasEval\":false,\"upvars\":[\"link-to\",\"-track-array\",\"each\"]}",
     "meta": {
       "moduleName": "squared-up/templates/layouts.hbs"
     }
@@ -937,7 +951,7 @@ catch(err) {
 
 ;
           if (!runningTests) {
-            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+2795982a"});
+            require("squared-up/app")["default"].create({"BACKEND":"http://localhost:3000","name":"squared-up","version":"0.0.0+5d1092f6"});
           }
         
 //# sourceMappingURL=squared-up.map

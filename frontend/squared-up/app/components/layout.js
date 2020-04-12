@@ -46,6 +46,8 @@ export default class extends Component {
     if (this.dragging) {
       let distX = x - this.clickX;
       let distY = y - this.clickY;
+
+      console.log(distX, this.clickX, this.clickY, distY)
       
       this.updateRectangle(this.rectId, distX, distY);
     } else {

@@ -3,13 +3,8 @@
 
     {{#each this.model as |ly|}}
     <p> {{#link-to "layout" ly.id }}
-            {{ ly.name }}
+            Open {{ ly.name }}
         {{/link-to}} </p>
     {{/each}}
-
-    {{!-- <Layout @rectangles={{rectangles}} 
-				@addRectangle={{addRectangle}}
-        @updateRectangle={{updateRectangle}}
-        @deleteRectangle={{deleteRectangle}}/> --}}
 
 </div>
