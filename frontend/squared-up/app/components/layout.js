@@ -46,8 +46,6 @@ export default class extends Component {
     if (this.dragging) {
       let distX = x - this.clickX;
       let distY = y - this.clickY;
-
-      console.log(distX, this.clickX, this.clickY, distY)
       
       this.updateRectangle(this.rectId, distX, distY);
     } else {
@@ -58,7 +56,6 @@ export default class extends Component {
         endY: Math.max(this.clickY, y),
         color: '#'+Math.floor(Math.random()*16777215).toString(16)
       }
-      console.log("in component rect =", rect)
       
       this.addRectangle(rect);
     }

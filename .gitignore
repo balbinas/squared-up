@@ -22,7 +22,8 @@
 /config/master.key
 
 # ignore more files
-dist/*
+dist/
 package-lock.json
-node_modules/*
-tmp/*
+node_modules/
+tmp/
+log/
