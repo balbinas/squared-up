@@ -20,3 +20,10 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# ignore more files
+*/dist/*
+package-lock.json
+*/node_modules/*
+*/vendor/*
+*/log/*
