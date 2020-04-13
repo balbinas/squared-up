@@ -29,11 +29,24 @@ export default class SignupController extends Controller {
             let response = await fetch(url, { method: 'post', headers, body });
                   
             let json = await response.json();
-            
       
-            return await response.then(this.transitionToRoute(`layout/${json.id}`));
+            // return await response.then(this.transitionToRoute(`layout/${json.id}`));
+            this.model = await this._reloadModel();
           } catch (e) {
             console.log(e);
           }
     }
+
+    async _reloadModel() {
+    
+        let url = `${ENV.APP.BACKEND}/layouts`;
+        let localStorage = window.localStorage;
+        let headers = new Headers({
+          'Authorization': localStorage.getItem('auth-token')
+          });
+    
+        let response = await fetch(url, { method: 'get', headers });
+    
+        return response.json()
+      }
 }

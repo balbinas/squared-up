@@ -10,6 +10,7 @@ export default class extends Component {
   maxX = 0;
   maxY = 0;
   dragging = false;
+  resizing = false;
   rectId = -1;
 
   didRender() {
@@ -25,14 +26,22 @@ export default class extends Component {
 	mouseDown(event) {
     this.clickX = event.pageX - this.minX;
     this.clickY = event.pageY - this.minY;
+    this.maxX = this.minX + document.getElementById(event.target.id).offsetWidth;
+    this.maxY = this.minY + document.getElementById(event.target.id).offsetHeight;
     
     let selectedRectangle = event.target.classList.contains('rectangle');
-    let rightClick = event.which == 3;
+    let pressShiftKey = event.shiftKey;
+    let pressMetaKey = event.metaKey;
     
     if (selectedRectangle) {
-      if (rightClick) {
+      if (pressShiftKey) {
         this.deleteRectangle(event.target.id);
+      } else if(pressMetaKey && event.pageX >= this.maxX - 5 && event.pageY >= this.maxY - 5) {
+        this.resizing = true;
+        this.rectId = event.target.id;
+        console.log("detects resizing", this.resizing)
       } else {
+        console.log("detects dragging")
         this.dragging = true;
         this.rectId = event.target.id;
       }
@@ -46,8 +55,20 @@ export default class extends Component {
     if (this.dragging) {
       let distX = x - this.clickX;
       let distY = y - this.clickY;
+
+      let rect = {}
       
-      this.updateRectangle(this.rectId, distX, distY);
+      this.updateRectangle(rect, this.rectId, distX, distY, 'drag');
+    } else if (this.resizing) {
+      let distX = x - this.clickX;
+      let distY = y - this.clickY;
+      let rect = {
+        startX: this.minX,
+        startY: this.minY,
+        endX: this.maxX + distX,
+        endY: this.maxY + distY
+      }
+      this.updateRectangle(rect, this.rectId, 0, 0, 'resize');
     } else {
       let rect = {
         startX: Math.max(0, Math.min(this.clickX, x)),
@@ -60,7 +81,8 @@ export default class extends Component {
       this.addRectangle(rect);
     }
     
-		this.dragging = false;
+    this.dragging = false;
+    this.resizing = false;
     this.clickX = -1;
     this.clickY = -1;
   }

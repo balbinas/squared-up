@@ -1,7 +1,5 @@
 import Controller from '@ember/controller';
 import { action } from "@ember/object";
-import { tracked } from '@glimmer/tracking';
-import { set } from '@ember/object';
 import fetch, { Headers } from 'fetch';
 import ENV from 'squared-up/config/environment';
 
@@ -42,7 +40,7 @@ export default class LayoutController extends Controller {
   }
 
   @action
-  async updateRectangle(id, distX, distY) {
+  async updateRectangle(rect, id, distX, distY, type) {
     let ogRect;
     
     for (let i = 0; i < this.model.length; i++) {
@@ -61,6 +59,17 @@ export default class LayoutController extends Controller {
       endY: ogRect.endY + distY,
       layout_id: ogRect.layout_id
     });
+    
+    let body2 = JSON.stringify({
+      startX: rect.startX,
+      endX: rect.endX,
+      startY: rect.startY,
+      endY: rect.endY,
+      layout_id: ogRect.layout_id
+    });
+
+    console.log("body1", body)
+    console.log("body2", body2)
 
     let headers = new Headers({
       'Content-Type': 'application/json',
@@ -68,7 +77,11 @@ export default class LayoutController extends Controller {
     });
 
     try {
+      if (type == 'drag') {
         let response = await fetch(url, { method: 'put', headers, body });
+      } else {
+        let response = await fetch(url, { method: 'put', headers, body2 });
+      }
         this.model = await this._reloadModel();
       } catch (e) {
         console.log(e);
