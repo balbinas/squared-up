@@ -7,6 +7,7 @@ export default class Layout extends Route {
   
   async model(params) {
     let url = `${ENV.APP.BACKEND}/layouts/${params.id}/rectangles`;
+    let url2 = `${ENV.APP.BACKEND}/layouts/${params.id}`;
     let localStorage = window.localStorage;
     let headers = new Headers({
       'Authorization': localStorage.getItem('auth-token')
@@ -14,7 +15,17 @@ export default class Layout extends Route {
 
     let response = await fetch(url, { method: 'get', headers });
 
-    return response.json()
+    let response2 = await fetch(url2, { method: 'get', headers });
+
+    return { rectangles: await response.json(), layout: await response2.json() }
   }
+
+  setupController(controller, model) {
+    super.setupController(controller, model);
+    console.log(model)
+
+    controller.set('rectangles', model.rectangles);
+    controller.set('layout', model.layout);
+}
             
 }

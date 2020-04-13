@@ -75,11 +75,11 @@ test:
 #
 # You can use this database configuration with:
 #
-#   production:
-#     url: <%= ENV['DATABASE_URL'] %>
+  production:
+    url: <%= ENV['DATABASE_URL'] %>
 #
-production:
-  <<: *default
-  database: squared_up_production
-  username: squared_up
-  password: <%= ENV['SQUARED_UP_DATABASE_PASSWORD'] %>
+# production:
+#   <<: *default
+#   database: squared_up_production
+#   username: squared_up
+#   password: <%= ENV['SQUARED_UP_DATABASE_PASSWORD'] %>

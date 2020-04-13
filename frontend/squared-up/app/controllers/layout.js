@@ -2,9 +2,12 @@ import Controller from '@ember/controller';
 import { action } from "@ember/object";
 import fetch, { Headers } from 'fetch';
 import ENV from 'squared-up/config/environment';
-
+import { tracked } from '@glimmer/tracking';
 
 export default class LayoutController extends Controller {
+
+  @tracked
+  rectangles = []
 
 	@action
   async addRectangle(rect) {
@@ -31,21 +34,21 @@ export default class LayoutController extends Controller {
 
     try {
         let response = await fetch(url, { method: 'post', headers, body });
-        this.model = await this._reloadModel();
+        this.rectangles = await this._reloadModel();
       } catch (e) {
         console.log(e);
       }
 
-      this.model = this.model
+      this.rectangles = this.rectangles
   }
 
   @action
   async updateRectangle(rect, id, distX, distY, type) {
     let ogRect;
     
-    for (let i = 0; i < this.model.length; i++) {
-      if (id == this.model[i].id) {
-        ogRect = this.model[i];
+    for (let i = 0; i < this.rectangles.length; i++) {
+      if (id == this.rectangles[i].id) {
+        ogRect = this.rectangles[i];
         break;
       }
     };
@@ -68,9 +71,6 @@ export default class LayoutController extends Controller {
       layout_id: ogRect.layout_id
     });
 
-    console.log("body1", body)
-    console.log("body2", body2)
-
     let headers = new Headers({
       'Content-Type': 'application/json',
       'Authorization': localStorage.getItem('auth-token')
@@ -82,7 +82,7 @@ export default class LayoutController extends Controller {
       } else {
         let response = await fetch(url, { method: 'put', headers, body2 });
       }
-        this.model = await this._reloadModel();
+        this.rectangles = await this._reloadModel();
       } catch (e) {
         console.log(e);
       }
@@ -92,9 +92,9 @@ export default class LayoutController extends Controller {
   async deleteRectangle(id) {
     let ogRect;
     
-    for (let i = 0; i < this.model.length; i++) {
-      if (id == this.model[i].id) {
-        ogRect = this.model[i];
+    for (let i = 0; i < this.rectangles.length; i++) {
+      if (id == this.rectangles[i].id) {
+        ogRect = this.rectangles[i];
         break; 
       }
     };
@@ -108,7 +108,7 @@ export default class LayoutController extends Controller {
 
     try {
       let response = await fetch(url, { method: 'delete', headers });
-      this.model = await this._reloadModel();
+      this.rectangles = await this._reloadModel();
       } catch (e) {
         console.log(e);
       }
