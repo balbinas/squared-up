@@ -22,7 +22,6 @@ export default class Layout extends Route {
 
   setupController(controller, model) {
     super.setupController(controller, model);
-    console.log(model)
 
     controller.set('rectangles', model.rectangles);
     controller.set('layout', model.layout);
